@@ -1,0 +1,155 @@
+# Spaltenzuordnung, vorgeschlagen von famrecon fuer beispiel/technisch-taufen.xlsx, beispiel/technisch-trauungen.xlsx, beispiel/technisch-begraebnisse.xlsx
+# Bitte durchsehen: 'unsicher' pruefen, '???' ersetzen oder loeschen.
+
+[allgemein]
+leer = ["NN"]
+
+[register.taufe]
+blatt = "Sheet1"
+datei = "technisch-taufen.xlsx"
+leitdatum = ["geburt_datum", "tauf_datum"]
+
+[register.taufe.spalten]
+A = "geburt_datum"                    # sicher         'dat_geburt': (leer)
+B = "geburt_ort"                      # sicher         'ort_geburt': (leer)
+C = "tauf_datum"                      # sicher         'dat_taufe': 1647-01-08 | 1647-09-21 | 1649-01-16
+D = "tauf_ort"                        # sicher         'ort_taufe': Hollerbach
+E = "kind_vorname_kb"                 # sicher         'vn_kind_kb': Catharina Margretha | Vollrad | Anna Elisabetha
+F = "kind_vorname"                    # sicher         'vn_kind': Katharina Margaretha | Vollrad | Anna Elisabeth
+G = "kind_name_kb"                    # sicher         'fn_kind_kb': Uberlin | Hähnlin
+H = "kind_name"                       # sicher         'fn_kind': Uberle | Hahn
+I = "kind_geschlecht"                 # sicher         'geschl_kind': f | m
+J = "unehelich"                       # sicher         'status_kind': e
+K = "sterbe_datum_rv"                 # sicher         'dat_tod_kind': (leer)
+L = "sterbe_ort_rv"                   # sicher         'ort_tod_kind': (leer)
+M = "kind_totgeburt"                  # sicher         'art_tod_kind': (leer)
+N = "todesursache_rv"                 # sicher         'ursache_tod_kind': (leer)
+O = "kind_verzogen"                   # sicher         'verzogen_kind': (leer)
+P = "kind_bemerkung_kb"               # sicher         'notiz_kind_kb': (leer)
+Q = "vater_vorname_kb"                # sicher         'vn_vater_kb': Hans | Adam
+R = "vater_vorname"                   # sicher         'vn_vater': Johann | Adam
+S = "vater_name_kb"                   # sicher         'fn_vater_kb': Uberlin | Hähnlin
+T = "vater_name"                      # sicher         'fn_vater': Uberle | Hahn
+U = "vater_beruf_kb"                  # sicher         'beruf_vater_kb': (leer)
+V = "vater_beruf"                     # sicher         'beruf_vater': (leer)
+W = "vater_beruf_ort"                 # sicher         'ort_beruf_vater': (leer)
+X = "vater_herkunft"                  # sicher         'herkunft_vater': (leer)
+Y = "vater_konfession"                # sicher         'religion_vater': (leer)
+Z = "vater_bemerkung_kb"              # sicher         'notiz_vater_kb': (leer)
+AA = "mutter_vorname_kb"              # sicher         'vn_mutter_kb': Catharina | Margretha
+AB = "mutter_vorname"                 # sicher         'vn_mutter': Katharina | Margaretha
+AC = "mutter_name_kb"                 # sicher         'fn_mutter_kb': NN
+AD = "mutter_name"                    # sicher         'fn_mutter': NN
+AE = "mutter_herkunft"                # sicher         'herkunft_mutter': (leer)
+AF = "mutter_konfession"              # sicher         'religion_mutter': (leer)
+AG = "mutter_bemerkung"               # sicher         'notiz_mutter': (leer)
+AH = "mutter_vater_vorname_kb"        # sicher         'vn_vater_mutter_kb': (leer)
+AI = "mutter_vater_vorname"           # sicher         'vn_vater_mutter': (leer)
+AJ = "mutter_vater_name_kb"           # sicher         'fn_vater_mutter_kb': (leer)
+AK = "mutter_vater_name"              # sicher         'fn_vater_mutter': (leer)
+AL = "mutter_mutter_vorname_kb"       # sicher         'vn_mutter_mutter_kb': (leer)
+AM = "mutter_mutter_vorname"          # sicher         'vn_mutter_mutter': (leer)
+AN = "mutter_mutter_name_kb"          # sicher         'fn_mutter_mutter_kb': (leer)
+AO = "mutter_mutter_name"             # sicher         'fn_mutter_mutter': (leer)
+AP = "paten_kb"                       # sicher         'paten_kb': (leer)
+AQ = "kb"                             # sicher         'quelle': KB Hollerbach 1647-1790
+AR = "zitat"                          # sicher         'zitat': Taufe 1647/01 | Taufe 1647/02 | Taufe 1649/01
+
+[register.ehe]
+blatt = "Sheet1"
+datei = "technisch-trauungen.xlsx"
+leitdatum = ["trauung_datum"]
+
+[register.ehe.spalten]
+A = "trauung_datum"                   # sicher         'dat_trauung': 1738-02-09 | 1740-11-20 | 1728-07-06
+B = "trauung_ort"                     # sicher         'ort_trauung': Hollerbach | Kleinwiesenheim
+C = "braeutigam_vorname_kb"           # sicher         'vn_braeu_kb': Johann Ludwig | Hannß Georg | Marcell
+D = "braeutigam_vorname"              # sicher         'vn_braeu': Johann Ludwig | Johann Georg | Marzell
+E = "braeutigam_name_kb"              # sicher         'fn_braeu_kb': Ude | Ellgeyer | Jung
+F = "braeutigam_name"                 # sicher         'fn_braeu': Ude | Ellgaier | Jung
+G = "braeutigam_beruf_kb"             # sicher         'beruf_braeu_kb': Pfarrer | Bürger
+H = "braeutigam_beruf"                # sicher         'beruf_braeu': Pfarrer
+I = "braeutigam_beruf_ort"            # sicher         'ort_beruf_braeu': Hollerbach
+J = "braeutigam_herkunft"             # sicher         'ort_herkunft_braeu': Kirchbach an der Aue
+K = "braeutigam_stand"                # sicher         'status_braeu': verwitwet | ledig
+L = "braeutigam_bemerkung"            # sicher         'notiz_braeu': ins 13te Jahr dahier | von Kirchbach an der Aue, Wittwer | ehlicher Sohn
+M = "braeutigam_vater_vorname_kb"     # sicher         'vn_vater_braeu_kb': Johann Caspar
+N = "braeutigam_vater_vorname"        # sicher         'vn_vater_braeu': Johann Kaspar I.
+O = "braeutigam_vater_name_kb"        # sicher         'fn_vater_braeu_kb': Jung
+P = "braeutigam_vater_name"           # sicher         'fn_vater_braeu': Jung
+Q = "braeutigam_vater_beruf_kb"       # sicher         'beruf_vater_braeu_kb': Schultheiß
+R = "braeutigam_vater_beruf"          # sicher         'beruf_vater_braeu': Schultheiß
+S = "braeutigam_vater_beruf_ort"      # sicher         'ort_beruf_vater_braeu': Hollerbach
+T = "braeutigam_vater_herkunft"       # sicher         'ort_herkunft_vater_braeu': (leer)
+U = "braeutigam_vater_stand"          # sicher         'status_vater_braeu': verstorben
+V = "braeutigam_vater_bemerkung"      # sicher         'notiz_vater_braeu': seelig, gewesener, allhier
+W = "braut_vorname_kb"                # sicher         'vn_braut_kb': Catharina Barbara | Sara Barbara | Anna Maria
+X = "braut_vorname"                   # sicher         'vn_braut': Katharina Barbara | Sara Barbara | Anna Maria
+Y = "braut_name_kb"                   # sicher         'fn_braut_kb': NN | Zeckerlin | Wolter
+Z = "braut_name"                      # sicher         'fn_braut': NN | Zeckerle | Wolter
+AA = "braut_herkunft"                 # sicher         'ort_herkunft_braut': (leer)
+AB = "braut_stand"                    # sicher         'status_braut': verwitwet | ledig
+AC = "braut_bemerkung"                # sicher         'notiz_braut': hinterlaßenen Wittwen | eheleibliche leedige Tochter | eheliche Tochter
+AD = "braut_vater_vorname_kb"         # sicher         'vn_vater_braut_kb': Michael | Johann
+AE = "braut_vater_vorname"            # sicher         'vn_vater_braut': Michael | Johann
+AF = "braut_vater_name_kb"            # sicher         'fn_vater_braut_kb': Zeckerlin | Wolter
+AG = "braut_vater_name"               # sicher         'fn_vater_braut': Zeckerle | Wolter
+AH = "braut_vater_beruf_kb"           # sicher         'beruf_vater_braut_kb': Bürger, Maurer | Meier
+AI = "braut_vater_beruf"              # sicher         'beruf_vater_braut': Maurer | Meier
+AJ = "braut_vater_beruf_ort"          # sicher         'ort_beruf_vater_braut': Reichenhofen
+AK = "braut_vater_herkunft"           # sicher         'ort_herkunft_vater_braut': (leer)
+AL = "braut_vater_stand"              # sicher         'status_vater_braut': (leer)
+AM = "braut_vater_bemerkung"          # sicher         'notiz_vater_braut': dahier | zu Reichenhofen
+AN = "braut_vorehe_vorname_kb"        # sicher         'vn_v_mann_braut_kb': Wilhelm Ludwig
+AO = "braut_vorehe_vorname"           # sicher         'vn_v_mann_braut': Wilhelm Ludwig
+AP = "braut_vorehe_name_kb"           # sicher         'fn_v_mann_braut_kb': Faenner
+AQ = "braut_vorehe_name"              # sicher         'fn_v_mann_braut': Fänner
+AR = "braut_vorehe_beruf_kb"          # sicher         'beruf_v_mann_braut_kb': Pfarrer
+AS = "braut_vorehe_beruf"             # sicher         'beruf_v_mann_braut': Pfarrer
+AT = "braut_vorehe_beruf_ort"         # sicher         'ort_beruf_v_mann_braut': Flecht
+AU = "braut_bemerkung"                # sicher         'notiz_mann_braut': Herr Magister, seelig, gewesener, zu Fle
+AV = "kb"                             # sicher         'quelle': KB Hollerbach 1666-1807
+AW = "zitat"                          # sicher         'zitat': Trauung 1738/02 | Trauung 1740/05 | Trauung 1728/02
+
+[register.tod]
+blatt = "Sheet1"
+datei = "technisch-begraebnisse.xlsx"
+leitdatum = ["sterbe_datum", "begraebnis_datum"]
+
+[register.tod.spalten]
+A = "sterbe_datum"                    # sicher         'dat_tod': (leer)
+B = "begraebnis_datum"                # sicher         'dat_grab': 1702-10-02 | 1703-03-09
+C = "begraebnis_ort"                  # sicher         'ort_grab': Hollerbach
+D = "verstorbener_vorname_kb"         # sicher         'vn_verst_kb': Johann Peter | Anonymus | Anna Barbara
+E = "verstorbener_vorname"            # sicher         'vn_verst': Johann Peter | Anonymus | Anna Barbara
+F = "verstorbener_name_kb"            # sicher         'fn_verst_kb': Neubrand | Rehm | Heist
+G = "verstorbener_name"               # sicher         'fn_verst': Neubrand | Rehm | Sommer
+H = "verstorbener_geschlecht"         # sicher         'geschl_verst': m | f
+I = "verstorbener_stand"              # sicher         'famstand_verst': ledig | verheiratet
+J = "verstorbener_beruf_kb"           # sicher         'beruf_verst_kb': (leer)
+K = "verstorbener_beruf"              # sicher         'beruf_verst': (leer)
+L = "verstorbener_beruf_ort"          # sicher         'ort_beruf_verst': (leer)
+M = "verstorbener_vater_vorname_kb"   # sicher         'vn_vater_verst_kb': Bonaventura | Mattheus
+N = "verstorbener_vater_vorname"      # sicher         'vn_vater_verst': Bonifatius Bonaventura | Matthäus
+O = "verstorbener_vater_name_kb"      # sicher         'fn_vater_verst_kb': Neubrand | Rehm
+P = "verstorbener_vater_name"         # sicher         'fn_vater_verst': Neubrand | Rehm
+Q = "verstorbener_vater_beruf_kb"     # sicher         'beruf_vater_verst_kb': (leer)
+R = "verstorbener_vater_beruf"        # sicher         'beruf_vater_verst': (leer)
+S = "verstorbener_vater_beruf_ort"    # sicher         'ort_beruf_vater_verst': (leer)
+T = "verstorbener_vater_stand"        # sicher         'status_vater_verst': (leer)
+U = "verstorbener_ehepartner_vorname_kb"# sicher         'vn_ehepart_verst_kb': Christoph
+V = "verstorbener_ehepartner_vorname" # sicher         'vn_ehepart_verst': Christoph
+W = "verstorbener_ehepartner_name_kb" # sicher         'fn_ehepart_verst_kb': Heist
+X = "verstorbener_ehepartner_name"    # sicher         'fn_ehepart_verst': Heist
+Y = "verstorbener_ehepartner_geschlecht"# sicher         'geschl_ehepart': m
+Z = "verstorbener_ehepartner_beruf_kb"# sicher         'beruf_ehepart_verst_kb': (leer)
+AA = "verstorbener_ehepartner_beruf"  # sicher         'beruf_ehepart_verst': (leer)
+AB = "verstorbener_ehepartner_beruf_ort"# sicher         'ort_beruf_ehepart_verst': (leer)
+AC = "todesursache_kb"                # sicher         'ursache_tod_kb': Todgeburt
+AD = "todesursache"                   # sicher         'ursache_tod': Totgeburt
+AE = "verstorbener_alter_kb"          # sicher         'Alter_kb': 1 Monat, 27 Tage | 40 Jahre, 2 Monate
+AF = "geburt_datum_rv_praefix"        # sicher         'dat_geburt_praefix': CAL
+AG = "geburt_datum_rv"                # sicher         'dat_geburt': 1702-08-05 | 1663-01-09
+AH = "verstorbener_bemerkung_kb"      # sicher         'notiz_verst_kb': Söhnle | todt gebohrenes Söhnlein | frau allhier
+AI = "kb"                             # sicher         'Quelle': KB Hollerbach 1702-1807
+AJ = "zitat"                          # sicher         'Zitat': Begräbnis 1702/01 | Begräbnis 1702/02 | Begräbnis 1703/01

@@ -1,0 +1,15 @@
+<h1>{{Zuordnung}} · $projekt</h1>
+<p class="hilfe">$anzahl {{Blätter. Jede Spalte bekommt ein Feld aus dem Katalog; die Beispiele zeigen, ob der Vorschlag stimmt. „unsicher“ bitte prüfen. Was nicht übernommen wird, fehlt später in der GEDCOM.}}</p>
+<p class="bilanz">$bilanz</p>
+<script>
+function umschalten(sel) {
+  const p = new URLSearchParams(location.search);
+  document.querySelectorAll('select[name^="r"]').forEach(s => { if (/^r\d+$/.test(s.name)) p.set(s.name, s.value); });
+  location.search = p.toString();
+}
+</script>
+<form method="post" action="/p/$projekt/zuordnung">
+$bloecke
+<p><label>{{Als „nicht angegeben“ gelten:}} <input name="leer" value="$leer" size="40"></label></p>
+<p><button name="bauen" value="1">{{Zuordnung bestätigen und bauen}}</button> <button class="leise">{{nur speichern}}</button> <a class="knopf leise" href="/p/$projekt">{{zurück}}</a></p>
+</form>

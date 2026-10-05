@@ -1,0 +1,57 @@
+# Pakete fuer Windows, macOS und Linux: eine Datei je System, Doppelklick startet die Oberflaeche.
+# Gebaut auf GitHub, weil eine Windows-EXE nur unter Windows und ein Mac-Paket nur auf einem Mac entsteht
+# (dasselbe Muster wie wtWin/wtMac in app4webtrees). Von Hand: Actions > Pakete > Run workflow,
+# die Dateien liegen dann unter "Artifacts". Bei einem veroeffentlichten Release: an das Release haengen.
+name: Pakete
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  paket:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            name: famrecon-windows.exe
+            bin: dist/famrecon.exe
+          - runner: macos-latest
+            name: famrecon-macos-arm64
+            bin: dist/famrecon
+          - runner: ubuntu-latest
+            name: famrecon-linux-x64
+            bin: dist/famrecon
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Abhaengigkeiten
+        run: python -m pip install --upgrade pip openpyxl pyinstaller
+      - name: Tests
+        run: python -m unittest discover -s tests -t .
+      - name: Paket bauen
+        run: python -m PyInstaller werkzeuge/famrecon.spec --noconfirm
+      - name: Datei benennen
+        shell: bash
+        run: |
+          mkdir -p out
+          cp "${{ matrix.bin }}" "out/${{ matrix.name }}"
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: out/*
+      - name: An das Release haengen
+        if: github.event_name == 'release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" out/* --clobber

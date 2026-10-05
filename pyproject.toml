@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "famrecon"
+version = "0.1.0"
+description = "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform, Ausgabe GEDCOM"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["openpyxl>=3.1"]
+
+[project.scripts]
+famrecon = "famrecon.cli:main"
+
+[tool.setuptools]
+packages = ["famrecon"]
+
+[tool.setuptools.package-data]
+famrecon = ["schema.sql", "sprachen/*/LC_MESSAGES/*.mo", "sprachen/*.pot", "web/static/*", "web/vorlagen/*"]

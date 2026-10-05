@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+daten/
+*.db
+*.ged
+!beispiel/falkenrath.ged
+build/
+dist/
+*.egg-info/
+.venv/
+werkzeuge/tmp/
+tmp/

@@ -1,0 +1,365 @@
+# famrecon - Vorlage fuer Uebersetzungen. Quelle ist Deutsch.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: de\n"
+
+msgid "Blatt '{blatt}' fehlt in {datei}; vorhanden: {blaetter}"
+msgstr ""
+
+msgid "Blatt '{blatt}': {zeilen} Zeilen"
+msgstr ""
+
+msgid "Kein Blatt der Zuordnung in den Dateien gefunden."
+msgstr ""
+
+msgid "Spalten zugeordnet"
+msgstr ""
+
+msgid "Warnung: Feld '{feld}' in [register.{register}] kennt der Katalog nicht."
+msgstr ""
+
+msgid "Eintraege"
+msgstr ""
+
+msgid "Personen in Normalform:"
+msgstr ""
+
+msgid "ohne Jahr: {n}"
+msgstr ""
+
+msgid "Personen: {n}, davon Name unbekannt {nn}, unsicher {u}, als verstorben genannt {v}, Totgeburt {t}, ohne Geschlecht {og}"
+msgstr ""
+
+msgid "{personen} Personen in Eintraegen -> {identitaeten} Identitaeten, {familien} Familien ({familien_mit_kindern} mit Kindern, {kinder} Kinder)"
+msgstr ""
+
+msgid "Zuordnungen:"
+msgstr ""
+
+msgid "{indi} Personen, {fam} Familien, {sour} Quellen, {zeilen} Zeilen -> {out}"
+msgstr ""
+
+msgid "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform."
+msgstr ""
+
+msgid "Blaetter und Ueberschriften einer Tabelle zeigen"
+msgstr ""
+
+msgid "Spaltenzuordnung aus Ueberschriften und Beispielwerten vorschlagen"
+msgstr ""
+
+msgid "Tabellen nach Zuordnung in die Projektdatei einlesen"
+msgstr ""
+
+msgid "TOML mit der Spaltenzuordnung"
+msgstr ""
+
+msgid "Personen in Normalform zeigen"
+msgstr ""
+
+msgid "Personen und Familien aus den Eintraegen bilden"
+msgstr ""
+
+msgid "Familien mit Kindern zeigen"
+msgstr ""
+
+msgid "Unsichere Zuordnungen zeigen"
+msgstr ""
+
+msgid "Aus einer GEDCOM die drei Register erzeugen (Wahrheit zum Messen)"
+msgstr ""
+
+msgid "Verknuepfung gegen die Ref-Spalten messen"
+msgstr ""
+
+msgid "GEDCOM 5.5.1 schreiben"
+msgstr ""
+
+msgid "GEDCOM gegen die Eintraege abgleichen: jede Zeile angekommen?"
+msgstr ""
+
+msgid "Oberflaeche im Browser starten"
+msgstr ""
+
+msgid "Was in der Projektdatei steht"
+msgstr ""
+
+msgid "openpyxl"
+msgstr ""
+
+msgid "Zuordnung"
+msgstr ""
+
+msgid "Personen"
+msgstr ""
+
+msgid "Familien"
+msgstr ""
+
+msgid "Prüfliste"
+msgstr ""
+
+msgid "noch keines"
+msgstr ""
+
+msgid "Tabellen"
+msgstr ""
+
+msgid "keine hochgeladen"
+msgstr ""
+
+msgid "liegt vor"
+msgstr ""
+
+msgid "fehlt"
+msgstr ""
+
+msgid "Projektdatei"
+msgstr ""
+
+msgid "Verknüpfung"
+msgstr ""
+
+msgid "offen"
+msgstr ""
+
+msgid "GEDCOM herunterladen"
+msgstr ""
+
+msgid "nicht übernehmen"
+msgstr ""
+
+msgid "Kirchenbuchform"
+msgstr ""
+
+msgid "leer"
+msgstr ""
+
+msgid "Überschrift"
+msgstr ""
+
+msgid "Beispiele"
+msgstr ""
+
+msgid "Feld"
+msgstr ""
+
+msgid "Ehe erschlossen"
+msgstr ""
+
+msgid "von Hand"
+msgstr ""
+
+msgid "ist diese Person"
+msgstr ""
+
+msgid "eigene Person (keiner davon)"
+msgstr ""
+
+msgid "Entscheidung zurücknehmen"
+msgstr ""
+
+msgid "Keine offenen Fälle."
+msgstr ""
+
+msgid "auch „wahrscheinlich“ zeigen"
+msgstr ""
+
+msgid "nur „unsicher“"
+msgstr ""
+
+msgid "Tabellen gespeichert"
+msgstr ""
+
+msgid "Zuordnung gespeichert"
+msgstr ""
+
+msgid "{p} Personen -> {i} Identitäten, {f} Familien"
+msgstr ""
+
+msgid "Projekt gelöscht"
+msgstr ""
+
+msgid "Beispielprojekt angelegt"
+msgstr ""
+
+msgid "Beispielprojekt anlegen (erfundener Stammbaum, 492 Personen)"
+msgstr ""
+
+msgid "famrecon läuft auf {url}  (Strg+C beendet)"
+msgstr ""
+
+msgid "Blätter. Jede Spalte bekommt ein Feld aus dem Katalog; die Beispiele zeigen, ob der Vorschlag stimmt. „unsicher“ bitte prüfen. Was nicht übernommen wird, fehlt später in der GEDCOM."
+msgstr ""
+
+msgid "Als „nicht angegeben“ gelten:"
+msgstr ""
+
+msgid "zurück"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Vorname"
+msgstr ""
+
+msgid "alle Register"
+msgstr ""
+
+msgid "Taufen"
+msgstr ""
+
+msgid "Ehen"
+msgstr ""
+
+msgid "Tote"
+msgstr ""
+
+msgid "suchen"
+msgstr ""
+
+msgid "Zeilen (höchstens 500)"
+msgstr ""
+
+msgid "Reg."
+msgstr ""
+
+msgid "Jahr"
+msgstr ""
+
+msgid "Rolle"
+msgstr ""
+
+msgid "Marker"
+msgstr ""
+
+msgid "Geburt"
+msgstr ""
+
+msgid "Stand"
+msgstr ""
+
+msgid "Beruf"
+msgstr ""
+
+msgid "GEDCOM"
+msgstr ""
+
+msgid "Personen,"
+msgstr ""
+
+msgid "Familien,"
+msgstr ""
+
+msgid "Zeilen geschrieben."
+msgstr ""
+
+msgid "Abgleich gegen die Einträge ("
+msgstr ""
+
+msgid "Fehler"
+msgstr ""
+
+msgid "Weiter prüfen:"
+msgstr ""
+
+msgid "lässt Gramps die Datei lesen,"
+msgstr ""
+
+msgid "wendet den Regelkatalog an."
+msgstr ""
+
+msgid "Fälle. Jeder Fall: eine Nennung in einem Eintrag und die Personen, zu denen sie passen könnte, mit allen Belegen. Eine Entscheidung gilt ab sofort und bei jedem weiteren Lauf."
+msgstr ""
+
+msgid "famrecon · Familien aus Tauf-, Ehe- und Sterberegistern · lokal, nichts verlässt diesen Rechner"
+msgstr ""
+
+msgid "Tabellen hochladen"
+msgstr ""
+
+msgid "Zuordnung durchsehen"
+msgstr ""
+
+msgid "bauen und verknüpfen"
+msgstr ""
+
+msgid "GEDCOM schreiben und prüfen"
+msgstr ""
+
+msgid "Projekt samt Tabellen löschen?"
+msgstr ""
+
+msgid "Projekt löschen"
+msgstr ""
+
+msgid "Name oder Vorname"
+msgstr ""
+
+msgid "Projekte"
+msgstr ""
+
+msgid "Neues Projekt"
+msgstr ""
+
+msgid "Tabellen (xlsx, eine Mappe mit Blättern oder mehrere Dateien)"
+msgstr ""
+
+msgid "anlegen"
+msgstr ""
+
+msgid "Ein Projekt ist ein Ordner unter"
+msgstr ""
+
+msgid "Der Weg: Tabellen laden → Zuordnung durchsehen → bauen → Prüfliste → GEDCOM."
+msgstr ""
+
+msgid "Zuerst Tabellen hochladen."
+msgstr ""
+
+msgid "In den Tabellen wurde kein Register erkannt."
+msgstr ""
+
+msgid "Die Zuordnung wurde aus dem Vorschlag übernommen, bitte durchsehen."
+msgstr ""
+
+msgid "Zuerst bauen und verknüpfen."
+msgstr ""
+
+msgid "Zuordnung bestätigen und bauen"
+msgstr ""
+
+msgid "nur speichern"
+msgstr ""
+
+msgid "Register umschalten: die Feldliste wird neu geladen"
+msgstr ""
+
+msgid "{s} sicher, {w} wahrscheinlich, {u} unsicher, {n} nicht erkannt"
+msgstr ""
+
+msgid "taufe"
+msgstr ""
+
+msgid "ehe"
+msgstr ""
+
+msgid "tod"
+msgstr ""
+
+msgid "Familien (höchstens 300)"
+msgstr ""
+
+msgid "Deine Tabelle"
+msgstr ""
+
+msgid "Feld in famrecon"
+msgstr ""
+
+msgid "Vorschlag"
+msgstr ""

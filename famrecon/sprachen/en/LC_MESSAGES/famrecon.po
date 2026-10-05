@@ -1,0 +1,364 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+
+msgid "Blatt '{blatt}' fehlt in {datei}; vorhanden: {blaetter}"
+msgstr "Sheet '{blatt}' is missing in {datei}; available: {blaetter}"
+
+msgid "Blatt '{blatt}': {zeilen} Zeilen"
+msgstr "Sheet '{blatt}': {zeilen} rows"
+
+msgid "Kein Blatt der Zuordnung in den Dateien gefunden."
+msgstr "None of the mapped sheets was found in the files."
+
+msgid "Spalten zugeordnet"
+msgstr "columns mapped"
+
+msgid "Warnung: Feld '{feld}' in [register.{register}] kennt der Katalog nicht."
+msgstr "Warning: field '{feld}' in [register.{register}] is unknown to the catalogue."
+
+msgid "Eintraege"
+msgstr "entries"
+
+msgid "Personen in Normalform:"
+msgstr "Persons in normal form:"
+
+msgid "ohne Jahr: {n}"
+msgstr "without year: {n}"
+
+msgid "Personen: {n}, davon Name unbekannt {nn}, unsicher {u}, als verstorben genannt {v}, Totgeburt {t}, ohne Geschlecht {og}"
+msgstr "Persons: {n}, of which surname unknown {nn}, uncertain {u}, mentioned as deceased {v}, stillborn {t}, without sex {og}"
+
+msgid "{personen} Personen in Eintraegen -> {identitaeten} Identitaeten, {familien} Familien ({familien_mit_kindern} mit Kindern, {kinder} Kinder)"
+msgstr "{personen} persons in entries -> {identitaeten} identities, {familien} families ({familien_mit_kindern} with children, {kinder} children)"
+
+msgid "Zuordnungen:"
+msgstr "Assignments:"
+
+msgid "{indi} Personen, {fam} Familien, {sour} Quellen, {zeilen} Zeilen -> {out}"
+msgstr "{indi} persons, {fam} families, {sour} sources, {zeilen} lines -> {out}"
+
+msgid "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform."
+msgstr "Families from baptism, marriage and burial registers in table form."
+
+msgid "Blaetter und Ueberschriften einer Tabelle zeigen"
+msgstr "Show sheets and headers of a spreadsheet"
+
+msgid "Spaltenzuordnung aus Ueberschriften und Beispielwerten vorschlagen"
+msgstr "Propose the column mapping from headers and sample values"
+
+msgid "Tabellen nach Zuordnung in die Projektdatei einlesen"
+msgstr "Read spreadsheets into the project file according to the mapping"
+
+msgid "TOML mit der Spaltenzuordnung"
+msgstr "TOML file with the column mapping"
+
+msgid "Personen in Normalform zeigen"
+msgstr "Show persons in normal form"
+
+msgid "Personen und Familien aus den Eintraegen bilden"
+msgstr "Build persons and families from the entries"
+
+msgid "Familien mit Kindern zeigen"
+msgstr "Show families with children"
+
+msgid "Unsichere Zuordnungen zeigen"
+msgstr "Show uncertain assignments"
+
+msgid "Aus einer GEDCOM die drei Register erzeugen (Wahrheit zum Messen)"
+msgstr "Create the three registers from a GEDCOM (truth for measuring)"
+
+msgid "Verknuepfung gegen die Ref-Spalten messen"
+msgstr "Measure the linking against the ref columns"
+
+msgid "GEDCOM 5.5.1 schreiben"
+msgstr "Write GEDCOM 5.5.1"
+
+msgid "GEDCOM gegen die Eintraege abgleichen: jede Zeile angekommen?"
+msgstr "Check the GEDCOM against the entries: every row arrived?"
+
+msgid "Oberflaeche im Browser starten"
+msgstr "Start the interface in the browser"
+
+msgid "Was in der Projektdatei steht"
+msgstr "What the project file contains"
+
+msgid "openpyxl"
+msgstr ""
+
+msgid "Zuordnung"
+msgstr "Mapping"
+
+msgid "Personen"
+msgstr "Persons"
+
+msgid "Familien"
+msgstr "Families"
+
+msgid "Prüfliste"
+msgstr "Review list"
+
+msgid "noch keines"
+msgstr "none yet"
+
+msgid "Tabellen"
+msgstr "Spreadsheets"
+
+msgid "keine hochgeladen"
+msgstr "none uploaded"
+
+msgid "liegt vor"
+msgstr "present"
+
+msgid "fehlt"
+msgstr "missing"
+
+msgid "Projektdatei"
+msgstr "Project file"
+
+msgid "Verknüpfung"
+msgstr "Linking"
+
+msgid "offen"
+msgstr "open"
+
+msgid "GEDCOM herunterladen"
+msgstr "Download GEDCOM"
+
+msgid "nicht übernehmen"
+msgstr "do not take over"
+
+msgid "Kirchenbuchform"
+msgstr "spelling in the register"
+
+msgid "leer"
+msgstr "empty"
+
+msgid "Überschrift"
+msgstr "Header"
+
+msgid "Beispiele"
+msgstr "Examples"
+
+msgid "Feld"
+msgstr "Field"
+
+msgid "Ehe erschlossen"
+msgstr "marriage inferred"
+
+msgid "von Hand"
+msgstr "by hand"
+
+msgid "ist diese Person"
+msgstr "is this person"
+
+msgid "eigene Person (keiner davon)"
+msgstr "separate person (none of these)"
+
+msgid "Entscheidung zurücknehmen"
+msgstr "withdraw decision"
+
+msgid "Keine offenen Fälle."
+msgstr "No open cases."
+
+msgid "auch „wahrscheinlich“ zeigen"
+msgstr "also show “probable”"
+
+msgid "nur „unsicher“"
+msgstr "only “uncertain”"
+
+msgid "Tabellen gespeichert"
+msgstr "Spreadsheets saved"
+
+msgid "Zuordnung gespeichert"
+msgstr "Mapping saved"
+
+msgid "{p} Personen -> {i} Identitäten, {f} Familien"
+msgstr "{p} persons -> {i} identities, {f} families"
+
+msgid "Projekt gelöscht"
+msgstr "Project deleted"
+
+msgid "Beispielprojekt angelegt"
+msgstr "Example project created"
+
+msgid "Beispielprojekt anlegen (erfundener Stammbaum, 492 Personen)"
+msgstr "Create example project (fictional family tree, 492 persons)"
+
+msgid "famrecon läuft auf {url}  (Strg+C beendet)"
+msgstr "famrecon is running at {url}  (Ctrl+C stops it)"
+
+msgid "Blätter. Jede Spalte bekommt ein Feld aus dem Katalog; die Beispiele zeigen, ob der Vorschlag stimmt. „unsicher“ bitte prüfen. Was nicht übernommen wird, fehlt später in der GEDCOM."
+msgstr "sheets. Each column gets a field from the catalogue; the examples show whether the proposal is right. Please check “uncertain”. What is not taken over will be missing from the GEDCOM."
+
+msgid "Als „nicht angegeben“ gelten:"
+msgstr "Treat as “not given”:"
+
+msgid "zurück"
+msgstr "back"
+
+msgid "Person"
+msgstr "Person"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Vorname"
+msgstr "Given name"
+
+msgid "alle Register"
+msgstr "all registers"
+
+msgid "Taufen"
+msgstr "Baptisms"
+
+msgid "Ehen"
+msgstr "Marriages"
+
+msgid "Tote"
+msgstr "Burials"
+
+msgid "suchen"
+msgstr "search"
+
+msgid "Zeilen (höchstens 500)"
+msgstr "rows (at most 500)"
+
+msgid "Reg."
+msgstr "Reg."
+
+msgid "Jahr"
+msgstr "Year"
+
+msgid "Rolle"
+msgstr "Role"
+
+msgid "Marker"
+msgstr "Markers"
+
+msgid "Geburt"
+msgstr "Birth"
+
+msgid "Stand"
+msgstr "Status"
+
+msgid "Beruf"
+msgstr "Occupation"
+
+msgid "GEDCOM"
+msgstr ""
+
+msgid "Personen,"
+msgstr "persons,"
+
+msgid "Familien,"
+msgstr "families,"
+
+msgid "Zeilen geschrieben."
+msgstr "lines written."
+
+msgid "Abgleich gegen die Einträge ("
+msgstr "Check against the entries ("
+
+msgid "Fehler"
+msgstr "errors"
+
+msgid "Weiter prüfen:"
+msgstr "Further checks:"
+
+msgid "lässt Gramps die Datei lesen,"
+msgstr "lets Gramps read the file,"
+
+msgid "wendet den Regelkatalog an."
+msgstr "applies the rule catalogue."
+
+msgid "Fälle. Jeder Fall: eine Nennung in einem Eintrag und die Personen, zu denen sie passen könnte, mit allen Belegen. Eine Entscheidung gilt ab sofort und bei jedem weiteren Lauf."
+msgstr "cases. Each case: one mention in an entry and the persons it could match, with all their evidence. A decision applies immediately and in every later run."
+
+msgid "famrecon · Familien aus Tauf-, Ehe- und Sterberegistern · lokal, nichts verlässt diesen Rechner"
+msgstr "famrecon · families from baptism, marriage and burial registers · local, nothing leaves this computer"
+
+msgid "Tabellen hochladen"
+msgstr "Upload spreadsheets"
+
+msgid "Zuordnung durchsehen"
+msgstr "Review mapping"
+
+msgid "bauen und verknüpfen"
+msgstr "build and link"
+
+msgid "GEDCOM schreiben und prüfen"
+msgstr "Write and check GEDCOM"
+
+msgid "Projekt samt Tabellen löschen?"
+msgstr "Delete project including spreadsheets?"
+
+msgid "Projekt löschen"
+msgstr "Delete project"
+
+msgid "Name oder Vorname"
+msgstr "Surname or given name"
+
+msgid "Projekte"
+msgstr "Projects"
+
+msgid "Neues Projekt"
+msgstr "New project"
+
+msgid "Tabellen (xlsx, eine Mappe mit Blättern oder mehrere Dateien)"
+msgstr "Spreadsheets (xlsx with sheets, several files, or csv)"
+
+msgid "anlegen"
+msgstr "create"
+
+msgid "Ein Projekt ist ein Ordner unter"
+msgstr "A project is a folder under"
+
+msgid "Der Weg: Tabellen laden → Zuordnung durchsehen → bauen → Prüfliste → GEDCOM."
+msgstr "The path: load spreadsheets → review the mapping → build → review list → GEDCOM."
+
+msgid "Zuerst Tabellen hochladen."
+msgstr "Upload spreadsheets first."
+
+msgid "In den Tabellen wurde kein Register erkannt."
+msgstr "No register was recognised in the spreadsheets."
+
+msgid "Die Zuordnung wurde aus dem Vorschlag übernommen, bitte durchsehen."
+msgstr "The mapping was taken from the proposal, please review it."
+
+msgid "Zuerst bauen und verknüpfen."
+msgstr "Build and link first."
+
+msgid "Zuordnung bestätigen und bauen"
+msgstr "Confirm mapping and build"
+
+msgid "nur speichern"
+msgstr "save only"
+
+msgid "Register umschalten: die Feldliste wird neu geladen"
+msgstr "Switch register: the field list is reloaded"
+
+msgid "{s} sicher, {w} wahrscheinlich, {u} unsicher, {n} nicht erkannt"
+msgstr "{s} certain, {w} probable, {u} uncertain, {n} not recognised"
+
+msgid "taufe"
+msgstr "baptisms"
+
+msgid "ehe"
+msgstr "marriages"
+
+msgid "tod"
+msgstr "burials"
+
+msgid "Familien (höchstens 300)"
+msgstr "families (at most 300)"
+
+msgid "Deine Tabelle"
+msgstr "Your spreadsheet"
+
+msgid "Feld in famrecon"
+msgstr "Field in famrecon"
+
+msgid "Vorschlag"
+msgstr "Proposal"

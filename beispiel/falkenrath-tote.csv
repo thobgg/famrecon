@@ -1,0 +1,419 @@
+﻿Sterbedatum;Begräbnisdatum;Name;Vorname;Geschlecht;Alter;Beruf;Krankheit;Familienstand;Vater;Vater Beruf;Mutter;Ehepartner;Ehepartner Beruf;Verstorbener Ref;Vater Ref;Ehepartner Ref
+1804-03-10;1804-03-14;Müller;Heinrich Christoph;m;38 J 2 M 1 T;Schmied;Schlagfluss;verheiratet;;;;Rabe, Magdalena;;@I240@;;@I241@
+1804-08-20;1804-08-25;Oberlin;Claus;m;38 J 2 M 15 T;Anbauer;;verheiratet;;;;Riebesell, Anna Maria;;@I214@;;@I215@
+1804-10-12;1804-10-14;Garbers;Jacob;m;;Anbauer;Brustfieber;verheiratet;;;;Bruns, Catharine Elisabeth;;@I236@;;@I237@
+1805-01-14;1805-01-16;Garbers;Jürgen;m;40 J 5 M 28 T;Brinksitzer;Wassersucht;verheiratet;;;;Garbers, Ilse;;@I260@;;@I261@
+1808-03-05;1808-03-09;Wrede;Ludwig;m;24 Wochen;;Brechdurchfall;ledig;Wrede, Friedrich;Kötner;Harms, Anna Dorothea;;;@I363@;@I242@;
+1812-02-12;1812-02-14;Bruns;Catharine Elisabeth;w;37 J 5 M 1 T;;Brustfieber;verwitwet;;;;Garbers, Jacob, weyl.;Anbauer;@I237@;;@I236@
+1812-12-23;1812-12-25;Rabe;Magdalena;w;45 J 11 M 9 T;;Schlagfluss;verwitwet;;;;Müller, Heinrich Christoph, weyl.;Schmied;@I241@;;@I240@
+1814-02-10;1814-02-13;Ohlhoff;Charlotte;w;9 Wochen;;Diphtherie;ledig;Ohlhoff, Friedrich;Vollhöfner;Wulf, Catharine Elisabeth;;;@I368@;@I250@;
+1814-04-13;1814-04-18;Plate;Heinrich Wilhelm;m;2 J 11 M 26 T;;Scharlach;ledig;Plate, Johann;Krüger;Cordes, Ilse;;;@I354@;@I210@;
+1815-08-17;1815-08-22;Riebesell;Anna Maria;w;45 J 4 M 3 T;;;verwitwet;;;;Oberlin, Claus, weyl.;Anbauer;@I215@;;@I214@
+1817-06-09;1817-06-12;Schulze;Heinrich Christoph;m;38 J 4 M 28 T;Halbhöfner;Brustfieber;verheiratet;;;;Hoops, Magdalena;Näherin;@I248@;;@I249@
+1820-12-26;1820-12-30;Voss;Dorothee;w;2 J 7 M 16 T;;Brechdurchfall;ledig;Voss, Hinrich;Brinksitzer;Hinrichs, Catharina;;;@I358@;@I228@;
+1822-07-24;1822-07-29;Harms;Anna Dorothea;w;38 J 4 M 11 T;;;verheiratet;;;;Wrede, Friedrich;Kötner;@I243@;;@I242@
+1823-01-13;1823-01-15;Ebeling;Ilsabe;w;37 J 9 M 25 T;;Auszehrung;verheiratet;;;;Burmester, Jürgen;Halbhöfner;@I205@;;@I204@
+1823-10-28;1823-11-02;Ohlhoff;Caroline;w;1 J 0 M 25 T;;Keuchhusten;ledig;Ohlhoff, Friedrich;Vollhöfner;Wulf, Catharine Elisabeth;;;@I367@;@I250@;
+1825-10-16;1825-10-20;Brammer;Henriette;w;;;Masern;ledig;Brammer, Christoph;Halbhöfner;Wrede, Anna Dorothea;;;@I370@;@I262@;
+1826-06-20;1826-06-22;Mohwinkel;Friedrich;m;63 J 2 M 4 T;Häusling;Schlagfluss;verheiratet;;;;Dammann, Catharine Elisabeth;;@I244@;;@I245@
+1827-02-17;1827-02-19;Voss;Ernst;m;4 J 7 M 17 T;;Scharlach;ledig;Voss, Peter;Vollhöfner;Rabe, Catharine Elisabeth;;;@I356@;@I216@;
+1827-04-11;1827-04-15;Tödter;Ilse;w;45 J 3 M 3 T;Dienstmagd;Nervenfieber;verheiratet;;;;Winkelmann, Johann Hinrich;Kötner;@I253@;;@I252@
+1828-10-05;1828-10-10;Oetzmann;Anna Dorothea;w;51 J 9 M 26 T;Näherin;;verheiratet;;;;Eggers, Johann Christoph;Leinweber;@I199@;;@I198@
+1829-01-19;1829-01-24;Kahle;Hans Jürgen;m;57 J 6 M 27 T;Krüger;Wassersucht;verheiratet;;;;Schröder, Anna Maria;;@I232@;;@I233@
+1829-09-01;1829-09-06;Ilgner;Heinrich;m;2 J 5 M 9 T;;Keuchhusten;ledig;Ilgner, Johann;Schmied;Kahle, Anna Catharina;;;@I322@;@I166@;
+1829-10-14;1829-10-18;Meyer;Catharina;w;58 J 9 M 2 T;;Schwindsucht;verheiratet;;;;Harms, Peter;Holzhauer;@I223@;;@I222@
+1831-12-11;1831-12-16;Falkenrath;Hans Jürgen;m;;Häusling;;verheiratet;;;;;;@I54@;;
+1832-07-04;1832-07-08;Wiebe;Heinrich Christoph;m;45 J 1 M 9 T;Brinksitzer;;verheiratet;;;;Dammann, Ilsabe;;@I256@;;@I257@
+1833-12-10;1833-12-14;Meyer;Johann Friedrich;m;32 Wochen;;Diphtherie;ledig;Meyer, Johann Christoph;Krüger;Ebeling, Anna Maria;;;@I359@;@I230@;
+1834-01-04;1834-01-08;Hagedorn;Heinrich;m;;;Scharlach;ledig;Hagedorn, Heinrich Christoph;Holzhauer;Garbers, Sophie;;;@I340@;@I190@;
+1834-10-12;1834-10-15;Hagedorn;Heinrich Christoph;m;38 J 7 M 16 T;Holzhauer;;verheiratet;;;;Garbers, Sophie;;@I190@;;@I191@
+1835-11-06;1835-11-09;Plate;Johann;m;63 J 9 M 12 T;Krüger;;verheiratet;;;;Cordes, Ilse;Näherin;@I210@;;@I211@
+1835-11-25;1835-11-30;Oberlin;Charlotte;w;38 Wochen;;Krämpfe;ledig;Oberlin, Heinrich Christoph;Schäfer;Tödter, Anna Maria;;;@I308@;@I152@;
+1836-04-12;1836-04-14;Ilgner;Louise;w;;;Lebensschwäche;ledig;Ilgner, Johann;Schmied;Kahle, Anna Catharina;;;@I321@;@I166@;
+1837-04-14;1837-04-16;Hartmann;Anna Dorothea;w;66 J 8 M 4 T;;Entkräftung;verheiratet;;;;Hagedorn, Friedrich;Tagelöhner;@I259@;;@I258@
+1837-08-11;1837-08-13;Hartmann;Catharina;w;57 J 10 M 4 T;;Schlagfluss;verheiratet;;;;Burmester, Claus;Krüger;@I221@;;@I220@
+1837-09-28;1837-10-02;Dammann;Catharine Elisabeth;w;70 J 4 M 28 T;;Entkräftung;verwitwet;;;;Mohwinkel, Friedrich, weyl.;Häusling;@I245@;;@I244@
+1838-02-09;1838-02-11;Mohwinkel;August;m;1 J 2 M 2 T;;Scharlach;ledig;Mohwinkel, Carl;Schmied;Hinrichs, Friederike;;;@I331@;@I178@;
+1838-04-08;1838-04-10;Voss;Hinrich;m;67 J 1 M 3 T;Brinksitzer;Altersschwäche;verheiratet;;;;Hinrichs, Catharina;;@I228@;;@I229@
+1838-09-23;1838-09-27;Ebeling;Anna Maria;w;38 J 3 M 21 T;;Wassersucht;verheiratet;;;;Meyer, Johann Christoph;Krüger;@I231@;;@I230@
+1839-01-12;1839-01-14;Lange;Catharina;w;62 J 5 M 13 T;;;verheiratet;;;;Harms, Hans Jürgen;Schäfer;@I255@;;@I254@
+1840-09-11;1840-09-16;Müller;Carl;m;38 J 8 M 7 T;Schmied;;verheiratet;;;;Wrede, Charlotte;;@I176@;;@I177@
+1841-03-25;1841-03-30;Oberlin;Heinrich Christoph;m;44 J 6 M 20 T;Schäfer;;verheiratet;;;;Tödter, Anna Maria;;@I152@;;@I153@
+1841-12-18;1841-12-23;Ohlhoff;Friedrich;m;52 J 4 M 12 T;Vollhöfner;;verheiratet;;;;Wulf, Catharine Elisabeth;;@I250@;;@I251@
+1842-03-02;1842-03-04;Falkenrath;Anna Catharina;w;1 J 6 M 11 T;;Masern;ledig;Falkenrath, Johann Heinrich;Häusling und Tagelöhner;Eggers, Catharine Sophie;;;@I372@;@I52@;
+1842-07-11;1842-07-15;Hinrichs;Heinrich Christoph;m;79 J 3 M 18 T;Müller;Schwindsucht;verheiratet;;;;Oetzmann, Margarethe;;@I246@;;@I247@
+1843-03-21;1843-03-23;Kröger;Margarethe;w;62 J 11 M 10 T;;Entkräftung;verheiratet;;;;Eggers, Hinrich;Schmied;@I203@;;@I202@
+1843-12-02;1843-12-05;Harms;Peter;m;73 J 0 M 18 T;Holzhauer;Schlagfluss;verwitwet;;;;Meyer, Catharina, weyl.;;@I222@;;@I223@
+1844-03-11;1844-03-16;Hagedorn;Friedrich;m;72 J 2 M 16 T;Tagelöhner;Entkräftung;verwitwet;;;;Hartmann, Anna Dorothea, weyl.;;@I258@;;@I259@
+1844-06-11;1844-06-15;Plate;Henriette;w;;;Brechdurchfall;ledig;Plate, Friedrich;Anbauer;Ebeling, Dorothee;;;@I307@;@I150@;
+1845-02-07;1845-02-09;Eggers;Hinrich;m;57 J 11 M 18 T;Schmied;Altersschwäche;verwitwet;;;;Kröger, Margarethe, weyl.;;@I202@;;@I203@
+1845-03-23;1845-03-28;Mohwinkel;Ernst;m;2 J 3 M 5 T;;Diphtherie;ledig;Mohwinkel, Carl;Schmied;Hinrichs, Friederike;;;@I330@;@I178@;
+1845-11-08;1845-11-12;Winkelmann;Catharine;w;3 J 1 M 0 T;;Keuchhusten;ledig;Winkelmann, Johann Heinrich;Holzhauer;Harms, Johanne;;;@I338@;@I186@;
+1846-06-12;1846-06-17;Riebesell;Christoph;m;66 J 11 M 3 T;Schmied;Wassersucht;verheiratet;;;;Dammann, Margarethe;;@I226@;;@I227@
+1846-08-21;1846-08-23;Peemöller;Anna Maria;w;70 J 4 M 20 T;;Brustfieber;verheiratet;;;;Pohlmann, Johann;Tagelöhner;@I235@;;@I234@
+1846-09-25;1846-09-30;Cordes;Friederike;w;1 J 4 M 0 T;;Diphtherie;ledig;Cordes, Hermann;Leinweber;Voss, Caroline;;;@I316@;@I162@;
+1848-07-11;1848-07-15;Behnke;Louise;w;2 J 0 M 22 T;;Keuchhusten;ledig;Behnke, Georg;Müller;Wulf, Caroline;;;@I302@;@I120@;
+1848-08-08;1848-08-10;Schröder;Anna Maria;w;79 J 2 M 21 T;;Entkräftung;verwitwet;;;;Kahle, Hans Jürgen, weyl.;Krüger;@I233@;;@I232@
+1848-09-24;1848-09-27;Cordes;Hermann;m;38 J 6 M 20 T;Leinweber;;verheiratet;;;;Voss, Caroline;Näherin;@I162@;;@I163@
+1848-10-02;1848-10-05;Wrede;Charlotte;w;38 J 2 M 15 T;;Nervenfieber;verwitwet;;;;Müller, Carl, weyl.;Schmied;@I177@;;@I176@
+1850-03-28;1850-04-01;Burmester;Sophie Dorothee;w;45 J 0 M 13 T;Dienstmagd;Altersschwäche;verheiratet;;;;Drewes, Carl;Anbauer;@I157@;;@I156@
+1850-04-10;1850-04-14;Schnehage;Anna Dorothea;w;66 J 10 M 24 T;;Wassersucht;verheiratet;;;;Ebeling, Johann Hinrich;Schmied;@I213@;;@I212@
+1850-12-09;1850-12-13;Eggers;Anna Catharina;w;62 J 11 M 28 T;;;verheiratet;;;;Wulf, Joachim;Kötner;@I225@;;@I224@
+1851-02-20;1851-02-24;Wichmann;Jürgen;m;75 J 6 M 10 T;Krüger;Schlagfluss;verheiratet;;;;Jürgens, Dorothea;Dienstmagd;@I200@;;@I201@
+1851-06-21;1851-06-25;Eggers;Marie;w;37 J 8 M 19 T;;;verheiratet;;;;Wichmann, Friedrich;Halbhöfner;@I143@;;@I142@
+1851-08-28;1851-09-02;Harms;Catharine Elisabeth;w;66 J 11 M 15 T;;Entkräftung;verheiratet;;;;Behnke, Hans Jürgen;Halbhöfner;@I207@;;@I206@
+1852-02-13;1852-02-18;Brammer;Ludwig;m;34 Wochen;;Scharlach;ledig;Brammer, Georg;Salinenarbeiter;Riebesell, Sophie Dorothee;;;@I341@;@I192@;
+1852-08-13;1852-08-18;Voss;Peter;m;69 J 9 M 20 T;Vollhöfner;Nervenfieber;verheiratet;;;;Rabe, Catharine Elisabeth;;@I216@;;@I217@
+1852-08-24;1852-08-29;Burmester;Claus;m;75 J 8 M 27 T;Krüger;Schwindsucht;verwitwet;;;;Hartmann, Catharina, weyl.;;@I220@;;@I221@
+1852-09-17;1852-09-21;Voss;Catharine;w;37 J 11 M 0 T;;Entkräftung;verheiratet;;;;Wulf, Ernst;Schmied;@I155@;;@I154@
+1853-02-08;1853-02-11;Brammer;Louise;w;;;Masern;ledig;Brammer, Georg;Salinenarbeiter;Riebesell, Sophie Dorothee;;;@I342@;@I192@;
+1853-04-19;1853-04-22;Brammer;Christoph;m;62 J 5 M 9 T;Halbhöfner;Wassersucht;verheiratet;;;;Wrede, Anna Dorothea;;@I262@;;@I263@
+1853-07-17;1853-07-19;Winkelmann;Johann Hinrich;m;72 J 10 M 2 T;Kötner;;verwitwet;;;;Tödter, Ilse, weyl.;Dienstmagd;@I252@;;@I253@
+1853-08-26;1853-08-30;Müller;Magdalena;w;81 J 8 M 18 T;;Brustfieber;verheiratet;;;;Drewes, Friedrich;Tagelöhner;@I219@;;@I218@
+1854-03-26;1854-03-30;Drewes;Friedrich;m;81 J 10 M 28 T;Tagelöhner;Wassersucht;verwitwet;;;;Müller, Magdalena, weyl.;;@I218@;;@I219@
+1855-01-10;1855-01-12;Burmester;Wilhelmine;w;37 J 7 M 9 T;;;verheiratet;;;;Brandes, Georg;Leinweber;@I145@;;@I144@
+1855-05-02;1855-05-06;Hartmann;Johann Heinrich;m;1 J 5 M 22 T;;Masern;ledig;Hartmann, Heinrich Wilhelm;Bahnarbeiter;Jürgens, Sophie;;;@I325@;@I172@;
+1855-05-03;1855-05-05;Garbers;Ilse;w;82 J 0 M 1 T;;Wassersucht;verwitwet;;;;Garbers, Jürgen, weyl.;Brinksitzer;@I261@;;@I260@
+1855-08-21;1855-08-25;Meinecke;Hermann;m;3 J 5 M 18 T;;Scharlach;ledig;Meinecke, Joachim;Müller;Lange, Sophie;;;@I296@;@I140@;
+1855-11-15;1855-11-17;Wrede;Friedrich;m;76 J 6 M 6 T;Kötner;;verwitwet;;;;Harms, Anna Dorothea, weyl.;;@I242@;;@I243@
+1856-09-02;1856-09-05;Oetzmann;Margarethe;w;86 J 1 M 29 T;;;verwitwet;;;;Hinrichs, Heinrich Christoph, weyl.;Müller;@I247@;;@I246@
+1857-06-02;1857-06-06;Wulf;Joachim;m;85 J 5 M 12 T;Kötner;Altersschwäche;verwitwet;;;;Eggers, Anna Catharina, weyl.;;@I224@;;@I225@
+1857-08-09;1857-08-14;Rabe;Catharine Elisabeth;w;67 J 7 M 0 T;;;verwitwet;;;;Voss, Peter, weyl.;Vollhöfner;@I217@;;@I216@
+1857-09-12;1857-09-16;Meinecke;Joachim;m;58 J 1 M 6 T;Müller;;verheiratet;;;;Lange, Sophie;;@I140@;;@I141@
+1857-09-17;1857-09-20;Schnehage;Wilhelm;m;2 J 9 M 13 T;;Scharlach;ledig;Schnehage, Ludwig;Krüger;Meyer, Louise;;;@I320@;@I164@;
+1857-10-18;1857-10-20;Rüther;Elisabeth;w;2 J 9 M 2 T;;Krämpfe;ledig;Rüther, Anton;Landwirt;Kleine, Elisabeth;;;@I348@;@I196@;
+1858-05-01;1858-05-05;Klingebiel;Auguste;w;44 J 6 M 9 T;;;verheiratet;;;;Bruns, Heinrich Wilhelm;Maurer;@I185@;;@I184@
+1858-08-02;1858-08-07;Wichmann;Friedrich;m;52 J 3 M 19 T;Halbhöfner;Nervenfieber;verwitwet;;;;Eggers, Marie, weyl.;;@I142@;;@I143@
+1858-11-17;1858-11-20;Wiebe;Wilhelmine;w;38 J 3 M 3 T;Dienstmagd;Entkräftung;verheiratet;;;;Riebesell, Ludwig;Tischler;@I189@;;@I188@
+1858-12-17;1858-12-19;Eggers;Johann Christoph;m;82 J 8 M 28 T;Leinweber;;verwitwet;;;;Oetzmann, Anna Dorothea, weyl.;Näherin;@I198@;;@I199@
+1858-12-20;1858-12-22;Jürgens;Dorothea;w;73 J 2 M 7 T;Dienstmagd;Altersschwäche;verwitwet;;;;Wichmann, Jürgen, weyl.;Krüger;@I201@;;@I200@
+1859-08-09;1859-08-14;Marquardt;Ludwig;m;51 J 8 M 17 T;Böttcher;Schwindsucht;verheiratet;;;;Stegen, Sophie;;@I174@;;@I175@
+1859-12-24;1859-12-29;Kleine;Franz Anton;m;1 J 7 M 5 T;;Masern;ledig;Kleine, Heinrich;Müller;Brinkmann, Maria Anna;;;@I345@;@I194@;
+1860-05-06;1860-05-08;Pohlmann;August;m;51 J 4 M 16 T;Salinenarbeiter;Schlagfluss;verheiratet;;;;Garbers, Anna Margarethe;;@I170@;;@I171@
+1860-05-11;1860-05-14;Rosskamp;Georg;m;58 J 3 M 0 T;Holzhauer;Schlagfluss;verheiratet;;;;Wiebe, Sophie Dorothee;;@I146@;;@I147@
+1861-01-09;1861-01-13;Schnehage;Ludwig;m;51 J 0 M 19 T;Krüger;;verheiratet;;;;Meyer, Louise;;@I164@;;@I165@
+1861-02-11;1861-02-13;Kahle;Anna Catharina;w;62 J 5 M 7 T;;Altersschwäche;verheiratet;;;;Ilgner, Johann;Schmied;@I167@;;@I166@
+1861-02-19;1861-02-23;Wulf;Caroline;w;51 J 2 M 11 T;Näherin;;verheiratet;;;;Behnke, Georg;Müller;@I121@;;@I120@
+1861-04-17;1861-04-21;Schnehage;Emma;w;;;Brechdurchfall;ledig;Schnehage, Ludwig, weyl.;Krüger;Meyer, Louise;;;@I319@;@I164@;
+1861-10-22;1861-10-25;Lange;Sophie;w;45 J 8 M 17 T;;Altersschwäche;verwitwet;;;;Meinecke, Joachim, weyl.;Müller;@I141@;;@I140@
+1862-04-18;1862-04-20;Hinrichs;Catharina;w;72 J 11 M 25 T;;Wassersucht;verwitwet;;;;Voss, Hinrich, weyl.;Brinksitzer;@I229@;;@I228@
+1862-05-21;1862-05-25;Harms;Hans Jürgen;m;86 J 3 M 29 T;Schäfer;Wassersucht;verwitwet;;;;Lange, Catharina, weyl.;;@I254@;;@I255@
+1862-05-23;1862-05-28;Kröger;Catharina;w;79 J 0 M 3 T;Näherin;Brustfieber;verheiratet;;;;Oetzmann, Joachim;Häusling;@I209@;;@I208@
+1862-07-22;1862-07-25;Kleine;Johann Bernhard;m;23 Wochen;;Keuchhusten;ledig;Kleine, Heinrich;Müller;Brinkmann, Maria Anna;;;@I346@;@I194@;
+1862-10-11;1862-10-13;Wulf;Catharine Elisabeth;w;76 J 0 M 3 T;;;verwitwet;;;;Ohlhoff, Friedrich, weyl.;Vollhöfner;@I251@;;@I250@
+1863-01-12;1863-01-17;Gerdau;Auguste;w;2 J 7 M 20 T;;Keuchhusten;ledig;Gerdau, Johann Friedrich;Müller;Riebesell, Marie;;;@I315@;@I160@;
+1863-07-21;1863-07-23;Voss;Johanne;w;44 J 11 M 16 T;;Wassersucht;ledig;;;;;;@I355@;;
+1863-11-18;1863-11-21;Ebeling;Johann Hinrich;m;76 J 4 M 19 T;Schmied;;verwitwet;;;;Schnehage, Anna Dorothea, weyl.;;@I212@;;@I213@
+1864-02-20;1864-02-22;Pohlmann;Johann;m;85 J 10 M 15 T;Tagelöhner;Schlagfluss;verwitwet;;;;Peemöller, Anna Maria, weyl.;;@I234@;;@I235@
+1864-06-23;1864-06-26;Behnke;Georg;m;52 J 5 M 23 T;Müller;Altersschwäche;verwitwet;;;;Wulf, Caroline, weyl.;Näherin;@I120@;;@I121@
+1864-08-04;1864-08-07;Falkenrath;Heinrich;m;27 J 1 M 14 T;Zimmergeselle;ertrunken;ledig;Falkenrath, Johann Heinrich;Häusling und Tagelöhner;Eggers, Catharine Sophie;;;@I60@;@I52@;
+1865-10-06;1865-10-08;Dammann;Margarethe;w;69 J 10 M 23 T;;Auszehrung;verwitwet;;;;Riebesell, Christoph, weyl.;Schmied;@I227@;;@I226@
+1865-10-06;1865-10-11;Meyer;Johann Christoph;m;76 J 1 M 15 T;Krüger;Entkräftung;verwitwet;;;;Ebeling, Anna Maria, weyl.;;@I230@;;@I231@
+1865-11-18;1865-11-21;Drewes;Carl;m;63 J 0 M 13 T;Anbauer;Nervenfieber;verwitwet;;;;Burmester, Sophie Dorothee, weyl.;Dienstmagd;@I156@;;@I157@
+1866-02-09;1866-02-12;Burmester;Jürgen;m;85 J 7 M 21 T;Halbhöfner;;verwitwet;;;;Ebeling, Ilsabe, weyl.;;@I204@;;@I205@
+1866-05-30;1866-06-01;Bostelmann;Jürgen Hinrich;m;;Kötner;;verheiratet;;;;Falkenrath, Anna Margarethe;;@I56@;;@I55@
+1866-10-28;1866-11-01;Behnke;Hans Jürgen;m;82 J 9 M 3 T;Halbhöfner;Entkräftung;verwitwet;;;;Harms, Catharine Elisabeth, weyl.;;@I206@;;@I207@
+1867-01-01;1867-01-05;Oetzmann;Joachim;m;81 J 11 M 20 T;Häusling;;verwitwet;;;;Kröger, Catharina, weyl.;Näherin;@I208@;;@I209@
+1867-01-18;1867-01-21;Jürgens;Wilhelmine;w;57 J 8 M 7 T;;;verheiratet;;;;Harms, Christian;Tagelöhner;@I159@;;@I158@
+1867-08-14;1867-08-19;Gerdau;Johann Friedrich;m;63 J 6 M 9 T;Müller;Entkräftung;verheiratet;;;;Riebesell, Marie;Dienstmagd;@I160@;;@I161@
+1868-02-22;1868-02-26;Wiebe;Carl;m;45 J 0 M 19 T;Anbauer;Nervenfieber;ledig;;;;;;@I369@;;
+1868-06-18;1868-06-22;Schulze;Marie;w;51 J 8 M 25 T;;Schlagfluss;ledig;;;;;;@I366@;;
+1868-11-27;1868-12-01;Jürgens;Joachim;m;79 J 9 M 12 T;Salzsieder;Entkräftung;verheiratet;;;;Klingebiel, Ilse;;@I238@;;@I239@
+1869-01-10;1869-01-13;Dammann;Ilsabe;w;81 J 6 M 9 T;;;verwitwet;;;;Wiebe, Heinrich Christoph, weyl.;Brinksitzer;@I257@;;@I256@
+1869-06-22;1869-06-24;Cordes;Ilse;w;82 J 0 M 9 T;Näherin;;verwitwet;;;;Plate, Johann, weyl.;Krüger;@I211@;;@I210@
+1869-11-09;1869-11-13;Falkenrath;Karl;m;14 Wochen;;Scharlach;ledig;Falkenrath, Johann Friedrich;Anbauer;Eggers, Charlotte;;;@I374@;@I371@;
+1870-06-20;1870-06-23;Riebesell;Ludwig;m;57 J 8 M 28 T;Tischler;Schlagfluss;verwitwet;;;;Wiebe, Wilhelmine, weyl.;Dienstmagd;@I188@;;@I189@
+1870-10-09;1870-10-14;Drewes;Christian;m;38 J 7 M 18 T;Förster;Wassersucht;verheiratet;;;;Harms, Charlotte;;@I118@;;@I119@
+1871-03-12;1871-03-15;Falkenrath;Anna Margarethe;w;67 J 2 M 5 T;;;verwitwet;;;;Bostelmann, Jürgen Hinrich, weyl.;Kötner;@I55@;;@I56@
+1871-04-13;1871-04-18;Stegen;Sophie;w;57 J 7 M 23 T;;Wassersucht;verwitwet;;;;Marquardt, Ludwig, weyl.;Böttcher;@I175@;;@I174@
+1871-05-12;1871-05-15;Tödter;Anna Maria;w;72 J 9 M 9 T;;;verwitwet;;;;Oberlin, Heinrich Christoph, weyl.;Schäfer;@I153@;;@I152@
+1871-11-18;1871-11-20;Hartmann;Heinrich Wilhelm;m;52 J 8 M 18 T;Bahnarbeiter;Brustfieber;verheiratet;;;;Jürgens, Sophie;;@I172@;;@I173@
+1872-01-03;1872-01-05;Falkenrath;Johann Heinrich;m;70 J 2 M 23 T;Häusling und Tagelöhner;;verheiratet;;;;Eggers, Catharine Sophie;;@I52@;;@I53@
+1872-04-01;1872-04-05;Hoops;Magdalena;w;86 J 0 M 23 T;Näherin;;verwitwet;;;;Schulze, Heinrich Christoph, weyl.;Halbhöfner;@I249@;;@I248@
+1872-09-01;1872-09-05;Mohwinkel;Carl;m;69 J 11 M 20 T;Schmied;Nervenfieber;verheiratet;;;;Hinrichs, Friederike;;@I178@;;@I179@
+1873-06-17;1873-06-19;Jürgens;Sophie;w;57 J 10 M 15 T;;Wassersucht;verwitwet;;;;Hartmann, Heinrich Wilhelm, weyl.;Bahnarbeiter;@I173@;;@I172@
+1873-09-17;1873-09-20;Wrede;Anna Dorothea;w;85 J 9 M 6 T;;;verwitwet;;;;Brammer, Christoph, weyl.;Halbhöfner;@I263@;;@I262@
+1874-01-26;1874-01-28;Eggers;Johann Friedrich;m;51 J 8 M 29 T;Tischler;Altersschwäche;ledig;;;;;;@I352@;;
+1874-05-12;1874-05-15;Falkenrath;Friedrich;m;;;Diphtherie;ledig;Falkenrath, Johann Friedrich;Anbauer;Eggers, Charlotte;;;@I376@;@I371@;
+1874-12-05;1874-12-10;Winkelmann;Gustav;m;27 T;;Krämpfe;ledig;Winkelmann, Hermann;Müller;Riebesell, Dorothee;;;@I292@;@I134@;
+1875-03-03;1875-03-05;Oetzmann;Louise;w;57 J 7 M 24 T;;;ledig;;;;;;@I353@;;
+1875-04-18;1875-04-21;Eggers;Heinrich Wilhelm;m;66 J 9 M 25 T;Müller;Wassersucht;ledig;;;;;;@I349@;;
+1875-08-13;1875-08-18;Eggers;Wilhelmine;w;57 J 10 M 23 T;;;ledig;;;;;;@I351@;;
+1875-10-23;1875-10-28;Krümmel;Hermann;m;73 J 4 M 17 T;Halbhöfner;Auszehrung;verheiratet;;;;Ohlhoff, Charlotte;;@I182@;;@I183@
+1876-04-07;1876-04-09;Eggers;Louise;w;63 J 2 M 23 T;;;ledig;;;;;;@I350@;;
+1876-09-28;1876-10-01;Reese;Friedrich;m;69 J 10 M 7 T;Böttcher;Schwindsucht;verheiratet;;;;Mohwinkel, Wilhelmine;;@I168@;;@I169@
+1877-04-16;1877-04-21;Voss;Charlotte;w;62 J 10 M 0 T;Dienstmagd;Nervenfieber;ledig;;;;;;@I357@;;
+1877-06-16;1877-06-18;Klingebiel;Ilse;w;81 J 11 M 2 T;;;verwitwet;;;;Jürgens, Joachim, weyl.;Salzsieder;@I239@;;@I238@
+1878-04-19;1878-04-22;Garbers;Anna Margarethe;w;78 J 11 M 13 T;;;verwitwet;;;;Pohlmann, August, weyl.;Salinenarbeiter;@I171@;;@I170@
+1878-05-03;1878-05-05;Hinrichs;Friederike;w;76 J 1 M 14 T;;;verwitwet;;;;Mohwinkel, Carl, weyl.;Schmied;@I179@;;@I178@
+1878-09-04;1878-09-08;Rüther;Anton;m;63 J 5 M 28 T;Landwirt;Schwindsucht;verheiratet;;;;Kleine, Elisabeth;;@I196@;;@I197@
+1879-03-07;1879-03-09;Rosskamp;Minna;w;2 J 3 M 2 T;;Lebensschwäche;ledig;Rosskamp, Johann Friedrich;Stellmacher;Behnke, Charlotte;;;@I270@;@I112@;
+1879-04-06;1879-04-10;Ilgner;Johanne;w;44 J 7 M 17 T;Dienstmagd;;ledig;;;;;;@I323@;;
+1879-11-27;1879-12-01;Brandes;Georg;m;75 J 11 M 7 T;Leinweber;Nervenfieber;verwitwet;;;;Burmester, Wilhelmine, weyl.;;@I144@;;@I145@
+1880-06-19;1880-06-24;Eggers;Catharine Sophie;w;74 J 2 M 23 T;;;verwitwet;;;;Falkenrath, Johann Heinrich, weyl.;Häusling und Tagelöhner;@I53@;;@I52@
+1880-07-11;1880-07-13;Oetzmann;Henriette;w;69 J 9 M 20 T;;Wassersucht;verheiratet;;;;Lüders, Friedrich;Sattler;@I149@;;@I148@
+1880-10-27;1880-11-01;Mohwinkel;Wilhelmine;w;76 J 8 M 4 T;;Wassersucht;verwitwet;;;;Reese, Friedrich, weyl.;Böttcher;@I169@;;@I168@
+1881-04-12;1881-04-16;Voss;Caroline;w;69 J 6 M 4 T;Näherin;;verwitwet;;;;Cordes, Hermann, weyl.;Leinweber;@I163@;;@I162@
+1881-10-05;1881-10-09;Wiebe;Sophie Dorothee;w;76 J 4 M 24 T;;;verwitwet;;;;Rosskamp, Georg, weyl.;Holzhauer;@I147@;;@I146@
+1882-03-26;1882-03-31;Plate;Friedrich;m;72 J 6 M 14 T;Anbauer;Krebs;verheiratet;;;;Ebeling, Dorothee;;@I150@;;@I151@
+1882-07-20;1882-07-22;Marquardt;Carl;m;44 J 10 M 22 T;Böttcher;;verheiratet;;;;Müller, Louise;Dienstmagd;@I128@;;@I129@
+1883-04-25;1883-04-28;Behnke;Charlotte;w;44 J 6 M 23 T;;Herzschwäche;verheiratet;;;;Rosskamp, Johann Friedrich;Stellmacher;@I113@;;@I112@
+1883-05-28;1883-05-30;Garbers;Sophie;w;78 J 5 M 5 T;;Tuberkulose;verwitwet;;;;Hagedorn, Heinrich Christoph, weyl.;Holzhauer;@I191@;;@I190@
+1884-05-12;1884-05-17;Ilgner;Johann;m;85 J 10 M 3 T;Schmied;;verwitwet;;;;Kahle, Anna Catharina, weyl.;;@I166@;;@I167@
+1884-08-28;1884-08-30;Müller;Louise;w;45 J 1 M 4 T;Dienstmagd;Herzschwäche;verwitwet;;;;Marquardt, Carl, weyl.;Böttcher;@I129@;;@I128@
+1884-11-20;1884-11-22;Bruns;Heinrich Wilhelm;m;73 J 6 M 26 T;Maurer;;verwitwet;;;;Klingebiel, Auguste, weyl.;;@I184@;;@I185@
+1885-03-15;1885-03-17;Schulze;Johann Friedrich;m;73 J 0 M 14 T;Hofbesitzer;Schlaganfall;verheiratet;;;;Gaede, Catharine;;@I180@;;@I181@
+1885-09-23;1885-09-26;Riebesell;Sophie;w;38 J 8 M 18 T;;;ledig;;;;;;@I339@;;
+1886-04-01;1886-04-05;Müller;Dorothee;w;81 J 8 M 25 T;;;ledig;;;;;;@I362@;;
+1886-06-06;1886-06-10;Schulze;Catharine;w;37 J 9 M 19 T;;;verheiratet;;;;Mohwinkel, Georg;Landwirt;@I131@;;@I130@
+1886-11-18;1886-11-23;Gaede;Catharine;w;73 J 9 M 28 T;;Lungenentzündung;verwitwet;;;;Schulze, Johann Friedrich, weyl.;Hofbesitzer;@I181@;;@I180@
+1886-12-27;1886-12-29;Hinrichs;Sophie;w;79 J 4 M 25 T;Dienstmagd;Lungenentzündung;ledig;;;;;;@I364@;;
+1887-10-14;1887-10-19;Harms;Johanne;w;82 J 4 M 15 T;;Herzschwäche;verheiratet;;;;Winkelmann, Johann Heinrich;Holzhauer;@I187@;;@I186@
+1887-12-15;1887-12-20;Riebesell;Sophie Dorothee;w;70 J 11 M 18 T;;Schlaganfall;verheiratet;;;;Brammer, Georg;Salinenarbeiter;@I193@;;@I192@
+1888-02-07;1888-02-10;Brammer;Georg;m;66 J 6 M 2 T;Salinenarbeiter;Krebs;verwitwet;;;;Riebesell, Sophie Dorothee, weyl.;;@I192@;;@I193@
+1888-02-12;1888-02-16;Ebeling;Dorothee;w;72 J 3 M 7 T;;Altersschwäche;verwitwet;;;;Plate, Friedrich, weyl.;Anbauer;@I151@;;@I150@
+1888-03-05;1888-03-07;Cordes;Wilhelm;m;45 J 1 M 17 T;Maurer;Lungenentzündung;verheiratet;;;;Schnehage, Charlotte;;@I124@;;@I125@
+1888-10-09;1888-10-14;Winkelmann;Johann Heinrich;m;82 J 5 M 17 T;Holzhauer;Tuberkulose;verwitwet;;;;Harms, Johanne, weyl.;;@I186@;;@I187@
+1889-05-20;1889-05-24;Krümmel;Sophie Dorothee;w;37 J 10 M 27 T;;Herzschwäche;ledig;;;;;;@I335@;;
+1889-09-13;1889-09-18;Hinrichs;Carl;m;79 J 2 M 28 T;Schmied;Schlaganfall;ledig;;;;;;@I365@;;
+1890-04-15;1890-04-19;Reese;Sophie;w;52 J 0 M 5 T;;Krebs;ledig;;;;;;@I324@;;
+1890-10-17;1890-10-21;Meyerhof;Ludwig;m;62 J 8 M 16 T;Hofbesitzer;;verheiratet;;;;Falkenrath, Sophie Dorothee;;@I59@;;@I58@
+1891-08-28;1891-09-02;Harms;Christian;m;86 J 4 M 29 T;Tagelöhner;;verwitwet;;;;Jürgens, Wilhelmine, weyl.;;@I158@;;@I159@
+1892-11-27;1892-12-02;Ohlhoff;Charlotte;w;76 J 6 M 27 T;;Altersschwäche;verwitwet;;;;Krümmel, Hermann, weyl.;Halbhöfner;@I183@;;@I182@
+1894-05-10;1894-05-12;Wulf;Ernst;m;76 J 0 M 19 T;Schmied;Schlaganfall;verwitwet;;;;Voss, Catharine, weyl.;;@I154@;;@I155@
+1895-04-03;1895-04-07;Lüders;Friedrich;m;81 J 6 M 18 T;Sattler;Krebs;verwitwet;;;;Oetzmann, Henriette, weyl.;;@I148@;;@I149@
+1895-08-25;1895-08-27;Kleine;Elisabeth;w;76 J 4 M 21 T;;Lungenentzündung;verwitwet;;;;Rüther, Anton, weyl.;Landwirt;@I197@;;@I196@
+1896-06-20;1896-06-24;Lüders;Johann Heinrich;m;51 J 10 M 29 T;Bahnarbeiter;Lungenentzündung;ledig;;;;;;@I303@;;
+1896-11-20;1896-11-24;Schnehage;Johann Heinrich;m;45 J 9 M 17 T;Anbauer;Tuberkulose;ledig;;;;;;@I318@;;
+1897-01-10;1897-01-13;Winkelmann;Hermann;m;57 J 0 M 21 T;Müller;;verheiratet;;;;Riebesell, Dorothee;;@I134@;;@I135@
+1897-01-19;1897-01-22;Oberlin;Georg;m;57 J 9 M 27 T;Lehrer;Tuberkulose;ledig;;;;;;@I309@;;
+1897-06-11;1897-06-16;Lüders;Ernst;m;58 J 4 M 17 T;Schuhmacher;Lungenentzündung;verheiratet;;;;Plate, Friederike;;@I114@;;@I115@
+1899-02-02;1899-02-04;Bostelmann;Heinrich;m;66 J 5 M 22 T;Kötner;;ledig;;;;;;@I57@;;
+1899-05-02;1899-05-04;Kleine;Heinrich;m;85 J 7 M 25 T;Müller;Krebs;verheiratet;;;;Brinkmann, Maria Anna;;@I194@;;@I195@
+1899-11-14;1899-11-17;Wichmann;Christian;m;61 J 2 M 6 T;Schuhmacher;;verheiratet;;;;Brandes, Luise;;@I50@;;@I51@
+1899-11-27;1899-12-01;Müller;Auguste;w;58 J 2 M 14 T;Dienstmagd;;ledig;;;;;;@I329@;;
+1900-02-01;1900-02-04;Meinecke;Ernst;m;45 J 0 M 18 T;Lehrer;Altersschwäche;ledig;;;;;;@I297@;;
+1900-03-06;1900-03-08;Plate;Hermann;m;51 J 9 M 23 T;Zimmermann;;ledig;;;;;;@I306@;;
+1900-08-26;1900-08-28;Wichmann;Wilhelmine;w;58 J 1 M 18 T;;;ledig;;;;;;@I298@;;
+1900-11-07;1900-11-11;Riebesell;Marie;w;82 J 4 M 6 T;Dienstmagd;;verwitwet;;;;Gerdau, Johann Friedrich, weyl.;Müller;@I161@;;@I160@
+1901-01-06;1901-01-10;Kleine;Wilhelm;m;51 J 7 M 23 T;Tischler;Schlaganfall;ledig;;;;;;@I343@;;
+1901-02-22;1901-02-27;Falkenrath;Friedrich Wilhelm;m;66 J 7 M 21 T;Zimmermann;;verheiratet;;;;Meinecke, Johanne;;@I48@;;@I49@
+1901-07-08;1901-07-11;Ilgner;Johann;m;71 J 3 M 25 T;Salinenarbeiter;;verheiratet;;;;Reese, Dorothee;;@I101@;;@I102@
+1901-08-01;1901-08-03;Marquardt;Heinrich Wilhelm;m;58 J 2 M 13 T;Salzsieder;Altersschwäche;ledig;;;;;;@I328@;;
+1901-08-08;1901-08-11;Pohlmann;Johann Friedrich;m;66 J 9 M 28 T;Anbauer;Schlaganfall;verheiratet;;;;Hartmann, Henriette;;@I126@;;@I127@
+1901-08-16;1901-08-21;Jürgens;Johanne;w;75 J 11 M 24 T;;Altersschwäche;ledig;;;;;;@I360@;;
+1902-04-25;1902-04-28;Falkenrath;Sophie Dorothee;w;70 J 5 M 17 T;;;verwitwet;;;;Meyerhof, Ludwig, weyl.;Hofbesitzer;@I58@;;@I59@
+1903-01-01;1903-01-05;Brinkmann;Maria Anna;w;81 J 9 M 9 T;;Schlaganfall;verwitwet;;;;Kleine, Heinrich, weyl.;Müller;@I195@;;@I194@
+1903-04-13;1903-04-18;Behnke;Johann Heinrich;m;60 J 5 M 6 T;Hofbesitzer;;verheiratet;;;;Gerdau, Catharine;;@I123@;;@I122@
+1903-09-11;1903-09-14;Meinecke;Christian;m;57 J 10 M 28 T;Hofbesitzer;Krebs;ledig;;;;;;@I295@;;
+1904-06-27;1904-06-30;Brandes;Wilhelmine;w;51 J 6 M 2 T;;;ledig;;;;;;@I299@;;
+1905-11-22;1905-11-26;Gerdau;Catharine;w;62 J 3 M 7 T;;;verwitwet;;;;Behnke, Johann Heinrich, weyl.;Hofbesitzer;@I122@;;@I123@
+1906-03-09;1906-03-14;Schnehage;Charlotte;w;57 J 7 M 29 T;;Lungenentzündung;verwitwet;;;;Cordes, Wilhelm, weyl.;Maurer;@I125@;;@I124@
+1906-09-22;1906-09-24;Meyer;Louise;w;79 J 1 M 19 T;;;verwitwet;;;;Schnehage, Ludwig, weyl.;Krüger;@I165@;;@I164@
+1908-08-11;1908-08-13;Jürgens;Friedrich;m;75 J 10 M 13 T;Böttcher;Schlaganfall;ledig;;;;;;@I361@;;
+1910-01-03;1910-01-07;Kleine;Franz;m;62 J 10 M 15 T;Schuhmacher;Schlaganfall;verheiratet;;;;Rüther, Franziska;;@I138@;;@I139@
+1910-05-07;1910-05-12;Oberlin;Charlotte;w;72 J 6 M 13 T;;Krebs;ledig;;;;;;@I310@;;
+1911-02-12;1911-02-14;Wulf;Georg;m;62 J 9 M 26 T;Zimmermann;Herzschwäche;ledig;;;;;;@I311@;;
+1911-06-22;1911-06-26;Ohlhoff;Fritz;m;38 J 2 M 10 T;Anbauer;;verheiratet;;;;Falkenrath, Frieda;Dienstmagd;@I379@;;@I375@
+1911-08-03;1911-08-08;Riebesell;Dorothee;w;70 J 6 M 25 T;;;verwitwet;;;;Winkelmann, Hermann, weyl.;Müller;@I135@;;@I134@
+1911-09-17;1911-09-20;Falkenrath;Johann Friedrich;m;68 J 7 M 15 T;Anbauer;Schlagfluss;verheiratet;;;;Eggers, Charlotte;;@I371@;;@I373@
+1912-05-22;1912-05-24;Oberlin;Otto;m;44 J 6 M 5 T;Müller;Krebs;ledig;;;;;;@I278@;;
+1912-08-30;1912-09-01;Meinecke;Johanne;w;73 J 7 M 16 T;;;verwitwet;;;;Falkenrath, Friedrich Wilhelm, weyl.;Zimmermann;@I49@;;@I48@
+1913-01-28;1913-02-01;Plate;Friederike;w;75 J 7 M 12 T;;;verwitwet;;;;Lüders, Ernst, weyl.;Schuhmacher;@I115@;;@I114@
+1913-07-18;1913-07-23;Rosskamp;Johann Friedrich;m;81 J 8 M 11 T;Stellmacher;Krebs;verwitwet;;;;Behnke, Charlotte, weyl.;;@I112@;;@I113@
+1914-01-08;1914-01-13;Mohwinkel;Richard;m;44 J 8 M 25 T;Schmied;Altersschwäche;ledig;;;;;;@I289@;;
+1914-01-17;1914-01-20;Oberlin;Hermann;m;81 J 11 M 19 T;Förster;;verheiratet;;;;Wulf, Caroline;;@I116@;;@I117@
+1914-02-12;1914-02-16;Hagedorn;August;m;81 J 4 M 17 T;Schmied;;verheiratet;;;;Brammer, Caroline;;@I136@;;@I137@
+1914-02-21;1914-02-26;Reese;Dorothee;w;77 J 4 M 27 T;;;verwitwet;;;;Ilgner, Johann, weyl.;Salinenarbeiter;@I102@;;@I101@
+1914-06-28;1914-07-01;Krümmel;Georg;m;72 J 11 M 15 T;Zimmermann;;ledig;;;;;;@I334@;;
+1915-02-10;1915-02-13;Bruns;Sophie;w;62 J 7 M 2 T;;Lungenentzündung;ledig;;;;;;@I336@;;
+1916-03-13;1916-03-15;Rosskamp;Friedrich;m;69 J 5 M 29 T;Landwirt;Schlaganfall;ledig;;;;;;@I301@;;
+1916-05-04;1916-05-06;Drewes;Emma;w;44 J 10 M 21 T;;;ledig;;;;;;@I280@;;
+1916-06-06;1916-06-10;Lüders;Wilhelmine;w;67 J 4 M 29 T;;;ledig;;;;;;@I304@;;
+1916-11-20;1916-11-25;Kleine;Franz Anton;m;62 J 11 M 2 T;Maurer;;ledig;;;;;;@I344@;;
+1917-10-27;1917-10-31;Mohwinkel;Marie;w;38 J 8 M 1 T;Dienstmagd;Schlaganfall;ledig;;;;;;@I287@;;
+1918-03-23;1918-03-27;Marquardt;Caroline;w;69 J 12 M 0 T;Näherin;Schlaganfall;ledig;;;;;;@I327@;;
+1918-08-06;1918-08-09;Hagedorn;Rudolf;m;5 J 1 M 0 T;;Scharlach;ledig;Hagedorn, August;Salzsieder;Kleine, Anna Maria;;;@I269@;@I110@;
+1918-10-27;;Falkenrath;Wilhelm;m;19 J 3 M 26 T;Zimmermannslehrling;gefallen;ledig;Falkenrath, Carl;Zimmermann;Wichmann, Dorothea;;;@I70@;@I39@;
+1919-01-28;1919-02-01;Brammer;Caroline;w;69 J 11 M 9 T;;Lungenentzündung;verwitwet;;;;Hagedorn, August, weyl.;Schmied;@I137@;;@I136@
+1919-09-07;1919-09-12;Mohwinkel;Georg;m;86 J 6 M 15 T;Landwirt;;verwitwet;;;;Schulze, Catharine, weyl.;;@I130@;;@I131@
+1920-04-07;1920-04-10;Brandes;Luise;w;77 J 1 M 16 T;;;verwitwet;;;;Wichmann, Christian, weyl.;Schuhmacher;@I51@;;@I50@
+1920-05-17;1920-05-20;Krümmel;Gustav;m;52 J 4 M 12 T;Tischler;Lungenentzündung;verheiratet;;;;Winkelmann, Anna;;@I108@;;@I109@
+1921-04-09;1921-04-13;Krümmel;Ernst;m;81 J 8 M 8 T;Müller;;verheiratet;;;;Bruns, Caroline;Näherin;@I132@;;@I133@
+1922-02-22;1922-02-27;Wulf;Caroline;w;78 J 11 M 5 T;;Krebs;verwitwet;;;;Oberlin, Hermann, weyl.;Förster;@I117@;;@I116@
+1922-05-20;1922-05-24;Harms;Charlotte;w;81 J 8 M 19 T;;;verwitwet;;;;Drewes, Christian, weyl.;Förster;@I119@;;@I118@
+1922-12-16;1922-12-21;Bruns;Ernst;m;67 J 4 M 5 T;Hofbesitzer;Altersschwäche;ledig;;;;;;@I337@;;
+1923-09-10;1923-09-15;Bruns;Caroline;w;76 J 3 M 19 T;Näherin;Herzschwäche;verwitwet;;;;Krümmel, Ernst, weyl.;Müller;@I133@;;@I132@
+1923-10-15;1923-10-17;Eggers;Charlotte;w;82 J 5 M 25 T;;;verwitwet;;;;Falkenrath, Johann Friedrich, weyl.;Anbauer;@I373@;;@I371@
+1924-08-03;1924-08-07;Brandes;Johanne;w;69 J 8 M 23 T;;Lungenentzündung;ledig;;;;;;@I300@;;
+1925-03-22;1925-03-24;Harms;Auguste;w;79 J 1 M 11 T;;Tuberkulose;ledig;;;;;;@I313@;;
+1925-07-05;1925-07-10;Hartmann;Sophie Dorothee;w;70 J 4 M 10 T;Dienstmagd;Altersschwäche;ledig;;;;;;@I326@;;
+1927-02-10;1927-02-14;Bartels;Hinrich;m;67 J 1 M 14 T;Sattler;;verheiratet;;;;Falkenrath, Louise;;@I63@;;@I62@
+1927-07-10;1927-07-13;Cordes;Caroline;w;86 J 3 M 4 T;;;ledig;;;;;;@I317@;;
+1927-07-12;1927-07-16;Rüther;Johann Bernhard;m;69 J 8 M 17 T;Zimmermann;Lungenentzündung;ledig;;;;;;@I347@;;
+1928-12-09;1928-12-12;Rosskamp;Walter;m;58 J 5 M 23 T;Schmied;Krebs;ledig;;;;;;@I273@;;
+1929-04-27;1929-05-02;Mohwinkel;Minna;w;57 J 5 M 4 T;;Altersschwäche;verheiratet;;;;Marquardt, Karl;Sattler;@I107@;;@I106@
+1929-08-07;1929-08-09;Wulf;Ernst;m;79 J 0 M 25 T;Stellmacher;Altersschwäche;ledig;;;;;;@I312@;;
+1929-09-20;1929-09-22;Ilgner;Ernst;m;67 J 6 M 13 T;Salinenarbeiter;;verheiratet;;;;Pohlmann, Auguste;;@I46@;;@I47@
+1929-10-14;1929-10-17;Falkenrath;Frieda;w;58 J 1 M 17 T;Dienstmagd;Lungenentzündung;verwitwet;;;;Ohlhoff, Fritz, weyl.;Anbauer;@I375@;;@I379@
+1931-01-25;1931-01-27;Schulze;Ernst;m;75 J 5 M 6 T;Müller;;ledig;;;;;;@I332@;;
+1931-04-24;1931-04-26;Oberlin;Bertha;w;57 J 7 M 22 T;Näherin;Altersschwäche;ledig;;;;;;@I277@;;
+1931-07-06;1931-07-10;Rüther;Franziska;w;81 J 6 M 18 T;;Altersschwäche;verwitwet;;;;Kleine, Franz, weyl.;Schuhmacher;@I139@;;@I138@
+1931-08-12;1931-08-17;Rosskamp;August;m;63 J 6 M 16 T;Gastwirt;;verheiratet;;;;Lüders, Sophie;;@I42@;;@I43@
+1931-12-12;1931-12-16;Meyerhof;Wilhelm;m;71 J 10 M 18 T;Hofbesitzer;;ledig;;;;;;@I61@;;
+1932-04-27;1932-04-29;Stegen;Hans;m;2 J 4 M 28 T;;Masern;ledig;Stegen, Gerhard;Elektriker;Ohlhoff, Hedwig;;;@I396@;@I393@;
+1932-11-16;1932-11-19;Harms;Wilhelmine;w;82 J 0 M 2 T;;;ledig;;;;;;@I314@;;
+1933-03-05;1933-03-10;Hartmann;Henriette;w;85 J 10 M 20 T;;Tuberkulose;verwitwet;;;;Pohlmann, Johann Friedrich, weyl.;Anbauer;@I127@;;@I126@
+1934-05-16;1934-05-21;Schulze;Marie;w;81 J 5 M 2 T;;Lungenentzündung;ledig;;;;;;@I333@;;
+1937-02-02;1937-02-05;Hagedorn;August;m;66 J 3 M 24 T;Salzsieder;;verheiratet;;;;Kleine, Anna Maria;;@I110@;;@I111@
+1937-04-26;1937-04-29;Behnke;Otto;m;70 J 2 M 10 T;Sattler;Herzschwäche;verheiratet;;;;Cordes, Martha;;@I104@;;@I105@
+1937-07-19;1937-07-23;Lüders;Dorothee;w;86 J 6 M 5 T;;;ledig;;;;;;@I305@;;
+1937-09-27;1937-10-02;Cordes;Emilie;w;58 J 3 M 24 T;;;ledig;;;;;;@I281@;;
+1938-02-20;1938-02-22;Winkelmann;Anna;w;69 J 9 M 7 T;;Tuberkulose;verwitwet;;;;Krümmel, Gustav, weyl.;Tischler;@I109@;;@I108@
+1938-03-04;1938-03-08;Falkenrath;Carl;m;71 J 3 M 15 T;Zimmermann;;verheiratet;;;;Wichmann, Dorothea;;@I39@;;@I40@
+1940-11-01;1940-11-03;Oberlin;Johann;m;75 J 5 M 12 T;Landwirt;;verheiratet;;;;Drewes, Wilhelmine;;@I44@;;@I45@
+1941-05-14;;Falkenrath;Ernst;m;71 J 9 M 10 T;Zimmermann, später Bauunternehmer;;verheiratet;;;;Steinbach, Clara;;@I65@;;@I66@
+1941-08-12;1941-08-15;Marquardt;Hans;m;37 J 9 M 25 T;Kraftfahrer;Schlaganfall;ledig;;;;;;@I264@;;
+1941-11-15;1941-11-18;Cordes;August;m;58 J 2 M 25 T;Bahnarbeiter;Schlaganfall;ledig;;;;;;@I284@;;
+1942-02-24;1942-03-01;Lüders;Richard;m;62 J 4 M 19 T;Hofbesitzer;Tuberkulose;ledig;;;;;;@I275@;;
+1943-06-04;1943-06-09;Pohlmann;Ernst;m;70 J 3 M 23 T;Böttcher;;ledig;;;;;;@I286@;;
+1943-07-05;1943-07-08;Pohlmann;Auguste;w;75 J 7 M 5 T;;;verwitwet;;;;Ilgner, Ernst, weyl.;Salinenarbeiter;@I47@;;@I46@
+1943-07-12;;Sandmann;Kurt;m;21 J 8 M 28 T;Schriftsetzer;gefallen;verheiratet;;;;Falkenrath, Elfriede;Kontoristin;@I24@;;@I23@
+1943-12-07;1943-12-12;Cordes;Wilhelm;m;58 J 1 M 16 T;Zimmermann;Schlaganfall;ledig;;;;;;@I283@;;
+1944-11-19;1944-11-24;Falkenrath;Louise;w;80 J 6 M 21 T;;;verwitwet;;;;Bartels, Hinrich, weyl.;Sattler;@I62@;;@I63@
+1944-11-23;1944-11-25;Schulze;Helmut;m;38 J 2 M 8 T;Elektriker;Altersschwäche;verheiratet;;;;Falkenrath, Irmgard;;@I401@;;@I386@
+1945-04-18;1945-04-21;Krümmel;Heinz;m;12 J 1 M 16 T;;Luftangriff;ledig;Krümmel, Paul;Bäckermeister;Hagedorn, Berta;;;@I34@;@I32@;
+1946-03-18;1946-03-23;Cordes;Martha;w;72 J 6 M 11 T;;Schlaganfall;verwitwet;;;;Behnke, Otto, weyl.;Sattler;@I105@;;@I104@
+1946-09-13;1946-09-18;Marquardt;Karl;m;82 J 5 M 7 T;Sattler;Schlaganfall;verwitwet;;;;Mohwinkel, Minna, weyl.;;@I106@;;@I107@
+1947-01-28;1947-02-01;Drewes;Wilhelmine;w;77 J 3 M 14 T;;;verwitwet;;;;Oberlin, Johann, weyl.;Landwirt;@I45@;;@I44@
+1947-07-02;1947-07-04;Lüders;Hermann;m;70 J 0 M 10 T;Schuhmacher;;ledig;;;;;;@I274@;;
+1947-07-06;1947-07-09;Garbers;Anna;w;63 J 5 M 20 T;Dienstmagd;Schlaganfall;verheiratet;;;;Falkenrath, Otto;Landwirt;@I384@;;@I378@
+1949-04-02;1949-04-04;Mohwinkel;Paul;m;75 J 4 M 0 T;Bahnarbeiter;Lungenentzündung;ledig;;;;;;@I290@;;
+1949-11-08;1949-11-13;Falkenrath;Frieda;w;73 J 2 M 26 T;;Schlaganfall;ledig;;;;;;@I377@;;
+1949-12-15;1949-12-20;Wichmann;Dorothea;w;79 J 6 M 10 T;;;verwitwet;;;;Falkenrath, Carl, weyl.;Zimmermann;@I40@;;@I39@
+1952-03-02;1952-03-04;Thielbar;Gerda;w;22 J 9 M 25 T;;Folgen der Geburt;verheiratet;;;;Falkenrath, Wilhelm;Tischlermeister;@I17@;;@I15@
+1952-03-19;1952-03-24;Falkenrath;Dieter;m;17 T;;Lebensschwäche;ledig;Falkenrath, Wilhelm;Tischlermeister;Thielbar, Gerda;;;@I18@;@I15@;
+1952-09-18;1952-09-20;Oberlin;Walter;m;73 J 8 M 8 T;Hofbesitzer;Herzinfarkt;ledig;;;;;;@I279@;;
+1952-10-09;;Steinbach;Clara;w;82 J 3 M 18 T;;;verwitwet;;;;Falkenrath, Ernst, weyl.;Zimmermann, später Bauunternehmer;@I66@;;@I65@
+1953-07-21;1953-07-24;Winkelmann;Anna;w;75 J 9 M 19 T;;;ledig;;;;;;@I291@;;
+1954-07-20;1954-07-25;Rosskamp;Wilhelm;m;81 J 8 M 14 T;Landwirt;;ledig;;;;;;@I271@;;
+1954-11-16;1954-11-21;Oberlin;Marie;w;79 J 8 M 22 T;;;ledig;;;;;;@I276@;;
+1955-01-21;1955-01-25;Ohlhoff;Elise;w;58 J 0 M 7 T;;;verheiratet;;;;Wrede, Gustav;Kraftfahrer;@I381@;;@I389@
+1955-02-09;1955-02-11;Lüders;Sophie;w;82 J 10 M 1 T;;;verwitwet;;;;Rosskamp, August, weyl.;Gastwirt;@I43@;;@I42@
+1956-12-26;1956-12-30;Rosskamp;August;m;76 J 9 M 14 T;Sattler;Herzinfarkt;ledig;;;;;;@I272@;;
+1958-08-04;1958-08-08;Cordes;Friedrich;m;70 J 1 M 11 T;Anbauer;;ledig;;;;;;@I282@;;
+1959-01-08;1959-01-11;Falkenrath;Otto;m;78 J 1 M 6 T;Landwirt;;verwitwet;;;;Garbers, Anna, weyl.;Dienstmagd;@I378@;;@I384@
+1959-04-17;1959-04-21;Oetzmann;Kurt;m;45 J 0 M 7 T;Landwirt;Krebs;verheiratet;;;;Wrede, Gertrud;;@I414@;;@I390@
+1960-10-23;1960-10-27;Kleine;Anna Maria;w;86 J 6 M 15 T;;;verwitwet;;;;Hagedorn, August, weyl.;Salzsieder;@I111@;;@I110@
+1961-12-13;1961-12-18;Ilgner;Hermann;m;66 J 5 M 9 T;Eisenbahner;;verheiratet;;;;Marquardt, Elise;;@I30@;;@I31@
+1962-08-17;1962-08-20;Timmermann;Albert;m;72 J 6 M 24 T;Postbeamter;;verheiratet;;;;Falkenrath, Marie;;@I76@;;@I41@
+1963-08-24;1963-08-26;Pohlmann;Otto;m;79 J 6 M 28 T;Böttcher;Lungenentzündung;ledig;;;;;;@I285@;;
+1964-04-21;1964-04-25;Mohwinkel;Emilie;w;79 J 1 M 4 T;;Krebs;ledig;;;;;;@I288@;;
+1965-02-20;;Falkenrath;Walter;m;72 J 5 M 18 T;Machinist;;verheiratet;;;;Lindgren, Ruth;;@I67@;;@I103@
+1965-06-02;1965-06-06;Wöhler;Werner;m;38 J 1 M 24 T;Bahnbeamter;Herzinfarkt;verheiratet;;;;Schulze, Käthe;;@I437@;;@I402@
+1965-12-24;1965-12-28;Schulze;Käthe;w;38 J 10 M 15 T;;Lungenentzündung;verwitwet;;;;Wöhler, Werner, weyl.;Bahnbeamter;@I402@;;@I437@
+1966-08-09;1966-08-14;Ebeling;Elfriede;w;38 J 6 M 9 T;;;verheiratet;;;;Wrede, Günter;Landwirt;@I419@;;@I391@
+1967-10-16;1967-10-18;Hagedorn;Luise;w;79 J 6 M 14 T;;;ledig;;;;;;@I294@;;
+1968-02-10;1968-02-15;Stegen;Günter;m;44 J 4 M 10 T;Maschinenschlosser;;verheiratet;;;;Gerdau, Käthe;;@I394@;;@I422@
+1968-04-27;1968-05-02;Ohlhoff;Frieda;w;72 J 9 M 17 T;;Krebs;ledig;;;;;;@I380@;;
+1968-11-28;1968-12-03;Oberlin;Heinrich;m;73 J 9 M 28 T;Hofbesitzer;;verheiratet;;;;Lüdemann, Minna;;@I98@;;@I99@
+1969-01-09;1969-01-14;Falkenrath;Heinrich;m;71 J 8 M 18 T;Tischler;;verheiratet;;;;Rosskamp, Anna;;@I21@;;@I22@
+1969-09-12;1969-09-14;Rathmann;Kurt;m;57 J 11 M 21 T;Kaufmann;Lungenentzündung;verheiratet;;;;Falkenrath, Ilse;;@I409@;;@I388@
+1970-01-01;1970-01-03;Bartels;Emma;w;79 J 8 M 20 T;Hebamme;;ledig;;;;;;@I64@;;
+1970-03-21;1970-03-26;Behrens;Karl;m;71 J 10 M 17 T;Postschaffner;;verheiratet;;;;Falkenrath, Martha;Näherin;@I72@;;@I71@
+1970-04-03;;Falkenrath;Ernest;m;74 J 4 M 7 T;Brewery worker;;ledig;;;;;;@I68@;;
+1970-10-14;1970-10-18;Brammer;Herbert;m;45 J 2 M 23 T;Maschinenschlosser;;verheiratet;;;;Falkenrath, Elfriede;;@I429@;;@I399@
+1971-06-02;1971-06-04;Hagedorn;Wilhelm;m;86 J 4 M 11 T;Salzsieder;;ledig;;;;;;@I293@;;
+1971-08-21;1971-08-26;Wrede;Erna;w;44 J 11 M 14 T;;Krebs;ledig;;;;;;@I392@;;
+1972-10-10;1972-10-12;Marquardt;Elise;w;74 J 6 M 16 T;;;verwitwet;;;;Ilgner, Hermann, weyl.;Eisenbahner;@I31@;;@I30@
+1972-12-18;1972-12-20;Riebesell;Herbert;m;44 J 12 M 4 T;Bahnbeamter;;verheiratet;;;;Stegen, Erna;;@I427@;;@I397@
+1974-06-13;1974-06-16;Meyer;Herbert;m;38 J 3 M 29 T;Elektroniker;Lungenentzündung;verheiratet;;;;Hoops, Hildegard;Kontoristin;@I406@;;@I444@
+1975-05-03;;Falkenrath;Marie;w;80 J 7 M 8 T;;;verwitwet;;;;Timmermann, Albert, weyl.;Postbeamter;@I41@;;@I76@
+1975-06-02;;Rosskamp;Ludwig;m;77 J 2 M 23 T;Gastwirt;;verheiratet;;;;Reinecke, Else;;@I79@;;@I80@
+1975-06-20;;Falkenrath;Ilse;w;63 J 1 M 8 T;;Herzversagen;verwitwet;;;;Rathmann, Kurt, weyl.;Kaufmann;@I388@;;@I409@
+1977-07-01;;Meyer;Elfriede;w;37 J 7 M 28 T;Näherin;Herzinfarkt;verheiratet;;;;Mohwinkel, Heinz;Handwerksmeister;@I407@;;@I447@
+1977-12-27;;Wrede;Gustav;m;82 J 5 M 3 T;Kraftfahrer;Lungenentzündung;verwitwet;;;;Ohlhoff, Elise, weyl.;;@I389@;;@I381@
+1978-01-04;;Stegen;Gerhard;m;75 J 7 M 14 T;Elektriker;Herzversagen;verheiratet;;;;Ohlhoff, Hedwig;;@I393@;;@I382@
+1978-05-25;;Oberlin;Georg;m;78 J 7 M 25 T;Landwirt;;verheiratet;;;;Behnke, Frieda;;@I28@;;@I29@
+1978-11-30;;Lindgren;Ruth;w;82 J 8 M 27 T;;;verwitwet;;;;Falkenrath, Walter, weyl.;Machinist;@I103@;;@I67@
+1979-08-11;;Hoops;Hildegard;w;45 J 0 M 20 T;Kontoristin;;verwitwet;;;;Meyer, Herbert, weyl.;Elektroniker;@I444@;;@I406@
+1980-01-16;;Krümmel;Paul;m;77 J 8 M 20 T;Bäckermeister;;verheiratet;;;;Hagedorn, Berta;;@I32@;;@I33@
+1980-10-20;;Ohlhoff;Heinz;m;76 J 9 M 20 T;Maschinenschlosser;;ledig;;;;;;@I383@;;
+1981-03-13;;Lüdemann;Minna;w;81 J 8 M 24 T;;;verwitwet;;;;Oberlin, Heinrich, weyl.;Hofbesitzer;@I99@;;@I98@
+1983-07-06;;Meyer;Werner;m;73 J 5 M 15 T;Kaufmann;Lungenentzündung;verheiratet;;;;Falkenrath, Anneliese;;@I404@;;@I387@
+1984-10-12;;Krümmel;Erna;w;76 J 4 M 28 T;;Krebs;ledig;;;;;;@I266@;;
+1985-02-20;;Hagedorn;Hans;m;81 J 4 M 12 T;Tischler;Herzinfarkt;ledig;;;;;;@I268@;;
+1985-06-01;;Rathmann;Ilse;w;45 J 0 M 27 T;;Krebs;ledig;;;;;;@I411@;;
+1985-11-17;;Krümmel;Heinz;m;79 J 9 M 27 T;Tischler;Lungenentzündung;ledig;;;;;;@I265@;;
+1985-11-30;;Rosskamp;Anna;w;84 J 3 M 19 T;;;verwitwet;;;;Falkenrath, Heinrich, weyl.;Tischler;@I22@;;@I21@
+1986-05-18;;Ohlhoff;Hedwig;w;86 J 1 M 23 T;;Schlaganfall;verwitwet;;;;Stegen, Gerhard, weyl.;Elektriker;@I382@;;@I393@
+1987-05-17;;Heitmann;Rudolf;m;51 J 11 M 18 T;Kaufmann;;verheiratet;;;;Meyer, Gisela;Näherin;@I450@;;@I408@
+1987-12-02;;Rabe;Petra;w;38 J 9 M 5 T;Näherin;Krebs;verheiratet;;;;Wrede, Rainer;Ingenieur;@I464@;;@I421@
+1988-09-30;;Falkenrath;Martha;w;86 J 7 M 19 T;Näherin;;verwitwet;;;;Behrens, Karl, weyl.;Postschaffner;@I71@;;@I72@
+1988-12-03;;Rathmann;Frank;m;45 J 9 M 9 T;Informatiker;Herzinfarkt;verheiratet;;;;Oetzmann, Gisela;;@I412@;;@I454@
+1989-07-07;;Reinecke;Else;w;85 J 8 M 21 T;;;verwitwet;;;;Rosskamp, Ludwig, weyl.;Gastwirt;@I80@;;@I79@
+1989-12-15;;Falkenrath;Irmgard;w;82 J 7 M 27 T;;;verwitwet;;;;Schulze, Helmut, weyl.;Elektriker;@I386@;;@I401@
+1990-03-05;;Timmermann;Hans;m;66 J 8 M 29 T;Kaufmann;;ledig;;;;;;@I78@;;
+1990-04-27;;Kass;Werner;m;64 J 8 M 24 T;Landmaschinenhändler;;verheiratet;;;;Oberlin, Mathilde;;@I36@;;@I35@
+1990-09-06;;Behnke;Frieda;w;86 J 6 M 20 T;;;verwitwet;;;;Oberlin, Georg, weyl.;Landwirt;@I29@;;@I28@
+1990-11-09;;Falkenrath;Erich;m;85 J 10 M 27 T;Tischler;;verheiratet;;;;Hinrichs, Käthe;;@I385@;;@I398@
+1991-02-04;;Falkenrath;Anneliese;w;81 J 4 M 10 T;;Herzversagen;verwitwet;;;;Meyer, Werner, weyl.;Kaufmann;@I387@;;@I404@
+1991-10-23;;Hinrichs;Käthe;w;82 J 5 M 15 T;;Schlaganfall;verwitwet;;;;Falkenrath, Erich, weyl.;Tischler;@I398@;;@I385@
+1992-10-09;;Gerdau;Käthe;w;67 J 0 M 5 T;;;verwitwet;;;;Stegen, Günter, weyl.;Maschinenschlosser;@I422@;;@I394@
+1992-11-25;;Krümmel;Ilse;w;82 J 2 M 12 T;;Lungenentzündung;ledig;;;;;;@I267@;;
+1993-04-10;;Stegen;Rudolf;m;67 J 0 M 0 T;Tischler;;verheiratet;;;;Niebuhr, Hildegard;;@I395@;;@I425@
+1993-07-08;;Hagedorn;Berta;w;87 J 6 M 16 T;;;verwitwet;;;;Krümmel, Paul, weyl.;Bäckermeister;@I33@;;@I32@
+1995-04-10;;Soltmann;Kurt;m;57 J 6 M 1 T;Informatiker;Lungenentzündung;verheiratet;;;;Oetzmann, Renate;;@I456@;;@I415@
+1995-04-19;;Garbers;Klaus;m;52 J 3 M 3 T;Handwerksmeister;;verheiratet;;;;Oetzmann, Petra;Verkäuferin;@I462@;;@I417@
+1996-04-15;;Wöhler;Wolfgang;m;44 J 11 M 12 T;Handwerksmeister;Lungenentzündung;ledig;;;;;;@I438@;;
+1996-10-01;;Riebesell;Peter;m;44 J 12 M 3 T;Landwirt;;verheiratet;;;;Hinrichs, Petra;Verkäuferin;@I428@;;@I473@
+1997-10-07;;Oetzmann;Renate;w;45 J 8 M 26 T;Näherin;Schlaganfall;ledig;;;;;;@I418@;;
+1998-06-07;;Ilgner;Friedrich;m;71 J 8 M 21 T;Schlosser;;verheiratet;;;;Krümmel, Margarete;Verkäuferin;@I19@;;@I20@
+1998-09-09;;Oberlin;Hans;m;72 J 8 M 27 T;Landwirt;;ledig;;;;;;@I100@;;
+1998-10-06;;Falkenrath;Erna;w;66 J 11 M 3 T;Kontoristin;Herzversagen;verheiratet;;;;Wittkopf, Günter;Elektriker;@I400@;;@I433@
+1999-06-21;;Rosskamp;Pauline;w;95 J 9 M 19 T;Lehrerin;;ledig;;;;;;@I38@;;
+1999-09-12;;Peters;Horst;m;72 J 9 M 21 T;Zollbeamter;;verheiratet;;;;Ilgner, Irmgard;Hausfrau;@I83@;;@I82@
+1999-10-01;;Meyer;Gisela;w;58 J 2 M 22 T;Näherin;Schlaganfall;verwitwet;;;;Heitmann, Rudolf, weyl.;Kaufmann;@I408@;;@I450@
+1999-12-14;;Wrede;Gertrud;w;79 J 6 M 14 T;;Herzinfarkt;verwitwet;;;;Oetzmann, Kurt, weyl.;Landwirt;@I390@;;@I414@
+2001-02-03;;Mohwinkel;Heinz;m;62 J 12 M 3 T;Handwerksmeister;Herzversagen;verwitwet;;;;Meyer, Elfriede, weyl.;Näherin;@I447@;;@I407@
+2001-04-14;;Rosskamp;Herbert;m;74 J 8 M 20 T;Gastwirt;;ledig;;;;;;@I81@;;
+2001-10-18;;Timmermann;Gertrud;w;81 J 8 M 18 T;Fernmeldegehilfin;;ledig;;;;;;@I77@;;
+2002-03-27;;Falkenrath;Elfriede;w;72 J 6 M 0 T;;Krebs;verwitwet;;;;Brammer, Herbert, weyl.;Maschinenschlosser;@I399@;;@I429@
+2002-07-26;;Schulze;Gerda;w;73 J 3 M 9 T;;Lungenentzündung;ledig;;;;;;@I403@;;
+2003-10-17;;Falkenrath;Wilhelm;m;75 J 8 M 11 T;Tischlermeister;;verheiratet;;;;Oberlin, Hannelore;Schneiderin;@I15@;;@I16@
+2004-11-15;;Bock;Manfred;m;71 J 7 M 18 T;Konditormeister;;verheiratet;;;;Krümmel, Ilse;Bäckereifachverkäuferin;@I96@;;@I95@
+2005-01-06;;Falkenrath;Helen;w;84 J 4 M 27 T;Teacher;;ledig;;;;;;@I69@;;
+2005-06-22;;Wrede;Günter;m;81 J 8 M 11 T;Landwirt;;verwitwet;;;;Ebeling, Elfriede, weyl.;;@I391@;;@I419@
+2006-09-13;;Oetzmann;Gisela;w;63 J 7 M 13 T;;;verwitwet;;;;Rathmann, Frank, weyl.;Informatiker;@I454@;;@I412@
+2008-09-03;;Falkenrath;Otto;m;78 J 5 M 15 T;Werkzeugmacher;;verheiratet;;;;Keller, Dorothy;;@I25@;;@I26@
+2009-01-27;;Behrens;Günter;m;77 J 5 M 19 T;Elektriker;;verheiratet;;;;Kruse, Ingrid;Verkäuferin;@I74@;;@I85@
+2009-04-24;;Gaede;Hanna;w;38 J 2 M 18 T;;;verheiratet;;;;Mohwinkel, Frank;Ingenieur;@I490@;;@I448@
+2009-06-23;;Lühmann;Ursula;w;57 J 7 M 18 T;Verkäuferin;Herzinfarkt;verheiratet;;;;Wittkopf, Rainer;Informatiker;@I480@;;@I434@
+2010-01-02;;Rathmann;Sabine;w;62 J 7 M 16 T;Kontoristin;Krebs;ledig;;;;;;@I413@;;
+2010-02-14;;Falkenrath;Elfriede;w;85 J 1 M 9 T;Kontoristin;;verwitwet;;;;Sandmann, Kurt, weyl.;Schriftsetzer;@I23@;;@I24@
+2010-09-26;;Meyer;Erich;m;76 J 5 M 23 T;Ingenieur;Schlaganfall;verheiratet;;;;Garbers, Hildegard;Verkäuferin;@I405@;;@I440@
+2011-06-27;;Niebuhr;Hildegard;w;85 J 8 M 19 T;;Herzinfarkt;verwitwet;;;;Stegen, Rudolf, weyl.;Tischler;@I425@;;@I395@
+2011-07-28;;Stegen;Erna;w;79 J 1 M 2 T;;Herzinfarkt;verwitwet;;;;Riebesell, Herbert, weyl.;Bahnbeamter;@I397@;;@I427@
+2011-08-22;;Krümmel;Margarete;w;80 J 9 M 14 T;Verkäuferin;;verwitwet;;;;Ilgner, Friedrich, weyl.;Schlosser;@I20@;;@I19@
+2013-05-26;;Wittkopf;Günter;m;86 J 0 M 4 T;Elektriker;Krebs;verwitwet;;;;Falkenrath, Erna, weyl.;Kontoristin;@I433@;;@I400@
+2014-01-05;;Wittkopf;Wolfgang;m;57 J 10 M 11 T;Handwerksmeister;Schlaganfall;verheiratet;;;;Soltmann, Petra;;@I435@;;@I483@
+2014-04-04;;Oberlin;Hannelore;w;82 J 9 M 10 T;Schneiderin;;verwitwet;;;;Falkenrath, Wilhelm, weyl.;Tischlermeister;@I16@;;@I15@
+2014-06-11;;Mohwinkel;Helga;w;51 J 8 M 6 T;Krankenschwester;Lungenentzündung;verheiratet;;;;Stegen, Klaus;Handwerksmeister;@I471@;;@I426@
+2014-08-15;;Oetzmann;Wolfgang;m;66 J 10 M 1 T;Elektroniker;Lungenentzündung;verheiratet;;;;Meyer, Karin;Näherin;@I416@;;@I458@
+2014-12-04;;Soltmann;Petra;w;52 J 9 M 10 T;;Krebs;verwitwet;;;;Wittkopf, Wolfgang, weyl.;Handwerksmeister;@I483@;;@I435@
+2015-06-25;;Rathmann;Brigitte;w;73 J 2 M 5 T;;Herzversagen;verheiratet;;;;Rathmann, Herbert;Verwaltungsangestellter;@I452@;;@I410@
+2015-08-28;;Stegen;Klaus;m;58 J 7 M 4 T;Handwerksmeister;Herzversagen;verwitwet;;;;Mohwinkel, Helga, weyl.;Krankenschwester;@I426@;;@I471@
+2015-12-01;;Keller;Dorothy;w;82 J 5 M 25 T;;;verwitwet;;;;Falkenrath, Otto, weyl.;Werkzeugmacher;@I26@;;@I25@
+2015-12-08;;Behrens;Hildegard;w;87 J 8 M 23 T;Buchhalterin;;ledig;;;;;;@I73@;;
+2016-02-03;;Ilgner;Irmgard;w;86 J 6 M 21 T;Hausfrau;;verwitwet;;;;Peters, Horst, weyl.;Zollbeamter;@I82@;;@I83@
+2017-09-06;;Soltmann;Nicole;w;44 J 10 M 21 T;;;ledig;;;;;;@I457@;;
+2017-10-01;;Rathmann;Herbert;m;79 J 0 M 16 T;Verwaltungsangestellter;Schlaganfall;verwitwet;;;;Rathmann, Brigitte, weyl.;;@I410@;;@I452@
+2017-12-28;;Mohwinkel;Katrin;w;45 J 2 M 18 T;Erzieherin;Krebs;ledig;;;;;;@I449@;;
+2018-06-27;;Meyer;Sabine;w;52 J 3 M 15 T;;Herzinfarkt;ledig;;;;;;@I446@;;
+2019-03-28;;Ilgner;Holger;m;57 J 3 M 23 T;Schlosser;;ledig;;;;;;@I14@;;
+2019-09-04;;Oetzmann;Petra;w;70 J 4 M 12 T;Verkäuferin;Herzinfarkt;verwitwet;;;;Garbers, Klaus, weyl.;Handwerksmeister;@I417@;;@I462@
+2020-11-02;;Oberlin;Mathilde;w;91 J 9 M 17 T;;;verwitwet;;;;Kass, Werner, weyl.;Landmaschinenhändler;@I35@;;@I36@
+2021-06-02;;Wrede;Sarah;w;44 J 5 M 8 T;Krankenschwester;Herzversagen;ledig;;;;;;@I477@;;
+2021-10-04;;Garbers;Hildegard;w;85 J 9 M 21 T;Verkäuferin;Krebs;verwitwet;;;;Meyer, Erich, weyl.;Ingenieur;@I440@;;@I405@
+2022-03-04;;Oetzmann;Renate;w;79 J 1 M 9 T;;Herzinfarkt;verwitwet;;;;Soltmann, Kurt, weyl.;Informatiker;@I415@;;@I456@
+2024-09-17;;Stegen;Ursula;w;66 J 12 M 1 T;Näherin;Herzversagen;verheiratet;;;;Schulze, Michael;Landwirt;@I424@;;@I467@

@@ -1,0 +1,86 @@
+# Spaltenzuordnung, vorgeschlagen von famrecon fuer beispiel/kirchenbuchstil.xlsx
+# Bitte durchsehen: 'unsicher' pruefen, '???' ersetzen oder loeschen.
+
+[allgemein]
+leer = ["k.A.", "—"]
+
+[register.taufe]
+blatt = "Taufen"
+leitdatum = ["geburt_datum", "tauf_datum"]
+
+[register.taufe.spalten]
+A = "lfd_nr_gesamt"                   # sicher         'lfd. Nr.': 7548 | 3522 | 14167
+B = "ort"                             # sicher         'Kirche': Stadtkirche Mühlenstadt
+C = "konfession"                      # sicher         'Konfession': lutherisch
+D = "kb"                              # sicher         'KB': Taufbuch 1771-1778 | Taufen 1738-1758 | Taufbuch 1810-1815
+E = "seite"                           # sicher         'Seite': 585 | 280 | 464
+F = "lfd_nr"                          # sicher         'lfd. Nr.': 2 | 1 | 223
+G = "geburt_ort"                      # sicher         'Geb.-Ort': Mühlenstadt
+H = "geburt_datum"                    # sicher         'Geb-Datum': 1778-08-31 | 1750-10-29 | 1815-11-12
+I = "tauf_datum"                      # sicher         'Tauf-Datum': 1778-09-01 | 1727-04-21
+J = "sterbe_datum_rv"                 # wahrscheinlich 'ggf. Sterbe-Dat. (als RV)': 1845-05-27
+L = "jahr"                            # sicher         'Jahr': 1778 | 1750 | 1815
+M = "kind_name"                       # sicher         'Name': Haag | Arst | Ebel
+N = "kind_vorname"                    # sicher         'Vorname': Christoph Georg | Maria Dorothea | Mädchen - totgeboren
+O = "vater"                           # sicher         'Vater': Haag, Nicolaus | Arst, Georg | Ebel, Jacob
+P = "vater_beruf"                     # sicher         'Vater - Beruf u. Herkunft': Kutscher bei Obervogt von Schmidtberg | herrschaftl. Stallknecht | Taglöhner, Hintersaß
+Q = "mutter"                          # sicher         'Mutter': Kriehmann, Dorothea | N., Eberhardina Sophia | Hauber ?, Barbara
+R = "bemerkung"                       # sicher         'Bemerkungen': (leer)
+"S-BF" = "paten"                      # wahrscheinlich 'Taufpate / -zeuge 1 … BF': Weiß, Christoph Friedrich, Hof-Sattler a | Lorenz, N., Hof-Sattler, u. Ehefrau | —
+
+[register.ehe]
+blatt = "Ehen"
+leitdatum = ["trauung_datum"]
+
+[register.ehe.spalten]
+A = "ort"                             # sicher         'Ort': Mühlenstadt
+B = "konfession"                      # sicher         'Konfession': lutherisch
+C = "kb"                              # sicher         'KB': 1738-1804 | Trauungen
+D = "seite"                           # sicher         'Seite': 40 | 48 | 26
+E = "lfd_nr"                          # sicher         'lfd.Nr': 1 | 2 | 6
+F = "jahr"                            # sicher         'Jahr': 1733 | 1734 | 1745
+G = "trauung_datum"                   # sicher         'Datum': 1733-02-10 | 1734-01-12 | 1745-05-25
+H = "trauung_ort"                     # sicher         'Ort der Trauung': Mühlenstadt
+I = "braeutigam_name"                 # sicher         'Bräutigam-Name': Feldmann | Adam (W) | Falke
+J = "braeutigam_vorname"              # sicher         'Brätigam, Vorname': Daniel | Johann Georg | Johann Wolfgang
+K = "braeutigam_beruf"                # sicher         'Bräutigam, Beruf, Herkunft': Schuhmacher | fürstl. Bauknecht, Wittwer | Dragoner der Kp Hauptmann C.W. von Temmi
+L = "braeutigam_alter"                # sicher         'Alter': (leer)
+M = "braut_name"                      # sicher         'Braut-Name': Lötz(in) | Steinbrecher (W)  | Stapf
+N = "braut_vorname"                   # sicher         'Braut-Vorname': Anna Maria | Maria Sophia | Christine Magdalene
+O = "braut_herkunft"                  # sicher         'Braut, Herkunft': k.A. | weyl. Johann Steinbrechers, gewesenen Bü | von Steinbach, Nordl.
+P = "braut_alter"                     # sicher         'Alter': (leer)
+Q = "braeutigam_vater"                # sicher         'Bräutigam-Vater': k.A. | Hag, Nikolaus, weil.,  | Rosenfeld auf Sommerhof u. Winterstein, 
+R = "braeutigam_mutter"               # sicher         'Bräutigam-Mutter': k.A. | Kriehmann, Dorothea Elisabetha | Bindemann, Elisabeth
+S = "braut_vater"                     # sicher         'Braut-Vater': k.A. | Werner, Johann Georg, weil.,  | Temmingen zu Buttenberg, Reinhard von, h
+T = "braut_mutter"                    # sicher         'Braut-Mutter': k.A. | Kaiser(in), Dorothea | Rebenfels, Maria Magdalena von
+U = "bemerkung"                       # sicher         'Bem.:': nach diesem Eintrag steht: den 28. Augus
+V = "pfarrer"                         # sicher         'Pfarrer': Welz, J.L. | Freuschen | Laurentii
+"W-Z" = "zeugen"                      # sicher         'Trauzeuge 1 … Z': (leer)
+AA = "bemerkung"                      # sicher         'Bemerkung 2:': Gem. 1719-Tabelle der Bürger der Stadt M
+
+[register.tod]
+blatt = "Tote"
+leitdatum = ["sterbe_datum", "begraebnis_datum"]
+
+[register.tod.spalten]
+A = "ort"                             # sicher         'Ort': Mühlenstadt
+B = "konfession"                      # sicher         'Konfession': lutherisch
+C = "kb"                              # sicher         'KB': 1791-1809 | 1717-1738 | 1775-1790
+D = "seite"                           # sicher         'Seite': 223 | 186 | 192
+E = "lfd_nr"                          # sicher         'Lfd.-Nr.': 6 | 1 | 2
+F = "jahr"                            # sicher         'Jahr': 1798 | 1731 | 1732
+G = "geburt_datum_rv"                 # wahrscheinlich 'Geb-Datum ggf. als RV': (leer)
+H = "tauf_datum_rv"                   # wahrscheinlich 'Tauf-Dat. ggf. als RV': (leer)
+I = "sterbe_datum"                    # sicher         'Sterbe-Dat.': 1798-11-24 | 1731-02-08 | 1732-01-06
+J = "begraebnis_datum"                # sicher         'Beerd.-Datum': 1798-11-26 | 1784-08-13 | 1815-11-13
+K = "verstorbener_name"               # sicher         'Name': Lutz geb. Kugel(in) | Wulff | Rohnweiler
+L = "verstorbener_vorname"            # sicher         'Vorname': Luise Dorothee | Friedrich Friedlieb | Johann Jacob Nicolaus
+M = "verstorbener_alter"              # sicher         'Alter': 59 J 10 M 4 T | 10 T | 6 T
+N = "todesursache"                    # sicher         'Krankheit': k.A.
+O = "verstorbener_beruf"              # sicher         'Beruf': herrschaftl. Wagenmeister | Buchdruckergeselle | hochfürstl. Sängerin
+P = "verstorbener_herkunft"           # wahrscheinlich 'Herkunft / Geb.-Ort': Elm
+Q = "verstorbener_vater"              # sicher         'Vater': k.A. | Wulff, Georg Johann Tobias | Rohnweiler, Johann Georg
+R = "verstorbener_mutter"             # sicher         'Mutter': k.A. | N., Christina | N., Veronica
+S = "verstorbener_ehepartner"         # wahrscheinlich 'Ehemann / -frau': Luz, N., fürstl. Hof-Bedienter | Eberlin, Martin, weyl. Wagen......  zu M
+T = "bemerkung"                       # sicher         'Bemerkungen': Ehemann; | "nach der Rechnung des alten Kalenders" | ledig
+"U-X" = "zeugen"                      # sicher         'Zeuge 1 … X': k.A.

@@ -1,0 +1,114 @@
+# Plausibilitätsregeln für Ortsfamilienbücher
+# =============================================
+# Diese Datei ist der Katalog. Der Motor (plausibilitaet.py) liest sie und
+# prüft damit eine SQLite-Datenbank im OFB-Schema oder eine GEDCOM-Datei.
+#
+#   id | art | schwere | grenzwert | frage | herkunft
+#
+# art:       unmoeglich = beschreibt, was nicht sein kann (Widerspruch in den
+#                         Daten; erledigt durch Korrektur)
+#            muss       = beschreibt, was gelten muss (Atlas: bestaetigte Form;
+#                         Treffer = nicht bestaetigt, erledigt durch Entscheidung)
+# schwere:   fehler  = sperrt den Export (make check bricht ab)
+#            warnung = landet in der Prüfliste, sperrt nicht
+# grenzwert: leer oder Zahl mit Einheit: J Jahre, M Monate, ohne = Stück
+# Zeile mit # am Anfang = Regel ausgeschaltet.
+# Spalte 7 "aufloesung": WIE ein Treffer behandelt wird -- deterministisch, nie LLM:
+#   regel:N     eine Feldregel des Neubaus loest ihn auf, wenn ihr Beleg im Text steht
+#   mechanik:x  Bau-Mechanik (Kanten-Waechter, Verschmelzung mit hartem Beleg)
+#   parser      Parserluecke: Muster suchen, Regel + Testfall bauen
+#   atlas       Form-Frage: Atlas-Pflege (Status, Leitform)
+#   frage       wird sichtbare Frage (/fragen, Crowd/Kirchenbuch)
+#   original    nur am Kirchenbuch entscheidbar; bleibt ehrlich in der Liste
+#   anzeige     kein Datenfehler, Darstellungs-/Ordnungsfrage
+# Nummernkreise: 0xx Chronologie, 1xx Altersgrenzen, 2xx Struktur,
+#                3xx Felder, 4xx Quellen / projektspezifisch
+#
+# Grenzwerte zum Vergleich: Ahnenblatt (Einstellungen Thomas 08/2026):
+#   Geschwister-Altersdifferenz 40 J, Mutter 55, Vater 85, Elter min 10,
+#   Heirat min 15 / max 120, Ehepartner-Differenz 90, Lebensalter 120.
+# Gramps "Daten überprüfen" (Werksdefaults): Lebensalter 90, Ehepartner 30,
+#   Geschwisterabstand 8 J, Kinderspanne 25, Heirat 17-50, Mutter 17-48,
+#   Vater 18-65, max 3 Ehen, 12 Kinder (Mutter) / 15 (Vater).
+# Stand 29.08.2026.
+
+# ---- 0xx Chronologie ------------------------------------------------------
+010 | unmoeglich | fehler  |        | Stirbt jemand vor seiner Geburt?                                      | Ahnenblatt, Gramps | regel:12 (Altersbeweis), sonst original
+011 | unmoeglich | fehler  |        | Heiratet jemand vor seiner Geburt?                                    | Ahnenblatt, Gramps | original
+012 | unmoeglich | fehler  |        | Heiratet jemand nach seinem Tod?                                      | Ahnenblatt, Gramps | original (oder falsche Ehe-Zuordnung -> frage)
+013 | unmoeglich | fehler  |        | Wird ein Kind vor seiner Mutter geboren?                              | Gramps (Unborn mother) | regel:8 (Datum), sonst original
+014 | unmoeglich | fehler  |        | Wird ein Kind vor seinem Vater geboren?                               | Gramps (Unborn father) | regel:8 (Datum), sonst original
+015 | unmoeglich | fehler  | 0 M    | Wird ein Kind nach dem Tod der Mutter geboren?                        | Gramps (Dead mother) | regel:8/11 (andere Ehe mit Beleg), sonst original
+016 | unmoeglich | fehler  | 9.5 M  | Wird ein Kind später als 9,5 Monate nach dem Tod des Vaters geboren?  | Gramps (Dead father); posthum ist erlaubt | regel:8/11 (andere Ehe mit Beleg), sonst original
+017 | unmoeglich | warnung | 1 J    | Wird ein Kind mehr als 1 Jahr vor der Ehe der Eltern geboren?         | Gramps; oft echt oder Zweitehen-Bucketing | original (voreheliche Geburt kommt vor)
+018 | unmoeglich | fehler  |        | Gibt es Daten, die es nicht gibt (31.4., 30.2., 29.2. ohne Schaltjahr, Monat 13)? | Ahnenblatt, Gramps (Invalid date) | original
+019 | unmoeglich | fehler  |        | Liegt ein Datum in der Zukunft?                                       | Ahnenblatt | regel:12 (Altersbeweis), sonst original
+020 | unmoeglich | fehler  |        | Wird jemand vor seiner Geburt getauft?                                | Gramps | original
+021 | unmoeglich | fehler  |        | Wird jemand vor seinem Tod begraben?                                  | Gramps | original
+022 | unmoeglich | warnung |        | Ist das Geburtsdatum gleich dem Heiratsdatum?                         | Gramps | original
+023 | unmoeglich | warnung |        | Stehen die Kinder einer Familie nicht in Geburtsreihenfolge?          | Gramps | anzeige (Ruths Reihenfolge bleibt)
+
+# ---- 1xx Altersgrenzen ----------------------------------------------------
+110 | unmoeglich | fehler  | 110 J  | Wird jemand älter als die Grenze?                                     | Gramps 90, Ahnenblatt 120 | regel:12 (Altersbeweis), sonst original
+111 | unmoeglich | fehler  | 14 J   | Ist eine Mutter bei der Geburt jünger als die Grenze?                 | Auftrag 29.08.26; Ahnenblatt 10, Gramps 17 | original
+112 | unmoeglich | fehler  | 55 J   | Ist eine Mutter bei der Geburt älter als die Grenze?                  | Auftrag 29.08.26; Ahnenblatt 55, Gramps 48 | original
+113 | unmoeglich | fehler  | 14 J   | Ist ein Vater bei der Geburt jünger als die Grenze?                   | Ahnenblatt 10, Gramps 18 | original
+114 | unmoeglich | warnung | 75 J   | Ist ein Vater bei der Geburt älter als die Grenze?                    | Ahnenblatt 85, Gramps 65 | original
+115 | unmoeglich | fehler  | 15 J   | Heiratet jemand jünger als die Grenze?                                | Ahnenblatt 15, Gramps 17 | original
+116 | unmoeglich | warnung | 90 J   | Heiratet jemand älter als die Grenze?                                 | Ahnenblatt 120, Gramps 50 | original
+117 | unmoeglich | warnung | 40 J   | Liegen zwischen Ehepartnern mehr Jahre als die Grenze?                | Ahnenblatt 90, Gramps 30 | original
+118 | unmoeglich | warnung | 8 M    | Liegen zwei Geschwister näher beieinander als die Grenze (keine Zwillinge)? | Gramps | original (Zwillinge ausgenommen)
+119 | unmoeglich | warnung | 30 J   | Liegen zwischen ältestem und jüngstem Kind mehr Jahre als die Grenze? | Ahnenblatt 40, Gramps 25 | frage (zwei Generationen in einem Artikel?)
+120 | unmoeglich | warnung | 16     | Hat eine Ehe mehr Kinder als die Grenze?                              | Thomas 30.08.26: Indiz fuer Parsingfehler (Gramps 12/15) | frage (Parsingverdacht)
+123 | unmoeglich | fehler  | 20     | Hat eine Mutter über alle Ehen mehr Kinder als die Grenze?            | Thomas 29.08.26; ab da fast immer zwei Familien in einer | frage (zwei Familien in einer?)
+124 | unmoeglich | warnung | 12 J   | Liegen zwischen zwei aufeinanderfolgenden Geschwistern mehr Jahre als die Grenze? | Thomas 31.08.26: Indiz fuer falsche Elternzuordnung (Erfahrung); Luecken durch Kindstod moeglich | frage (falsche Elternzuordnung?)
+125 | unmoeglich | fehler  |        | Heiratet jemand nach seinem eigenen Sterbedatum?                      | Ahnenblatt 15.09.26 (77 Meldungen, unsere 122 fand nur 3) | original (Datum der Vorlage) oder falsche Zuordnung
+121 | unmoeglich | warnung | 3      | Hat jemand mehr Ehen als die Grenze?                                  | Thomas 30.08.26: Indiz fuer Parsingfehler (Gramps 3) | frage (Parsingverdacht)
+122 | unmoeglich | warnung | 2 M    | Heiratet jemand früher als die Grenze nach dem Tod des vorigen Partners wieder? | Gramps (Trauerzeit) | original
+
+# ---- 2xx Struktur ---------------------------------------------------------
+210 | unmoeglich | fehler  |        | Gibt es Personen ohne Namen, ohne Daten und ohne jede Verbindung?     | Auftrag 29.08.26 (leere Personen) | parser (Luecke suchen), sonst loeschen nur mit Beleg
+211 | unmoeglich | warnung |        | Gibt es Personen, die in keiner Familie vorkommen?                    | Gramps (Disconnected), Ahnenblatt | parser
+212 | unmoeglich | warnung |        | Gibt es NN-Partner ohne jede eigene Angabe in einer kinderlosen Ehe?  | Auftrag 29.08.26; quellenbedingte NN bleiben | frage
+213 | unmoeglich | fehler  |        | Ist dieselbe Person Kind in zwei Familien?                            | Gramps (Multiple parents), Ahnenblatt 4.21 | mechanik:kanten (eine Zuordnung gewinnt), sonst frage
+214 | unmoeglich | fehler  |        | Ist jemand Kind in der Familie, in der er selbst Elter ist?           | Billig-Check | mechanik:kanten (Kante zurueckweisen)
+215 | unmoeglich | fehler  |        | Haben beide Ehepartner dasselbe Geschlecht?                           | Ahnenblatt, Gramps (Same sex marriage) | regel:9/10 (Toechterzeilen), Rest original
+216 | unmoeglich | fehler  |        | Steht eine Frau als Vater oder ein Mann als Mutter?                   | Gramps (Female husband / Male wife) | regel:9/10, Rest original
+217 | unmoeglich | fehler  |        | Gibt es Familien ohne Partner und ohne Kinder?                        | Billig-Check | parser
+218 | unmoeglich | fehler  |        | Verweist eine Familie auf eine Person, die es nicht gibt?             | Referenz-Integrität (Memory 06.08.26) | mechanik:waechter (FK-Pruefung im Bau)
+219 | unmoeglich | warnung |        | Gibt es zwei Personen mit gleichem Namen und gleichem vollen Geburtsdatum? | Auftrag 29.08.26 (Schuler); Ahnenblatt; Kopf/Kind-Doppelführung zählt nicht | mechanik:verschmelzung (harter Beleg), sonst frage
+220 | unmoeglich | fehler  |        | Sind Ehepartner Geschwister?                                          | Thomas 29.08.26 | mechanik:kanten (Kante zurueckweisen)
+221 | unmoeglich | fehler  |        | Sind Ehepartner Elter und Kind?                                       | Thomas 29.08.26 | mechanik:kanten (Kante zurueckweisen)
+222 | unmoeglich | fehler  |        | Heiratet jemand, während der vorige Partner noch lebt (Bigamie)?      | Thomas 29.08.26 | mechanik:waechter (verhindert Verschmelzung), sonst original
+223 | unmoeglich | warnung |        | Haben beide Ehepartner denselben Nachnamen?                           | Gramps (Same surname family) | original (kommt vor)
+227 | unmoeglich | warnung |        | Steht derselbe Quellentext bei mehr als einer Person desselben Artikels? | Thomas 07.09.26: ein Quellentext hat genau EINEN Ort | parser (Zuordnung markieren), sonst original (Ruth wiederholt sich)
+226 | unmoeglich | warnung |        | Gibt es dasselbe Elternpaar als zwei Familien (gleiche Eltern, gleiches oder fehlendes Trauungsdatum)? | Thomas 01.09.26, ersetzt namensschau.py (doppelte Trauungen) | mechanik:verschmelzung, sonst frage
+224 | unmoeglich | warnung |        | Haben zwei lebende Geschwister denselben Vornamen?                    | MyHeritage; Namensvergabe erst nach Tod des älteren üblich | original (Namensvergabe-Praxis)
+225 | unmoeglich | fehler  |        | Ist jemand sein eigener Vorfahr (Kreis in der Abstammung)?            | GEDCOM-Validatoren (circular reference) | mechanik:kanten (Kreis-Waechter)
+
+# ---- 3xx Felder -----------------------------------------------------------
+310 | muss       | fehler  |        | Steht im Nachnamensfeld ein weiblicher Rufname (Walburga, Maria ...)? | Auftrag 29.08.26 (Walburga); Memory Rufnamen 06.08.26 | regel:rufname-diskriminator + atlas
+311 | unmoeglich | fehler  |        | Steht im Vornamensfeld eine Floskel statt eines Namens (Keine Angaben, Findelkind)? | Auftrag 29.08.26 (Angaben Keine) | atlas (Quasi-Namen)
+312 | muss       | fehler  |        | Steht im Vornamensfeld ein Ort (Tübingen Friederike Beate)?           | Auftrag 29.08.26 (Tübingen) | atlas (Orte schlagen Vornamen)
+313 | unmoeglich | fehler  |        | Kleben zwei Wörter im Namensfeld aneinander (DelingerBeck)?           | Auftrag 29.08.26 (DelingerBeck) | parser (Klebstellen), sonst meldung
+314 | unmoeglich | fehler  |        | Stehen im Nachnamensfeld mehrere Namen nebeneinander (Karch Karg Kuth)? | Auftrag 29.08.26 (Karch Karg Kuth) | parser, sonst meldung
+315 | unmoeglich | fehler  |        | Steht im Namensfeld ein Datum oder eine Jahreszahl?                   | diagnose_felder.py 06.08.26 | parser
+316 | muss       | warnung |        | Steht im Berufsfeld ein Personenname statt eines Berufs?              | diagnose_felder.py; Korrektur-Workflow Punkt 10 | atlas (Berufe-Status)
+317 | unmoeglich | fehler  |        | Steht im Notizfeld ein automatischer Bearbeitungshinweis?             | Regelkatalog 29.08.26 (gehört in die Prüfliste, nie in NOTE) | parser (V1-Erbe, in V2 verboten)
+318 | unmoeglich | warnung |        | Steht im Nachnamensfeld eine Ortsangabe (zu X, aus X)?                | diagnose_felder.py | parser (Ortsabtrennung)
+319 | unmoeglich | warnung |        | Hat ein Ehepartner unbekanntes Geschlecht?                            | Ahnenblatt, Gramps (Unknown gender) | regel:rolle/atlas (Geschlecht), Rest frage
+320 | unmoeglich | fehler  |        | Steht im Vornamensfeld eine im Atlas verworfene Form (Patin, kein Name)? | Atlas-Urteile 08.09.26 | atlas (verworfen), Abtrennung: Feldregel 17
+321 | unmoeglich | warnung |        | Steht im Vornamensfeld ein Klammerzusatz, der kein Vorname ist ((früher Beischlaf), (Urbach))? | Atlas-Urteile 08.09.26 | parser (Feldregel 17); Namensklammern wie (Maria) bleiben
+322 | unmoeglich | fehler  |        | Steht im Nachnamensfeld ein Ortsname, der nie Artikelnachname ist (Köstlin in Eßlingen)? | Nachnamen-Atlas anschliessen 09.09.26 | parser (Feldregel 18: Herkunftsort des Partners ins Ortsfeld)
+323 | unmoeglich | fehler  |        | Steht im Nachnamensfeld eine im Atlas verworfene Form (Walburga, Ulm)? | Nachnamen-Atlas 09.09.26 | atlas (verworfen), Abtrennung: Feldregel (Trockenlauf offen)
+
+# ---- 32x Stufe 2: Andockpunkt Atlanten (optional, --atlas; Motor folgt) ------
+#320 | muss       | warnung |        | Vornamen-Token nicht im Vornamen-Atlas bestätigt?                     | Konzept 29.08.26; Arbeitsvorrat Atlas
+#321 | muss       | warnung |        | Nachname nicht im Nachnamen-Atlas bestätigt?                          | Konzept 29.08.26
+#322 | muss       | warnung |        | Berufs-Token nicht im Berufe-Atlas bestätigt?                         | Konzept 29.08.26
+#323 | muss       | warnung |        | Ort nicht im Orte-Atlas bestätigt?                                    | Konzept 29.08.26
+#324 | muss       | fehler  |        | Widerspricht das Geschlecht dem Vornamen-Atlas?                       | Konzept 29.08.26 (Thomas)
+
+# ---- 4xx Quellen / projektspezifisch (braucht Rohtext, bei GEDCOM still) ---
+410 | unmoeglich | warnung | 1 J    | Widerspricht die Altersangabe im Sterbeeintrag (81 J 2 M) den Daten um mehr als die Grenze? | Auftrag 29.08.26; Memory Altersangaben (Taufeintrag schlägt Alter) | regel:12-Anker; Widerspruch bleibt original
+411 | unmoeglich | fehler  |        | Nennen zwei Artikel dieselbe (verschmolzene) Person mit verschiedenem Sterbetag? | Kartenabnahme 20.09.26 (Anna Praxedis Hirschmann, Artikel 3385/3583) | original: Ruth widerspricht sich, unvereinbare Daten (Jahr UND Tag verschieden) verschmelzen nicht mehr
