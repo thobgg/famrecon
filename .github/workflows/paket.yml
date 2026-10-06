@@ -3,13 +3,19 @@
 #   Windows: famrecon-windows.exe        Einzeldatei mit Symbol, Doppelklick startet die Oberflaeche
 #   macOS:   famrecon-macos-arm64.zip    Programmpaket famrecon.app mit Symbol (entpacken, Rechtsklick > Oeffnen)
 #   Linux:   famrecon-linux-x64          Einzeldatei; famrecon_<version>_amd64.deb mit Menueeintrag und Symbol
-# Von Hand: Actions > Pakete > Run workflow, die Dateien liegen dann unter "Artifacts".
+# Von Hand: Actions > Pakete > Run workflow, die Dateien liegen dann unter "Artifacts";
+# mit release_tag=v0.1.2 (gh workflow run Pakete -f release_tag=v0.1.2) haengt der Lauf sie an dieses Release.
 # Bei einem veroeffentlichten Release: an das Release haengen.
 # Linux baut auf Ubuntu 22.04, damit die Einzeldatei auch auf aelteren Systemen (glibc 2.35) laeuft.
 name: Pakete
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Pakete an dieses Release haengen (z. B. v0.1.2); leer: nur Artifacts"
+        required: false
+        default: ""
   release:
     types: [published]
 
@@ -62,8 +68,8 @@ jobs:
           name: famrecon-${{ matrix.name }}
           path: out/*
       - name: An das Release haengen
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || inputs.release_tag != ''
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" out/* --clobber
+        run: gh release upload "${{ github.event.release.tag_name || inputs.release_tag }}" out/* --clobber

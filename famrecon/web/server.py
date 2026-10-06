@@ -510,6 +510,11 @@ def app_fenster(url):
     return False
 
 
+class Server(ThreadingHTTPServer):
+    """Unter Windows ohne Adress-Wiederverwendung, damit ein belegter Port als belegt erkannt wird."""
+    allow_reuse_address = sys.platform != "win32"
+
+
 def laeuft_schon(port):
     """Antwortet auf diesem Port bereits ein famrecon? Dann nur das Fenster oeffnen."""
     import urllib.request
@@ -535,13 +540,14 @@ def vorbereiten(port=8765, daten=None):
     DATEN = Path(daten) if daten else wurzel() / "daten"
     DATEN.mkdir(parents=True, exist_ok=True)
     protokoll_umleiten(DATEN.parent / "famrecon.log" if DATEN.name == "daten" else DATEN / "famrecon.log")
+    # Erst fragen, dann binden: unter Windows laesst SO_REUSEADDR ein zweites Binden desselben Ports zu.
+    if laeuft_schon(port):
+        print(_("famrecon läuft bereits auf {url}, Fenster wird geöffnet").format(url=f"http://127.0.0.1:{port}/"))
+        return None, f"http://127.0.0.1:{port}/"
     try:
-        server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+        server = Server(("127.0.0.1", port), Handler)
     except OSError:
-        if laeuft_schon(port):
-            print(_("famrecon läuft bereits auf {url}, Fenster wird geöffnet").format(url=f"http://127.0.0.1:{port}/"))
-            return None, f"http://127.0.0.1:{port}/"
-        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        server = Server(("127.0.0.1", 0), Handler)
         print(_("Port {port} ist belegt, weiche auf {neu} aus").format(port=port, neu=server.server_address[1]))
     return server, f"http://127.0.0.1:{server.server_address[1]}/"
 

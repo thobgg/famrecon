@@ -134,8 +134,20 @@ class Oberflaeche(unittest.TestCase):
     def test_vorbereiten_port_belegt(self):
         # der Testserver haelt self.port: vorbereiten erkennt das laufende famrecon
         srv, url = server.vorbereiten(self.port, self.tmp.name)
+        if srv is not None:
+            srv.server_close()
         self.assertIsNone(srv)
         self.assertIn(str(self.port), url)
+        # ein fremder Port-Belegung ohne famrecon: Ausweichen auf einen freien Port
+        import socket
+        fremd = socket.socket(); fremd.bind(("127.0.0.1", 0)); fremd.listen(1)
+        try:
+            srv, url = server.vorbereiten(fremd.getsockname()[1], self.tmp.name)
+            self.assertIsNotNone(srv)
+            self.assertNotIn(str(fremd.getsockname()[1]), url)
+            srv.server_close()
+        finally:
+            fremd.close()
 
 
 if __name__ == "__main__":
