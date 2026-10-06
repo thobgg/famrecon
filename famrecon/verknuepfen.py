@@ -64,7 +64,7 @@ class Bestand:
         i = dict(id=self.next_i, geschlecht=p.get("geschlecht"), name=p.get("geburtsname") or p.get("name"),
                  vorname=p.get("vorname"), geburtsname=p.get("geburtsname"),
                  ehename=p.get("name") if p.get("geburtsname") else None, unbekannt=int(bool(p.get("unbekannt"))),
-                 geb=None, geb_praefix=None, tod=None, famc=None, pfade=[], ref=None)
+                 geb=None, geb_praefix=None, tod=None, famc=None, pfade=[], ref=None, erwachsen_ab=None)
         i["name_schl"] = nf.koelner(i["name"]) or None
         i["vorname_kanon"] = nf.vorname_kanon(i["vorname"]) or None
         self.next_i += 1
@@ -156,6 +156,11 @@ def person_punkte(best, i, p, jahr, vater=None, mutter=None, partner=None, tod=N
         return None
     if p.get("geschlecht") and i["geschlecht"] and p["geschlecht"] != i["geschlecht"]:
         return None
+    # Lebenslauf: wer schon als Erwachsener auftrat, kann nicht danach geboren sein (und umgekehrt)
+    if p.get("geb") and i.get("erwachsen_ab") and p["geb"][0] > i["erwachsen_ab"] - ALTER_EHE[0]:
+        return None
+    if jahr and best.geb_jahr(i) and p.get("pfad") not in ("kind", "verstorbener") and jahr - best.geb_jahr(i) < ALTER_EHE[0]:
+        return None
     vp = nf.vornamen_punkte(p.get("vorname_kanon"), i["vorname_kanon"])
     if vp is None:
         if vorname_pflicht and p.get("vorname_kanon") and not i["vorname_kanon"] and not p.get("totgeburt"):
@@ -167,6 +172,8 @@ def person_punkte(best, i, p, jahr, vater=None, mutter=None, partner=None, tod=N
         gruende.append("Vorname" if vp == 100 else "Vorname teils")
     if p.get("name") and i["name"] and p["name"].lower() == i["name"].lower():
         punkte += P_NAME_EXAKT
+    if alter == ALTER_EHE and jahr and best.geb_jahr(i) and 18 <= jahr - best.geb_jahr(i) <= 32:
+        punkte += 10; gruende.append("Heiratsalter")          # Zuenglein bei Namensvettern: der 23-Jaehrige vor dem 39-Jaehrigen
     gj = p.get("geb")[0] if p.get("geb") else None
     ij = best.geb_jahr(i)
     if gj and ij:
@@ -221,13 +228,25 @@ def vater_passt(i, p):
     return vp is None or vp > 0
 
 
+def widerspruch(i, p):
+    """Echter Widerspruch zwischen Identitaet i und Nennung p: Nachname unaehnlich oder kein gemeinsamer Vornamensteil."""
+    if p.get("name") and not p.get("unbekannt") and i["name"] and not i["unbekannt"] \
+            and not nf.namen_aehnlich(i["name"], p["name"], i["name_schl"]) and not nf.namen_aehnlich(i["ehename"], p["name"]):
+        return True
+    return nf.vornamen_widerspruch(p.get("vorname_kanon"), i["vorname_kanon"])
+
+
 def mutter_passt(i, p):
-    """-> Punkte: 50 Name+Vorname, 30 NN-Frau mit gleichem Vornamen, 10 Mutter fehlt, 0 widerspruechlich, -1 Veto."""
+    """-> Punkte: 50 Name+Vorname, 30 NN-Frau mit gleichem Vornamen, 10 Mutter fehlt, -1 Veto bei Widerspruch.
+    Ein anderer Vorname der Mutter (Margaretha gegen Anna Maria) ist ein Veto, auch wenn eine Seite NN heisst:
+    sonst landen Kinder bei der falschen Frau desselben Mannes."""
     vp = nf.vornamen_punkte(p.get("vorname_kanon"), i["vorname_kanon"])
+    if nf.vornamen_widerspruch(p.get("vorname_kanon"), i["vorname_kanon"]):
+        return -1
     if p.get("unbekannt") or not p.get("name"):
-        return P_MUTTER // 2 if vp and vp > 0 else (10 if vp is None else 0)
+        return P_MUTTER // 2 if vp and vp > 0 else 10
     if i["unbekannt"] or not i["name"]:
-        return 30 if vp and vp > 0 else (10 if vp is None else -1)
+        return 30 if vp and vp > 0 else 10
     if nf.namen_aehnlich(i["name"], p["name"], i["name_schl"]) or nf.namen_aehnlich(i["ehename"], p["name"]):
         return P_MUTTER if (vp is None or vp > 0) else -1
     return -1
@@ -261,6 +280,7 @@ def lade(con):
     for p in con.execute("SELECT * FROM person"):
         d = dict(p)
         d["geb"] = (p["geburt_jahr"], p["geburt_monat"], p["geburt_tag"]) if p["geburt_jahr"] else None
+        d["jahr"] = eintraege[p["eintrag"]]["jahr"]
         eintraege[p["eintrag"]]["personen"][p["pfad"]] = d
     return sorted(eintraege.values(), key=lambda e: (e["jahr"] or 9999, e["monat"] or 6, e["tag"] or 15,
                                                       {"ehe": 0, "taufe": 1, "tod": 2}[e["register"]]))
@@ -288,6 +308,8 @@ def verknuepfen(con, kennungen=None):
             zuordnungen.append((p["id"], i["id"], stufe, punkte, grund, json.dumps(alt or [], ensure_ascii=False)))
             i["pfade"].append((p["eintrag"], p["pfad"]))
             ident_von_person[p["id"]] = i["id"]
+            if p["pfad"] not in ("kind", "verstorbener") and p.get("jahr"):   # Vater, Braut, Partner ...: hier erwachsen
+                i["erwachsen_ab"] = min(i["erwachsen_ab"] or 9999, p["jahr"])
             if kennungen and p.get("ref") and not i["ref"]:
                 i["ref"] = p["ref"]
                 ident_von_ref[p["ref"]] = i["id"]
@@ -313,7 +335,9 @@ def verknuepfen(con, kennungen=None):
             return (best.idents[ident_von_person[e[1]]], "sicher", 999, "von Hand bestaetigt", [])
         return None
 
-    def finde(p, jahr, geschlecht=None, schwelle=SCHWELLE, **ctx):
+    def finde(p, jahr, geschlecht=None, schwelle=SCHWELLE, raten=False, **ctx):
+        """raten=False: bei Gleichstand keine Wahl (eigene Person, Kandidaten fuer die Pruefliste);
+        raten=True (Verstorbene, Partner): den Besten nehmen, Stufe unsicher."""
         hand = von_hand(p)
         if hand:
             return [], hand
@@ -329,6 +353,11 @@ def verknuepfen(con, kennungen=None):
                 if r and not any(k[0]["id"] == i["id"] for k in kand):
                     kand.append((i, r[0], r[1]))
         ergebnis = entscheiden(kand, schwelle)
+        if ergebnis[1] == "unsicher" and not vorgabe and not raten:
+            # Gleichstand (Namensvettern ohne weiteren Anker): nicht raten. Eigene Person, Kandidaten in die
+            # Pruefliste; eine Entscheidung dort zieht alle spaeteren Nennungen der Familie mit.
+            i, _st, punkte, grund, alt = ergebnis
+            ergebnis = (None, "neu", 0, f"unentschieden zwischen {len(alt) + 1} Kandidaten: {grund}", [[i["id"], punkte, grund]] + alt)
         if vorgabe:                       # Kennung entscheidet; widerspricht die Rechnung deutlich, in die Pruefliste
             i, stufe, punkte, grund, alt = ergebnis
             if i is not None and i["id"] != vorgabe["id"]:
@@ -337,10 +366,10 @@ def verknuepfen(con, kennungen=None):
             return kand, (vorgabe, "vorgabe", 999, "Kennung " + p["ref"], [])
         return kand, ergebnis
 
-    def person_oder_neu(p, jahr, geschlecht=None, schwelle=SCHWELLE, **ctx):
+    def person_oder_neu(p, jahr, geschlecht=None, schwelle=SCHWELLE, raten=False, **ctx):
         if not p:
             return None
-        kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, geschlecht, schwelle, **ctx)
+        kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, geschlecht, schwelle, raten, **ctx)
         if i is None:
             i = best.neu_ident(p)
             if geschlecht and not i["geschlecht"]:
@@ -406,6 +435,8 @@ def verknuepfen(con, kennungen=None):
                     punkte += 20; gruende.append("Geschwister")
                 kand.append((f, punkte, gruende))
         kand.sort(key=lambda k: -k[1])
+        if len(kand) > 1 and kand[0][1] - kand[1][1] < ABSTAND_KLAR and kand[0][0]["id"] != kand[1][0]["id"]:
+            return None                                       # zwei Familien gleich gut: nicht raten, eigene Familie
         if kand and kand[0][1] >= SCHWELLE:
             f = kand[0][0]
             merke(vater_p, best.idents[f["mann"]], "sicher" if "Mutter" in kand[0][2] else "wahrscheinlich", kand[0][1], ", ".join(kand[0][2]),
@@ -450,7 +481,8 @@ def verknuepfen(con, kennungen=None):
                     merke(kind_p, k, "unsicher", 999, f"Kennung {kind_p['ref']}; Rechnung spricht für eine neue Person: schon getauft {k['geb'][0] if k['geb'] else ''}", [])
                 else:
                     merke(kind_p, k, "vorgabe" if vorgabe else "neu", 999 if vorgabe else 0, "Kennung " + kind_p["ref"] if vorgabe else "")
-                k["geb"] = k["geb"] or kind_p["geb"]
+                # ohne Geburtsdatum gilt das Taufdatum als Geburt (Tage danach): sonst fehlt der Anker fuers Begraebnis
+                k["geb"] = k["geb"] or kind_p["geb"] or nf.datum_zerlegen(e["felder"].get("tauf_datum"))
         elif e["register"] == "ehe":
             paar = {}
             for rolle, g in (("braeutigam", "M"), ("braut", "F")):
@@ -461,7 +493,7 @@ def verknuepfen(con, kennungen=None):
                 kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, g, vater=vater_p, mutter=mutter_p, alter=ALTER_EHE)
                 if i is None:
                     i = best.neu_ident(p)
-                    merke(p, i)
+                    merke(p, i, stufe, punkte, grund, alt)
                     if vater_p or mutter_p:
                         eltern_anbinden(i, vater_p, mutter_p, jahr)
                 else:
@@ -470,7 +502,7 @@ def verknuepfen(con, kennungen=None):
                     best.name_setzen(i, p["name"], p["geburtsname"])
                 vorehe_p = P.get(f"{rolle}_vorehe")
                 if vorehe_p:
-                    vi = person_oder_neu(vorehe_p, jahr, "F" if g == "M" else "M", schwelle=SCHWELLE_NIEDRIG, tot_erlaubt=True)
+                    vi = person_oder_neu(vorehe_p, jahr, "F" if g == "M" else "M", schwelle=SCHWELLE_NIEDRIG, raten=True, tot_erlaubt=True)
                     best.neu_fam(*( (vi["id"], i["id"]) if g == "F" else (i["id"], vi["id"]) ), art="ehe")
                 paar[rolle] = i
             if paar:
@@ -488,7 +520,7 @@ def verknuepfen(con, kennungen=None):
                 continue
             vater_p, mutter_p, partner_p = P.get("verstorbener_vater"), P.get("verstorbener_mutter"), P.get("verstorbener_ehepartner")
             tod = (e["jahr"], e["monat"], e["tag"]) if e["jahr"] else None
-            kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, None, SCHWELLE_TOD, vater=vater_p, mutter=mutter_p,
+            kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, None, SCHWELLE_TOD, raten=True, vater=vater_p, mutter=mutter_p,
                                                         partner=partner_p, tod=tod, vorname_pflicht=not p.get("totgeburt"))
             # Totgeburt / Kind ohne Vornamen: ueber Eltern und Datum
             if i is None and (p.get("totgeburt") or not p.get("vorname")) and vater_p:
@@ -498,17 +530,35 @@ def verknuepfen(con, kennungen=None):
                             ki = best.idents[kid]
                             if ki["geb"] and ki["geb"][0] == e["jahr"] and (p.get("totgeburt") or not ki["vorname"]):
                                 i, stufe, punkte, grund = ki, "sicher", 150, "Eltern und Jahr, ohne Vornamen"
-            # Vetos nach Hollerbach: ledig -> Vater muss passen, wenn Familie da; verheiratet -> ein Partner muss passen
+            anker = any(g in grund for g in ("Geburtsjahr", "Geburtsdatum", "Rueckverweis", "Vater", "Mutter", "Ehepartner"))
+            # Vetos nach Hollerbach: ledig -> genannter Vater darf dem Vater der Familie nicht widersprechen;
+            # verheiratet/verwitwet -> ein Partner muss passen. Nur echter Widerspruch zaehlt (Johann Philipp
+            # gegen Philipp Jakob ist keiner). Mit Anker wird der Fall unsicher und geht in die Pruefliste,
+            # statt still eine zweite Person zu erzeugen.
             if i is not None and not (kennungen and p.get("ref") and i["ref"] == p["ref"]):    # eine Kennung schlaegt Vetos
                 stand = (p.get("stand") or "").lower()
+                veto = None
                 if stand == "ledig" and vater_p and i["famc"] and best.fams[i["famc"]]["mann"] \
-                        and not vater_passt(best.idents[best.fams[i["famc"]]["mann"]], vater_p):
-                    i = None
+                        and widerspruch(best.idents[best.fams[i["famc"]]["mann"]], vater_p):
+                    veto = "ledig, genannter Vater widerspricht"
                 elif stand in ("verheiratet", "verwitwet") and partner_p and best.fams_von.get(i["id"]) and "Ehepartner" not in grund:
-                    i = None
+                    partner_ids = [best.fams[fid]["frau"] if best.fams[fid]["mann"] == i["id"] else best.fams[fid]["mann"] for fid in best.fams_von[i["id"]]]
+                    if all(widerspruch(best.idents[pid], partner_p) for pid in partner_ids if pid):
+                        veto = "verheiratet, kein Partner passt"
+                if veto:
+                    if anker:
+                        stufe, grund, alt = "unsicher", f"{grund}; Veto: {veto}", alt
+                    else:
+                        i = None
+            # Begraebnis eines Kindes: nur mit Anker (Geburt, Vater, Rueckverweis) an eine Taufe; bei zwei gleich guten
+            # Taufen (Zwillinge, Namenswiederholung) nie von selbst. Sonst eigene Person, Kandidaten fuer die Pruefliste.
+            kind = (p.get("alter_tage") is not None and p["alter_tage"] < 15 * 365) or (p.get("geb") and jahr and jahr - p["geb"][0] < 15)
+            if i is not None and kind and (not anker or stufe == "unsicher") and not (kennungen and p.get("ref")):
+                alt = [[i["id"], punkte, grund]] + alt
+                i, stufe, punkte, grund = None, "neu", 0, "Kind ohne klaren Anker; Kandidaten siehe Alternativen"
             if i is None:
                 i = best.neu_ident(p)
-                merke(p, i)
+                merke(p, i, stufe, punkte, grund, alt)
                 if vater_p or mutter_p:
                     eltern_anbinden(i, vater_p, mutter_p, (p["geb"][0] if p.get("geb") else jahr))
             else:
@@ -528,7 +578,7 @@ def verknuepfen(con, kennungen=None):
                         merke(partner_p, vorhanden, "sicher", P_PARTNER, "Ehepartner des Verstorbenen")
                         break
                 if not vorhanden:
-                    pi = person_oder_neu(partner_p, jahr, pg, schwelle=SCHWELLE_NIEDRIG, tot_erlaubt=True)
+                    pi = person_oder_neu(partner_p, jahr, pg, schwelle=SCHWELLE_NIEDRIG, raten=True, tot_erlaubt=True)
                     if pi:
                         mann, frau = (i["id"], pi["id"]) if i["geschlecht"] == "M" else (pi["id"], i["id"])
                         best.neu_fam(mann, frau, art="ehe")
@@ -623,11 +673,11 @@ def familien_zeigen(con, limit=200):
 def pruefliste_zeigen(con, stufe=None):
     sql = ("SELECT z.*, p.pfad, p.roh, e.register, e.jahr, i.name iname, i.vorname ivorname, i.geb_jahr, i.id iid "
            "FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag JOIN identitaet i ON i.id=z.ident "
-           "WHERE z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if stufe == "alle" else "") + ") ORDER BY e.jahr")
+           "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if stufe == "alle" else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]')) ORDER BY e.jahr")
     n = 0
     for r in con.execute(sql):
         n += 1
-        print(f"{r['register']:6} {r['jahr']} {r['pfad']:24} {r['roh'][:50]!r}")
+        print(f"{r['register']:6} {r['jahr']} {r['pfad']:24} {(r['roh'] or '')[:50]!r}")
         print(f"       -> [{r['iid']}] {r['iname']}, {r['ivorname']} *{r['geb_jahr'] or '?'}  {r['punkte']} Punkte ({r['grund']})  {r['stufe']}")
         for alt in json.loads(r["alternativen"] or "[]"):
             a = con.execute("SELECT name, vorname, geb_jahr FROM identitaet WHERE id=?", (alt[0],)).fetchone()

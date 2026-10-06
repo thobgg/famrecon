@@ -115,7 +115,7 @@ class Projekt:
             st["identitaeten"] = con.execute("SELECT COUNT(*) FROM identitaet").fetchone()[0]
             st["familien"] = con.execute("SELECT COUNT(*) FROM familie").fetchone()[0]
             st["stufen"] = dict(con.execute("SELECT stufe, COUNT(*) FROM zuordnung GROUP BY stufe"))
-            st["offen"] = con.execute("SELECT COUNT(*) FROM zuordnung z WHERE z.stufe='unsicher' AND z.person NOT IN (SELECT person FROM entscheidung)").fetchone()[0]
+            st["offen"] = con.execute("SELECT COUNT(*) FROM zuordnung z WHERE (z.stufe='unsicher' OR (z.stufe='neu' AND z.alternativen<>'[]')) AND z.person NOT IN (SELECT person FROM entscheidung)").fetchone()[0]
             r = con.execute("SELECT wert FROM einstellung WHERE name='kennungen'").fetchone()
             st["kennungen"] = bool(r and r["wert"] == "1")
         return st
@@ -287,7 +287,7 @@ def s_pruefliste(pr, alle=False):
     sql = ("SELECT z.*, p.pfad, p.roh, e.register, e.jahr, i.name iname, i.vorname ivorname, i.geb_jahr, i.tod_jahr, i.id iid, en.art hart, en.ziel hziel "
            "FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag JOIN quelle q ON q.id=e.quelle JOIN identitaet i ON i.id=z.ident "
            "LEFT JOIN entscheidung en ON en.schluessel = q.datei||'|'||q.blatt||'|'||e.zeile||'|'||p.pfad "
-           "WHERE z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if alle else "") + ") ORDER BY (en.art IS NOT NULL), e.jahr")
+           "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if alle else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]')) ORDER BY (en.art IS NOT NULL), e.jahr")
 
     def belege(ident):
         out = []

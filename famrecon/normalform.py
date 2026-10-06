@@ -332,20 +332,35 @@ def namen_aehnlich(a, b, schl_a=None, schl_b=None):
         return True
     if (schl_a or koelner(a)) == (schl_b or koelner(b)):
         return True
-    return levenshtein(a, b) <= 1 + max(len(a), len(b)) // 6
+    d = levenshtein(a, b)                                    # ein Buchstabe immer; zwei nur bei laengeren Namen mit
+    return d <= 1 or (d == 2 and max(len(a), len(b)) >= 7 and a[:3].lower() == b[:3].lower())   # gleichem Anfang (Aberle/Aberlin, nicht Weber/Wegmer)
+
+
+FUELLNAMEN = {"johan", "johann", "anna", "maria"}       # Beinamen, die fast jeder traegt: allein ein schwacher Treffer
 
 
 def vornamen_punkte(a_kanon, b_kanon):
-    """100 gleich, 90 Rufname gleich (Johann = Johann Georg), 70 zwei gemeinsame von mehreren,
-    40 ein Name steckt an anderer Stelle (Georg in Johann Georg), 0 verschieden, None wenn einer fehlt."""
+    """100 gleich; einer gegen mehrere: 90 Rufname vorn (Jacob = Jacob Friedrich), 80 Rufname hinten
+    (Jacob = Johann Jacob), 60/40 wenn der gemeinsame Name nur Johann/Anna/Maria ist; mehrere gegen mehrere:
+    70 zwei gemeinsame, sonst 0 verschieden; None wenn einer fehlt."""
     if not a_kanon or not b_kanon:
         return None
     if a_kanon == b_kanon:
         return 100
     ta, tb = a_kanon.split(), b_kanon.split()
-    if ta[0] == tb[0] and (len(ta) == 1 or len(tb) == 1):
-        return 90                                             # Rufname gleich; der volle Treffer bleibt vorn (Franz vs. Franz Anton)
     if len(ta) == 1 or len(tb) == 1:
-        return 40 if (ta[0] in tb or tb[0] in ta) else 0
-    gemeinsam = sum(1 for t in ta if t in tb)
-    return 70 if gemeinsam >= 2 else 0
+        einer, mehrere = (ta[0], tb) if len(ta) == 1 else (tb[0], ta)
+        if einer == mehrere[0]:
+            return 60 if einer in FUELLNAMEN else 90
+        if einer in mehrere:
+            return 40 if einer in FUELLNAMEN else 80
+        return 0
+    gemeinsam = [t for t in ta if t in tb]
+    return 70 if len(gemeinsam) >= 2 else 0                  # Johann Georg gegen Christoph Georg: verschieden
+
+
+def vornamen_widerspruch(a_kanon, b_kanon):
+    """Echter Widerspruch fuer Vetos: beide bekannt und kein gemeinsamer Namensteil."""
+    if not a_kanon or not b_kanon:
+        return False
+    return not (set(a_kanon.split()) & set(b_kanon.split()))

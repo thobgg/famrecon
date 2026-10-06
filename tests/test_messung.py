@@ -1,8 +1,10 @@
 """Messlauf: Falkenrath-GEDCOM (erfunden, CC0) -> drei Register -> Verknuepfung -> Vergleich mit der Wahrheit.
 
-Die Untergrenzen sind Stand 05.10.2026. Wer an Punkten oder Vetos dreht, sieht hier, ob es traegt.
-Die verbleibenden Fehler liegen in den Demodaten: Kinder, die vor ihrer Geburt sterben, und zwei
-Schwestern mit demselben Vornamen.
+Die Untergrenzen sind Stand 06.10.2026. Wer an Punkten oder Vetos dreht, sieht hier, ob es traegt.
+Seit 06.10. gilt: Bei Gleichstand zwischen Namensvettern (Eltern, Brautleute) raet famrecon nicht, sondern
+legt eine eigene Person an und gibt die Kandidaten in die Pruefliste. Das kostet hier Vollstaendigkeit
+(zwei Petra Meyer, Franz neben Franz Anton), bringt an echten Registern aber Praezision bei den Kindern.
+Die uebrigen Fehler liegen in den Demodaten: Kinder, die vor ihrer Geburt sterben.
 """
 import tempfile
 import unittest
@@ -34,14 +36,14 @@ class Falkenrath(unittest.TestCase):
     def test_sauber(self):
         m = lauf(0.0)
         self.assertEqual(m["refs"], 492)
-        self.assertGreaterEqual(m["praezision"], 0.99, m)
-        self.assertGreaterEqual(m["vollstaendigkeit"], 0.99, m)
+        self.assertGreaterEqual(m["praezision"], 0.995, m)
+        self.assertGreaterEqual(m["vollstaendigkeit"], 0.98, m)
         self.assertEqual(m["doppelte_paare"], 0)                # ein Paar, eine Familie (Ahnenblatt: "doppelter Eheeintrag")
 
     def test_mit_rauschen(self):
         m = lauf(0.3)
-        self.assertGreaterEqual(m["praezision"], 0.95, m)
-        self.assertGreaterEqual(m["vollstaendigkeit"], 0.85, m)
+        self.assertGreaterEqual(m["praezision"], 0.99, m)
+        self.assertGreaterEqual(m["vollstaendigkeit"], 0.95, m)
 
 
 if __name__ == "__main__":
