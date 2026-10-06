@@ -419,7 +419,10 @@ class Handler(BaseHTTPRequestHandler):
         pr = None
         try:
             if teile == ["beenden"]:
-                threading.Thread(target=self.server.shutdown, daemon=True).start()
+                def aus(server=self.server):
+                    server.shutdown()
+                    server.server_close()                 # Port sofort freigeben, damit ein Nachfolger ihn nehmen kann
+                threading.Thread(target=aus, daemon=True).start()
                 return self.antwort(seite("beendet", titel=_("Beendet")))
             if teile == ["beispiele"]:
                 beispiele_anlegen()
@@ -570,9 +573,17 @@ def vorbereiten(port=8765, daten=None):
     if version and (version == __version__ or not alte_version_abloesen(port, version)):
         print(_("famrecon läuft bereits auf {url}, Fenster wird geöffnet").format(url=f"http://127.0.0.1:{port}/"))
         return None, f"http://127.0.0.1:{port}/"
-    try:
-        server = Server(("127.0.0.1", port), Handler)
-    except OSError:
+    server = None
+    for _versuch in range(30):                # bis 3 s warten: ein eben beendeter Vorgaenger gibt den Port gerade frei
+        try:
+            server = Server(("127.0.0.1", port), Handler)
+            break
+        except OSError:
+            if not version:
+                break
+            import time
+            time.sleep(0.1)
+    if server is None:
         server = Server(("127.0.0.1", 0), Handler)
         print(_("Port {port} ist belegt, weiche auf {neu} aus").format(port=port, neu=server.server_address[1]))
     return server, f"http://127.0.0.1:{server.server_address[1]}/"

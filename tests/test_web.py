@@ -162,7 +162,8 @@ class Oberflaeche(unittest.TestCase):
         srv = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
         threading.Thread(target=srv.serve_forever, daemon=True).start()
         port = srv.server_address[1]
-        with mock.patch.object(server, "__version__", "9.9.9"):          # wir sind die neuere Version
+        echt = server.laeuft_schon                                       # der alte Server meldet im Test dieselbe Version:
+        with mock.patch.object(server, "laeuft_schon", lambda p: "0.0.1" if echt(p) else None):   # als aelter ausgeben
             neu, url = server.vorbereiten(port, self.tmp.name)
         self.assertIsNotNone(neu)
         self.assertEqual(neu.server_address[1], port)                    # derselbe Port, der alte ist weg
