@@ -451,10 +451,7 @@ class Handler(BaseHTTPRequestHandler):
                     if FENSTER is not None:               # das App-Fenster hat famrecon selbst geoeffnet: zumachen, kein Restfenster
                         import time
                         time.sleep(0.6)                   # die Antwortseite darf erst ankommen
-                        try:
-                            FENSTER.terminate()
-                        except Exception:
-                            pass
+                        fenster_schliessen()
                 self.close_connection = True
                 self.antwort(seite("beendet", titel=_("Beendet")))     # erst die Seite ausliefern, dann herunterfahren
                 self.wfile.flush()
@@ -530,6 +527,23 @@ class Handler(BaseHTTPRequestHandler):
             self.antwort(f"<pre>{h(traceback.format_exc())}</pre>", code=500)
 
 
+def fenster_schliessen():
+    """Den selbst gestarteten Browser beenden. Unter Linux/Mac ist der Start oft ein Shell-Skript (brave-browser,
+    google-chrome), das den eigentlichen Browser als Kind startet: deshalb die ganze Prozessgruppe, nicht nur den Vater."""
+    import os
+    import signal
+    try:
+        if os.name == "posix":
+            os.killpg(os.getpgid(FENSTER.pid), signal.SIGTERM)
+        else:
+            FENSTER.terminate()
+    except Exception:
+        try:
+            FENSTER.terminate()
+        except Exception:
+            pass
+
+
 def app_fenster(url):
     """Eigenes Fenster ohne Adressleiste und Tabs: der App-Modus von Chrome, Chromium, Brave oder Edge.
     Gibt es keinen davon, oeffnet der normale Browser."""
@@ -550,7 +564,8 @@ def app_fenster(url):
             try:
                 global FENSTER
                 FENSTER = subprocess.Popen([exe, f"--app={url}", "--window-size=1240,860", f"--user-data-dir={DATEN / '.fenster'}"],
-                                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                           start_new_session=(os.name == "posix"))   # eigene Prozessgruppe: Beenden trifft Skript und Browser
                 return True
             except OSError:
                 continue
