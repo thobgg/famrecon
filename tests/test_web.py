@@ -113,7 +113,11 @@ class Oberflaeche(unittest.TestCase):
             self.assertIn(f'href="#{abschnitt}"', html)                 # Inhaltsverzeichnis
         self.assertIn("Prüfliste", html)
         st, html = self.hole("/p/kirchenbuchstil")                      # jede Seite verweist auf ihren Abschnitt
-        self.assertIn('href="/hilfe#projekt"', html)
+        self.assertIn('href="/hilfe?p=kirchenbuchstil#projekt"', html)
+        st, html = self.hole("/hilfe?p=kirchenbuchstil")                 # Projektleiste und Zurueck bleiben
+        self.assertIn('href="/p/kirchenbuchstil/pruefliste"', html)
+        self.assertIn('href="/p/kirchenbuchstil" onclick', html)
+        self.assertIn('href="/" onclick', self.hole("/hilfe")[1])
         self.assertIn('action="/beenden"', html)
         st, text = self.hole("/ping")
         self.assertTrue(text.startswith("famrecon "))

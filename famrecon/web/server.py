@@ -65,12 +65,13 @@ DATEN = wurzel() / "daten"
 def seite(name, **werte):
     kopf = (VORLAGEN / "rahmen.html").read_text(encoding="utf-8")
     roh = (VORLAGEN / f"{name}.html").read_text(encoding="utf-8")
-    werte.setdefault("hilfe", f'<a class="hilfe-link" href="/hilfe#{name}">{_("Mehr in der Hilfe")} →</a>')
+    ziel = f"/hilfe?p={werte.get('projekt', '')}#{name}" if werte.get("projekt") else f"/hilfe#{name}"
+    werte.setdefault("hilfe", f'<a class="hilfe-link" href="{ziel}">{_("Mehr in der Hilfe")} →</a>')
     inhalt = Template(re.sub(r"\{\{(.+?)\}\}", lambda m: _(m.group(1)), roh)).safe_substitute(**werte)
     kopf = re.sub(r"\{\{(.+?)\}\}", lambda m: _(m.group(1)), kopf)
     pr = werte.get("projekt", "")
     nav = "".join(f'<a href="/p/{pr}/{w}">{t}</a>' for w, t in (("", pr), ("zuordnung", _("Zuordnung")), ("personen", _("Personen")), ("familien", _("Familien")), ("pruefliste", _("Prüfliste")), ("gedcom", "GEDCOM"))) if pr else ""
-    return Template(kopf).safe_substitute(inhalt=inhalt, titel=werte.get("titel", "famrecon"), projekt_nav=nav, hilfe_ziel=f"/hilfe#{name}")
+    return Template(kopf).safe_substitute(inhalt=inhalt, titel=werte.get("titel", "famrecon"), projekt_nav=nav, hilfe_ziel=ziel)
 
 
 def projekte():
@@ -315,14 +316,16 @@ def s_gedcom(pr):
                  fehlerliste="".join(f"<li>{h(f)}</li>" for f in fehler[:50]))
 
 
-def s_hilfe():
+def s_hilfe(projekt=""):
     """Die Hilfe: eine HTML-Datei je Sprache in web/hilfe/, Inhaltsverzeichnis aus den h2-Ueberschriften.
-    Jede Seite verweist mit /hilfe#<seite> auf ihren Abschnitt."""
+    Jede Seite verweist mit /hilfe?p=<projekt>#<seite> auf ihren Abschnitt; die Projektleiste bleibt stehen."""
+    projekt = projekt if re.fullmatch(r"[\w\-]+", projekt or "") else ""
     datei = HILFE / f"{SPRACHE}.html"
     text = (datei if datei.exists() else HILFE / "de.html").read_text(encoding="utf-8")
     punkte = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', text)
     toc = "".join(f'<a href="#{i}">{re.sub("<[^>]+>", "", ueberschrift)}</a>' for i, ueberschrift in punkte)
-    return seite("hilfe", titel=_("Hilfe"), text=text, toc=toc, version=__version__)
+    zurueck = (f'<a class="knopf leise" href="/{"p/" + projekt if projekt else ""}" onclick="if (history.length > 1) {{ history.back(); return false; }}">← {_("zurück")}</a>')
+    return seite("hilfe", titel=_("Hilfe"), text=text, toc=toc, version=__version__, projekt=projekt, zurueck=zurueck)
 
 
 # ----------------------------------------------------------------- Server
@@ -368,7 +371,7 @@ class Handler(BaseHTTPRequestHandler):
             if not teile:
                 return self.antwort(s_start(q.get("m", "")))
             if teile == ["hilfe"]:
-                return self.antwort(s_hilfe())
+                return self.antwort(s_hilfe(q.get("p", "")))
             if teile == ["ping"]:                              # fuer den zweiten Start: laeuft hier schon famrecon?
                 return self.antwort(f"famrecon {__version__}", "text/plain; charset=utf-8")
             if teile[0] == "static" and len(teile) == 2:
