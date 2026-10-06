@@ -1,2 +1,6 @@
 <h1>{{famrecon ist beendet}}</h1>
-<p>{{Alle Projekte sind gespeichert. Dieses Fenster kann geschlossen werden; der nächste Start öffnet die Oberfläche wieder.}}</p>
+<p>{{Alle Projekte sind gespeichert. Dieses Fenster schließt sich gleich; sonst bitte von Hand schließen.}}</p>
+<script>
+// Das App-Fenster darf sich selbst schliessen; ein normaler Browser-Tab oft nicht, dann bleibt der Hinweis stehen.
+setTimeout(() => { window.close(); }, 400);
+</script>

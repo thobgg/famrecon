@@ -423,3 +423,6 @@ msgstr ""
 
 msgid "Nein"
 msgstr ""
+
+msgid "Alle Projekte sind gespeichert. Dieses Fenster schließt sich gleich; sonst bitte von Hand schließen."
+msgstr ""

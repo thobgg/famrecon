@@ -422,3 +422,6 @@ msgstr "Yes"
 
 msgid "Nein"
 msgstr "No"
+
+msgid "Alle Projekte sind gespeichert. Dieses Fenster schließt sich gleich; sonst bitte von Hand schließen."
+msgstr "All projects are saved. This window closes in a moment; otherwise please close it by hand."
