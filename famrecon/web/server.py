@@ -61,6 +61,7 @@ def beispiele_ordner():
 
 DATEN = wurzel() / "daten"
 SCHREIBSPERRE = threading.Lock()      # bauen, verknuepfen, Beispiele, Entscheidungen: nacheinander, nie gleichzeitig
+FENSTER = None                        # der von famrecon gestartete Browserprozess (App-Fenster), damit Beenden es schliessen kann
 
 
 def seite(name, **werte):
@@ -444,9 +445,16 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if teile == ["beenden"]:
                 def aus(server=self.server):
-                    """Server anhalten und Port freigeben, damit ein Nachfolger ihn uebernehmen kann."""
+                    """Server anhalten, Port sofort freigeben (fuer einen Nachfolger) und das eigene App-Fenster schliessen."""
                     server.shutdown()
                     server.server_close()                 # Port sofort freigeben, damit ein Nachfolger ihn nehmen kann
+                    if FENSTER is not None:               # das App-Fenster hat famrecon selbst geoeffnet: zumachen, kein Restfenster
+                        import time
+                        time.sleep(0.6)                   # die Antwortseite darf erst ankommen
+                        try:
+                            FENSTER.terminate()
+                        except Exception:
+                            pass
                 threading.Thread(target=aus, daemon=True).start()
                 return self.antwort(seite("beendet", titel=_("Beendet")))
             if teile == ["beispiele"]:
@@ -537,8 +545,9 @@ def app_fenster(url):
         exe = shutil.which(k) or (k if Path(k).exists() else None)
         if exe:
             try:
-                subprocess.Popen([exe, f"--app={url}", "--window-size=1240,860", f"--user-data-dir={DATEN / '.fenster'}"],
-                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                global FENSTER
+                FENSTER = subprocess.Popen([exe, f"--app={url}", "--window-size=1240,860", f"--user-data-dir={DATEN / '.fenster'}"],
+                                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return True
             except OSError:
                 continue
