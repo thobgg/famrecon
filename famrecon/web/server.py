@@ -450,7 +450,7 @@ class Handler(BaseHTTPRequestHandler):
                     server.server_close()                 # Port sofort freigeben, damit ein Nachfolger ihn nehmen kann
                     if FENSTER is not None:               # das App-Fenster hat famrecon selbst geoeffnet: zumachen, kein Restfenster
                         import time
-                        time.sleep(0.6)                   # die Antwortseite darf erst ankommen
+                        time.sleep(0.3)                   # die Antwort darf erst ankommen
                         fenster_schliessen()
                 self.close_connection = True
                 self.antwort(seite("beendet", titel=_("Beendet")))     # erst die Seite ausliefern, dann herunterfahren

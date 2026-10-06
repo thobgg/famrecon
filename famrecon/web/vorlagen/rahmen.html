@@ -26,7 +26,16 @@ $inhalt
 function rueckfrage(form, text) {
   const d = document.getElementById('rueckfrage');
   document.getElementById('rueckfrage-text').textContent = text;
-  d.onclose = () => { if (d.returnValue === 'ja') form.submit(); };
+  d.onclose = () => {
+    if (d.returnValue !== 'ja') return;
+    if (form.getAttribute('action') !== '/beenden') { form.submit(); return; }
+    // Beenden: Seite sofort leeren und im Hintergrund abschicken, damit beim Schliessen des Fensters nichts mehr aufflackert.
+    document.body.innerHTML = '';
+    document.body.style.background = '#fff';
+    fetch('/beenden', { method: 'POST' }).finally(() => {
+      setTimeout(() => { document.body.innerHTML = '<p style="padding:2rem;color:#666">' + '{{famrecon ist beendet. Dieses Fenster kann geschlossen werden.}}' + '</p>'; }, 2500);
+    });
+  };
   d.showModal();
   return false;
 }
