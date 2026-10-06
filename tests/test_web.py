@@ -124,6 +124,27 @@ class Oberflaeche(unittest.TestCase):
         self.assertTrue(server.laeuft_schon(self.port))
         self.assertFalse(server.laeuft_schon(1))
 
+    def test_gleichzeitige_schreibzugriffe(self):
+        """Doppelklick auf 'Beispielprojekt anlegen': zwei Anfragen zugleich duerfen nicht kollidieren
+        (frueher: FOREIGN KEY constraint failed / database is locked)."""
+        ergebnisse = []
+
+        def anlegen():
+            req = urllib.request.Request(f"http://127.0.0.1:{self.port}/beispiele", data=b"", method="POST")
+            try:
+                with urllib.request.urlopen(req) as r:
+                    ergebnisse.append(r.status)
+            except urllib.error.HTTPError as e:
+                ergebnisse.append(e.code)
+        faeden = [threading.Thread(target=anlegen) for _ in range(2)]
+        for f in faeden:
+            f.start()
+        for f in faeden:
+            f.join(120)
+        self.assertEqual(ergebnisse, [200, 200])
+        st, html = self.hole("/p/beispiel-falkenrath/familien?q=Falkenrath")
+        self.assertIn("Falkenrath", html)
+
     def test_beenden(self):
         srv = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
         t = threading.Thread(target=srv.serve_forever, daemon=True)
