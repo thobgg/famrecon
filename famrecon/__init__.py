@@ -1,2 +1,2 @@
 """famrecon: Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform."""
-__version__ = "0.1.4"
+__version__ = "0.1.5"
