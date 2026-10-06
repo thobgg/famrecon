@@ -74,3 +74,6 @@ button.klein { padding: .2rem .6rem; font-size: .9rem; }
 .erweitert { margin: .8rem 0; color: var(--grau); }
 .erweitert summary { cursor: pointer; font-weight: 600; }
 .erweitert label { display: flex; gap: .5rem; align-items: flex-start; max-width: 60rem; }
+dialog { border: 1px solid var(--linie); border-radius: 10px; padding: 1.2rem 1.5rem; max-width: 26rem; font: inherit; color: var(--tinte); background: #fff; }
+dialog::backdrop { background: rgba(0,0,0,.25); }
+dialog .knoepfe { margin: 1rem 0 0; display: flex; gap: .6rem; justify-content: flex-end; }

@@ -416,3 +416,9 @@ msgstr "identifiers as given"
 
 msgid "Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"
 msgstr "identifiers (field ref) as given: the same identifier is the same person"
+
+msgid "Ja"
+msgstr "Yes"
+
+msgid "Nein"
+msgstr "No"

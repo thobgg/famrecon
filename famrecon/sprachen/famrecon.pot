@@ -417,3 +417,9 @@ msgstr ""
 
 msgid "Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"
 msgstr ""
+
+msgid "Ja"
+msgstr ""
+
+msgid "Nein"
+msgstr ""

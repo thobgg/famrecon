@@ -13,12 +13,23 @@
   <nav>$projekt_nav</nav>
   <div class="rechts">
     <a class="hilfe-knopf" href="$hilfe_ziel" title="{{Hilfe zu dieser Seite}}">? {{Hilfe}}</a>
-    <form method="post" action="/beenden" onsubmit="return confirm('{{famrecon beenden? Alle Daten sind gespeichert.}}')"><button class="leise klein">{{Beenden}}</button></form>
+    <form method="post" action="/beenden" onsubmit="return rueckfrage(this, '{{famrecon beenden? Alle Daten sind gespeichert.}}')"><button class="leise klein">{{Beenden}}</button></form>
   </div>
 </header>
 <main>
 $inhalt
 </main>
 <footer>{{famrecon · Familien aus Tauf-, Ehe- und Sterberegistern · lokal, nichts verlässt diesen Rechner}}</footer>
+<dialog id="rueckfrage"><form method="dialog"><p id="rueckfrage-text"></p><p class="knoepfe"><button value="ja">{{Ja}}</button> <button value="nein" class="leise">{{Nein}}</button></p></form></dialog>
+<script>
+// Eigene Rueckfrage statt confirm(): der Browser-Dialog zeigt im App-Fenster die Adresse 127.0.0.1 an.
+function rueckfrage(form, text) {
+  const d = document.getElementById('rueckfrage');
+  document.getElementById('rueckfrage-text').textContent = text;
+  d.onclose = () => { if (d.returnValue === 'ja') form.submit(); };
+  d.showModal();
+  return false;
+}
+</script>
 </body>
 </html>

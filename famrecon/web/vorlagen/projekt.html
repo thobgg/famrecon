@@ -10,5 +10,5 @@
   <a class="knopf" href="/p/$projekt/pruefliste">{{Prüfliste}}</a>
   <a class="knopf" href="/p/$projekt/gedcom">{{GEDCOM schreiben und prüfen}}</a>
   $ged_link
-  <form method="post" action="/p/$projekt/loeschen" onsubmit="return confirm('{{Projekt samt Tabellen löschen?}}')"><button class="leise">{{Projekt löschen}}</button></form>
+  <form method="post" action="/p/$projekt/loeschen" onsubmit="return rueckfrage(this, '{{Projekt samt Tabellen löschen?}}')"><button class="leise">{{Projekt löschen}}</button></form>
 </div>
