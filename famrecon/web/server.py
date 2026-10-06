@@ -455,8 +455,11 @@ class Handler(BaseHTTPRequestHandler):
                             FENSTER.terminate()
                         except Exception:
                             pass
+                self.close_connection = True
+                self.antwort(seite("beendet", titel=_("Beendet")))     # erst die Seite ausliefern, dann herunterfahren
+                self.wfile.flush()
                 threading.Thread(target=aus, daemon=True).start()
-                return self.antwort(seite("beendet", titel=_("Beendet")))
+                return None
             if teile == ["beispiele"]:
                 beispiele_anlegen()
                 return self.weiter("/?m=" + urllib.parse.quote(_("Beispielprojekt angelegt")))
@@ -639,4 +642,6 @@ def start(port=8765, daten=None, browser=True):
     except KeyboardInterrupt:
         pass
     server.server_close()
+    import time
+    time.sleep(1.0)                      # laufende Antworten (die Beendet-Seite) noch ausliefern, bevor der Prozess endet
     print(_("beendet"))
