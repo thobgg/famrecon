@@ -398,3 +398,6 @@ msgstr "Port {port} is busy, switching to {neu}"
 
 msgid "beendet"
 msgstr "stopped"
+
+msgid "famrecon {alt} läuft noch, wird durch {neu} abgelöst"
+msgstr "famrecon {alt} is still running, replaced by {neu}"

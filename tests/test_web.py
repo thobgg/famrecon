@@ -121,8 +121,8 @@ class Oberflaeche(unittest.TestCase):
         self.assertIn('action="/beenden"', html)
         st, text = self.hole("/ping")
         self.assertTrue(text.startswith("famrecon "))
-        self.assertTrue(server.laeuft_schon(self.port))
-        self.assertFalse(server.laeuft_schon(1))
+        self.assertEqual(server.laeuft_schon(self.port), server.__version__)
+        self.assertIsNone(server.laeuft_schon(1))
 
     def test_gleichzeitige_schreibzugriffe(self):
         """Doppelklick auf 'Beispielprojekt anlegen': zwei Anfragen zugleich duerfen nicht kollidieren
@@ -154,6 +154,19 @@ class Oberflaeche(unittest.TestCase):
             self.assertIn("beendet", r.read().decode("utf-8"))
         t.join(5)
         self.assertFalse(t.is_alive())                                  # serve_forever ist zurueckgekehrt
+        srv.server_close()
+
+    def test_alte_version_abloesen(self):
+        """Nach einem Update: ein laufendes aelteres famrecon wird beendet, der Port uebernommen."""
+        from unittest import mock
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        port = srv.server_address[1]
+        with mock.patch.object(server, "__version__", "9.9.9"):          # wir sind die neuere Version
+            neu, url = server.vorbereiten(port, self.tmp.name)
+        self.assertIsNotNone(neu)
+        self.assertEqual(neu.server_address[1], port)                    # derselbe Port, der alte ist weg
+        neu.server_close()
         srv.server_close()
 
     def test_vorbereiten_port_belegt(self):

@@ -524,13 +524,30 @@ class Server(ThreadingHTTPServer):
 
 
 def laeuft_schon(port):
-    """Antwortet auf diesem Port bereits ein famrecon? Dann nur das Fenster oeffnen."""
+    """Antwortet auf diesem Port bereits ein famrecon? -> dessen Version oder None."""
     import urllib.request
     try:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/ping", timeout=1) as r:
-            return r.read().startswith(b"famrecon")
+            antwort = r.read().decode("utf-8", "replace")
+            return antwort.split(" ", 1)[1].strip() if antwort.startswith("famrecon") else None
     except Exception:
-        return False
+        return None
+
+
+def alte_version_abloesen(port, version):
+    """Nach einem Update laeuft oft noch das alte Programm: sauber beenden und den Port uebernehmen."""
+    import time
+    import urllib.request
+    print(_("famrecon {alt} läuft noch, wird durch {neu} abgelöst").format(alt=version, neu=__version__))
+    try:
+        urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{port}/beenden", data=b"", method="POST"), timeout=5).read()
+    except Exception:
+        pass
+    for _i in range(50):
+        if not laeuft_schon(port):
+            return True
+        time.sleep(0.1)
+    return False
 
 
 def protokoll_umleiten(datei):
@@ -549,7 +566,8 @@ def vorbereiten(port=8765, daten=None):
     DATEN.mkdir(parents=True, exist_ok=True)
     protokoll_umleiten(DATEN.parent / "famrecon.log" if DATEN.name == "daten" else DATEN / "famrecon.log")
     # Erst fragen, dann binden: unter Windows laesst SO_REUSEADDR ein zweites Binden desselben Ports zu.
-    if laeuft_schon(port):
+    version = laeuft_schon(port)
+    if version and (version == __version__ or not alte_version_abloesen(port, version)):
         print(_("famrecon läuft bereits auf {url}, Fenster wird geöffnet").format(url=f"http://127.0.0.1:{port}/"))
         return None, f"http://127.0.0.1:{port}/"
     try:

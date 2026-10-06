@@ -399,3 +399,6 @@ msgstr ""
 
 msgid "beendet"
 msgstr ""
+
+msgid "famrecon {alt} läuft noch, wird durch {neu} abgelöst"
+msgstr ""
