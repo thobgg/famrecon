@@ -17,7 +17,8 @@ daten = [(str(wurzel / "famrecon" / p), f"famrecon/{Path(p).parent}") for p in
 daten += [(str(wurzel / "beispiel" / p), "beispiel") for p in
           ("falkenrath-taufen.csv", "falkenrath-ehen.csv", "falkenrath-tote.csv")]
 a = Analysis([str(wurzel / "werkzeuge" / "start.py")], pathex=[str(wurzel)], datas=daten,
-             hiddenimports=["famrecon.web.server", "openpyxl"], noarchive=False)
+             hiddenimports=["famrecon.web.server", "openpyxl"], noarchive=False,
+             excludes=["PIL"])  # Pillow dient nur dem Symbol beim Bau; openpyxl kommt ohne aus (sonst +6 MB)
 pyz = PYZ(a.pure)
 mac = sys.platform == "darwin"
 symbol = str(wurzel / "werkzeuge" / ("famrecon.ico" if sys.platform.startswith("win") else "famrecon-512.png"))
