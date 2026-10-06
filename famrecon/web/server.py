@@ -64,6 +64,7 @@ SCHREIBSPERRE = threading.Lock()      # bauen, verknuepfen, Beispiele, Entscheid
 
 
 def seite(name, **werte):
+    """HTML einer Seite: Vorlage fuellen ($-Platzhalter), {{Texte}} uebersetzen, Rahmen mit Projektleiste und Hilfe-Ziel drumherum."""
     kopf = (VORLAGEN / "rahmen.html").read_text(encoding="utf-8")
     roh = (VORLAGEN / f"{name}.html").read_text(encoding="utf-8")
     ziel = f"/hilfe?p={werte.get('projekt', '')}#{name}" if werte.get("projekt") else f"/hilfe#{name}"
@@ -76,10 +77,12 @@ def seite(name, **werte):
 
 
 def projekte():
+    """Namen aller Projektordner im Datenordner."""
     return sorted(p.name for p in DATEN.iterdir() if p.is_dir() and not p.name.startswith(".")) if DATEN.exists() else []
 
 
 class Projekt:
+    """Ein Projekt = ein Ordner unter daten/: Tabellen, zuordnung.toml, projekt.db, projekt.ged."""
     def __init__(self, name):
         if not re.fullmatch(r"[\w\-]+", name):
             raise ValueError(name)
@@ -88,6 +91,7 @@ class Projekt:
         self.toml, self.dbpfad, self.ged = self.ordner / "zuordnung.toml", self.ordner / "projekt.db", self.ordner / "projekt.ged"
 
     def tabellen(self):
+        """Hochgeladene Tabellen des Projekts (xlsx, xlsm, csv, tsv)."""
         return sorted(p for p in self.ordner.iterdir() if p.suffix.lower() in (".xlsx", ".xlsm", ".csv", ".tsv"))
 
     def con(self):
@@ -98,6 +102,7 @@ class Projekt:
         return c
 
     def schliessen(self):
+        """Alle Verbindungen dieser Anfrage schliessen (Windows: sonst bleibt die Datei gesperrt)."""
         for c in getattr(self, "_cons", []):
             try:
                 c.close()
@@ -106,6 +111,7 @@ class Projekt:
         self._cons = []
 
     def stand(self):
+        """Stand der sechs Schritte fuer die Projektseite: Tabellen, Zuordnung, Eintraege, Nennungen, Identitaeten, Familien, Stufen, offene Faelle, Kennungen-Schalter."""
         st = dict(tabellen=[t.name for t in self.tabellen()], zuordnung=self.toml.exists(), db=self.dbpfad.exists(),
                   ged=self.ged.exists(), eintraege={}, personen=0, identitaeten=0, familien=0, stufen={}, offen=0)
         if st["db"]:
@@ -123,6 +129,7 @@ class Projekt:
 
 # ------------------------------------------------------------------ Seiten
 def s_start(meldung=""):
+    """Startseite: Projektliste, neues Projekt, Beispielprojekt."""
     zeilen = "".join(f'<li><a href="/p/{h(n)}">{h(n)}</a></li>' for n in projekte()) or "<li>" + _("noch keines") + "</li>"
     return seite("start", projekte=zeilen, meldung=h(meldung), daten=h(str(DATEN.resolve())))
 
@@ -152,6 +159,7 @@ def beispiele_anlegen():
 
 
 def s_projekt(pr, meldung=""):
+    """Projektseite: die sechs Schritte mit Stand und Haken, Knoepfe."""
     st = pr.stand()
     schritte = []
     schritte.append((_("Tabellen"), ", ".join(st["tabellen"]) or _("keine hochgeladen"), bool(st["tabellen"])))
@@ -218,6 +226,7 @@ def s_zuordnung(pr, wahl=None):
 
 
 def zuordnung_speichern(pr, form):
+    """Formular der Zuordnungsseite -> zuordnung.toml (je Blatt Register und Spalten, allgemein: Leerwoerter, Kennungen-Schalter)."""
     n, z = 0, ["# Spaltenzuordnung, in der Oberflaeche bestaetigt", "", "[allgemein]",
                "leer = [" + ", ".join(f'"{w.strip()}"' for w in form.get("leer", "").split(",") if w.strip()) + "]",
                "kennungen = " + ("true" if form.get("kennungen") else "false") + "   # Feld ref als Vorgabe (Erweitert)"]
@@ -234,6 +243,7 @@ def zuordnung_speichern(pr, form):
 
 
 def s_personen(pr, q, register):
+    """Personenliste: alle Nennungen mit Suche, Registerfilter, hoechstens 500."""
     con = pr.con()
     sql = ("SELECT e.register, e.jahr, p.id, p.pfad, p.name, p.vorname, p.geschlecht, p.beruf, p.stand, p.unsicher, p.unbekannt, p.totgeburt, p.verstorben, "
            "p.geburt_jahr, p.geburt_praefix, p.roh, z.ident, z.stufe FROM person p JOIN eintrag e ON e.id=p.eintrag LEFT JOIN zuordnung z ON z.person=p.id WHERE 1=1")
@@ -255,9 +265,11 @@ def s_personen(pr, q, register):
 
 
 def s_familien(pr, q):
+    """Familienansicht: je Familie Mann, Frau, Kinder; Suche; hoechstens 300."""
     con = pr.con()
 
     def wer(i):
+        """Eine Identitaet als HTML-Zeile mit Namen, Jahren und Nummer."""
         if not i:
             return "—"
         r = con.execute("SELECT * FROM identitaet WHERE id=?", (i,)).fetchone()
@@ -283,6 +295,7 @@ def s_familien(pr, q):
 
 
 def s_pruefliste(pr, alle=False):
+    """Pruefliste: unsichere Zuordnungen und neue Personen mit Kandidaten, je Fall die Karten der Kandidaten mit Belegen und Knoepfen."""
     con = pr.con()
     sql = ("SELECT z.*, p.pfad, p.roh, e.register, e.jahr, i.name iname, i.vorname ivorname, i.geb_jahr, i.tod_jahr, i.id iid, en.art hart, en.ziel hziel "
            "FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag JOIN quelle q ON q.id=e.quelle JOIN identitaet i ON i.id=z.ident "
@@ -290,6 +303,7 @@ def s_pruefliste(pr, alle=False):
            "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if alle else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]')) ORDER BY (en.art IS NOT NULL), e.jahr")
 
     def belege(ident):
+        """Alle Nennungen einer Identitaet als Liste (Register, Jahr, Rolle, Rohtext)."""
         out = []
         for r in con.execute("SELECT e.register, e.jahr, p.pfad, p.roh, p.id FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag WHERE z.ident=? ORDER BY e.jahr", (ident,)):
             out.append(f'<li><small>{r["register"]} {r["jahr"]} · {r["pfad"]}</small> {h(r["roh"] or "")} <small>#{r["id"]}</small></li>')
@@ -314,6 +328,7 @@ def s_pruefliste(pr, alle=False):
 
 
 def s_gedcom(pr):
+    """GEDCOM schreiben, sofort gegen die Eintraege abgleichen, Ergebnis zeigen."""
     con = pr.con()
     st = gedcom.schreiben(con, pr.ged)
     n, fehler = pruefe.pruefen(con, pr.ged)
@@ -352,10 +367,13 @@ def formular(body, ctype):
 
 
 class Handler(BaseHTTPRequestHandler):
+    """Eine Anfrage: GET liefert Seiten und Dateien, POST aendert (Projekt anlegen, hochladen, Zuordnung, bauen, Entscheidungen, loeschen, beenden). Schreibende Anfragen laufen nacheinander (SCHREIBSPERRE)."""
     def log_message(self, fmt, *args):
+        """Keine Zugriffsmeldungen auf der Konsole."""
         pass
 
     def antwort(self, text, typ="text/html; charset=utf-8", code=200):
+        """HTTP-Antwort mit Inhalt, Typ und Code."""
         daten = text.encode("utf-8") if isinstance(text, str) else text
         self.send_response(code)
         self.send_header("Content-Type", typ)
@@ -364,6 +382,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(daten)
 
     def weiter(self, ziel):
+        """Umleitung (303) auf eine andere Seite."""
         self.send_response(303)
         self.send_header("Location", ziel)
         self.end_headers()
@@ -425,6 +444,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if teile == ["beenden"]:
                 def aus(server=self.server):
+                    """Server anhalten und Port freigeben, damit ein Nachfolger ihn uebernehmen kann."""
                     server.shutdown()
                     server.server_close()                 # Port sofort freigeben, damit ein Nachfolger ihn nehmen kann
                 threading.Thread(target=aus, daemon=True).start()
@@ -595,6 +615,7 @@ def vorbereiten(port=8765, daten=None):
 
 
 def start(port=8765, daten=None, browser=True):
+    """Oberflaeche starten: Datenordner, Protokoll, Server binden (oder laufendes famrecon abloesen), Fenster oeffnen, bis Beenden."""
     server, url = vorbereiten(port, daten)
     if server is None:
         if browser:

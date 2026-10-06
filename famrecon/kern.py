@@ -22,6 +22,7 @@ GESCHLECHT_WERT = {"m": "M", "f": "F", "w": "F", "männlich": "M", "weiblich": "
 
 
 def pfade(register):
+    """Alle Rollenpfade eines Registers: Hauptrollen und ihre Unterrollen (kind, vater, mutter, mutter_vater ...)."""
     out = []
     for h in katalog.HAUPTROLLEN[register]:
         out.append(h)
@@ -32,6 +33,7 @@ def pfade(register):
 def person_aus_feldern(pfad, felder, register):
     """felder: {feldname: (wert, roh)} des Eintrags -> dict oder None, wenn nichts da ist."""
     def w(merkmal):
+        """Wert eines Merkmals dieser Rolle aus den Feldern, z. B. w('vorname') -> 'kind_vorname'."""
         return (felder.get(f"{pfad}_{merkmal}") or (None, None))[0]
     roh = []
     p = normalform.person_zerlegen((felder.get(pfad) or (None, None))[0])
@@ -135,6 +137,7 @@ def personen_bauen(con):
 
 
 def zeigen(con, register=None, limit=50):
+    """Nennungen in Normalform als Tabelle auf der Kommandozeile (`famrecon personen`)."""
     sql = ("SELECT e.register, e.jahr, p.pfad, p.name, p.vorname, p.geschlecht, p.beruf, p.stand, p.geburtsname, "
            "p.verstorben, p.unsicher, p.unbekannt, p.totgeburt, p.alter_tage, p.geburt_jahr, p.geburt_praefix, p.name_schl "
            "FROM person p JOIN eintrag e ON e.id=p.eintrag" + (" WHERE e.register=?" if register else "") +

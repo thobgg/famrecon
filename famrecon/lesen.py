@@ -23,6 +23,7 @@ TRENNER = " | "
 
 
 def zuordnung_laden(pfad):
+    """TOML-Zuordnung lesen; Spaltenbereiche wie 'S-AN' werden zu Indexlisten aufgeloest, `leer` bekommt einen Standard."""
     with open(pfad, "rb") as f:
         z = tomllib.load(f)
     z.setdefault("allgemein", {}).setdefault("leer", [])
@@ -64,6 +65,7 @@ def bereinigen(zelle, leerwoerter):
 
 
 def jahr_aus(wert):
+    """Jahr (vier Ziffern am Anfang) aus einem Datumswert oder None."""
     m = re.match(r"(\d{4})", wert or "")
     return int(m.group(1)) if m else None
 

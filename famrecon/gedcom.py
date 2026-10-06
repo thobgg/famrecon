@@ -23,6 +23,7 @@ MON = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
 
 
 def datum(j, m=None, t=None, praefix=None):
+    """GEDCOM-Datum aus Jahr, Monat, Tag und Praefix (ABT, BEF, CAL): '31 AUG 1778', 'AUG 1778', 'CAL 1750'."""
     if not j:
         return None
     s = f"{t} " if t else ""
@@ -49,6 +50,7 @@ def z(stufe, tag, wert=None):
 
 
 def schreiben(con, ziel):
+    """Die ganze GEDCOM aus der Projektdatei: Kopf, Quellen, je Identitaet ein INDI mit Namen, Ereignissen, Berufen, Notizen und Fundstellen, je Familie ein FAM. Gibt Zaehler zurueck."""
     quellen = {q["id"]: dict(q) for q in con.execute("SELECT * FROM quelle")}
     eintraege = {e["id"]: dict(e) for e in con.execute("SELECT * FROM eintrag")}
     felder = {}

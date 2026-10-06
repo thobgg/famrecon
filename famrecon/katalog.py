@@ -168,6 +168,7 @@ def basisname(name):
 
 
 def bekannt(register, name):
+    """Ist `name` (auch mit Nachsilbe _kb/_praefix) ein Feld dieses Registers?"""
     return basisname(name)[0] in felder(register)
 
 

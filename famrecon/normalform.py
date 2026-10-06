@@ -85,6 +85,7 @@ def partikel_umsetzen(p):
 
 
 def geschlechtswort_entfernen(t):
+    """'Mädchen - totgeboren' -> '': Geschlechtswoerter aus einer Namenszelle streichen, Rest bereinigen."""
     for wort in GESCHLECHT_WORT:
         t = re.sub(rf"\b{wort}\b", "", t, flags=re.I)
     return re.sub(r"[\s\-–,;]+", " ", t).strip(" -–,;") or ""
@@ -196,6 +197,7 @@ def tage_seit(jmt):
 
 
 def datum_minus_tage(jmt, tage):
+    """Kalenderdatum `tage` vor dem Datum (Jahr, Monat, Tag): Geburt aus Sterbedatum und Alter."""
     import datetime as dt
     return dt.date.fromordinal(tage_seit(jmt) - tage)
 
@@ -301,6 +303,7 @@ wilhelmine augusta auguste karoline caroline charlotte amalia amalie philippina 
 
 
 def geschlecht_aus_vorname(vorname):
+    """M/F aus bekannten Vornamen (Listen MAENNLICH/WEIBLICH), sonst None."""
     if not vorname:
         return None
     for w in re.split(r"[\s-]+", vorname.lower()):
@@ -313,6 +316,7 @@ def geschlecht_aus_vorname(vorname):
 
 
 def levenshtein(a, b):
+    """Schreibdistanz zweier Strings (Einfuegen, Loeschen, Ersetzen), ohne Gross/Klein."""
     a, b = (a or "").lower(), (b or "").lower()
     if a == b:
         return 0

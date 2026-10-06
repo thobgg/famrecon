@@ -32,6 +32,7 @@ REGISTER_WORTE = {
 
 
 def normal(text):
+    """Ueberschrift vergleichbar machen: klein, ohne Satzzeichen, ss statt ß, 'v. Mann' -> 'vormann'."""
     t = str(text or "").lower().replace("ß", "ss").replace("_", " ")
     t = re.sub(r"[^\wäöü]+", " ", t)
     t = re.sub(r"\bv (mann|ehemann)\b", "vormann", t)
@@ -45,6 +46,7 @@ def ist_snake(text):
 
 
 def register_erkennen(blattname, kopf, datei=""):
+    """Welches Register ist das Blatt? Punkte fuer Registerwoerter in Blattname, Dateiname und Ueberschriften; None, wenn nichts passt."""
     tokens = normal(blattname).split() + normal(str(datei)).split()
     tokens += [t for _, k in kopf for t in normal(k).split()]
     punkte = {}
@@ -158,6 +160,7 @@ def feld_raten(ueberschrift, register, kontextrolle, felder):
 
 
 def beispiele(spalte, n=3):
+    """Bis zu n verschiedene Beispielwerte einer Spalte (gekuerzt) und die Zahl der gefuellten Zellen."""
     werte = [str(v).replace("\n", " ") for v in spalte if v not in (None, "")]
     seen, out = set(), []
     for w in werte:
@@ -169,6 +172,7 @@ def beispiele(spalte, n=3):
 
 
 def stufe(punkte, art, werte):
+    """Sicherheitsgrad eines Vorschlags: unsicher bei Datums-/Zahlfeld mit unpassenden Werten, sonst nach Punkten der Ueberschrift."""
     if art == "datum" and werte and not all(DATUM.match(w) for w in werte):
         return UNSICHER
     if art == "zahl" and werte and not all(re.match(r"^\d+$", w) for w in werte):
@@ -223,6 +227,7 @@ def blatt_zuordnen(blattname, kopf, zeilen, register):
     lfd = [(b, s) for b, s in out if s["feld"] == "lfd_nr"]
     if len(lfd) > 1:
         def maxwert(s):
+            """Groesste Zahl in den Beispielwerten (fuer die Unterscheidung lfd_nr / lfd_nr_gesamt)."""
             try: return max(int(w) for w in s["werte"])
             except ValueError: return 0
         b, s = max(lfd, key=lambda bs: maxwert(bs[1]))
@@ -257,6 +262,7 @@ def toml_text(datei, blaetter, mit_datei=False):
 
 
 def vorschlagen(datei):
+    """Fuer jedes Blatt einer Datei: Register, Spaltenvorschlaege, Leerwoerter. -> [(blatt, register, zuordnung, leerwoerter, datei), ...]"""
     blaetter = []
     for blatt, _, kopf in lesen.blaetter(datei):
         zeilen = [r for _, r in lesen.zeilen_lesen(datei, blatt)][:200]

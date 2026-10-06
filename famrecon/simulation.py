@@ -46,10 +46,12 @@ def lesen(pfad):
 
 
 def sub(knoten, tag):
+    """Kindknoten eines GEDCOM-Knotens mit diesem Tag."""
     return [k for k in knoten["kinder"] if k["tag"] == tag]
 
 
 def wert(knoten, *pfad):
+    """Wert entlang eines Tag-Pfads (z. B. 'BIRT', 'DATE') oder None."""
     for tag in pfad:
         k = sub(knoten, tag)
         if not k:
@@ -77,6 +79,7 @@ def datum_iso(text):
 
 
 def datum_obj(text):
+    """Vollstaendiges Datum als (Jahr, Monat, Tag) oder None, wenn Monat oder Tag fehlen."""
     m = re.match(r"(\d{4})-(\d{2})-(\d{2})$", datum_iso(text) or "")
     if not m or "00" in (m.group(2), m.group(3)):
         return None
@@ -109,6 +112,7 @@ class Zufall:
         self.s = staerke
 
     def vorname(self, vn):
+        """Mit Wahrscheinlichkeit `staerke`: nur der Rufname oder eine Schreibvariante."""
         if not vn or self.r.random() > self.s:
             return vn
         teile = vn.split()
@@ -118,6 +122,7 @@ class Zufall:
         return (self.r.choice(v) + vn[len(teile[0]):]) if v else vn
 
     def nachname(self, n, weiblich=False):
+        """Mit Wahrscheinlichkeit `staerke`: Endung '(in)' bei Frauen, 'ckh' oder 'ey' als Schreibvariante."""
         if not n or self.r.random() > self.s:
             return n
         if weiblich and self.r.random() < 0.5:
@@ -125,13 +130,16 @@ class Zufall:
         return re.sub(r"(ck|k)$", "ckh", n) if self.r.random() < 0.3 else n.replace("ei", "ey", 1) if "ei" in n else n
 
     def weg(self):
+        """Soll ein Feld fehlen? (Luecke mit 40 % der Rauschstaerke)"""
         return self.r.random() < self.s * 0.4
 
 
 def register(indis, fams, rauschen=0.0, saat=1):
+    """Aus Personen und Familien einer GEDCOM die drei Register als Zeilenlisten: je Taufe, Trauung, Begraebnis eine Zeile im Kirchenbuchstil, mit versteckten Ref-Spalten (Kennung jeder genannten Person). rauschen 0..1 streut Schreibvarianten ein."""
     z = Zufall(saat, rauschen)
 
     def name(x, kb=False):
+        """(Nachname, Vorname) einer Person; kb=True in Kirchenbuchschreibung mit Rauschen."""
         i = indis.get(x)
         if not i:
             return None, None
@@ -155,9 +163,11 @@ def register(indis, fams, rauschen=0.0, saat=1):
         return ", ".join(t for t in teile if t)
 
     def beruf(x):
+        """Beruf (OCCU) einer Person oder None."""
         return wert(indis[x], "OCCU") if x and x in indis else None
 
     def eltern(x):
+        """(Vater, Mutter, Familie) einer Person aus FAMC oder (None, None, None)."""
         famc = wert(indis[x], "FAMC")
         f = fams.get(famc) if famc else None
         return (wert(f, "HUSB"), wert(f, "WIFE"), f) if f else (None, None, None)
@@ -218,6 +228,7 @@ def register(indis, fams, rauschen=0.0, saat=1):
 
 
 def schreiben(ziel, taufen, ehen, tote):
+    """Die drei Register als Mappe mit Blaettern Taufen, Ehen, Tote; Zeilen nach Datum sortiert."""
     wb = openpyxl.Workbook()
     for i, (titel, zeilen) in enumerate((("Taufen", taufen), ("Ehen", ehen), ("Tote", tote))):
         ws = wb.active if i == 0 else wb.create_sheet()
@@ -233,6 +244,7 @@ def schreiben(ziel, taufen, ehen, tote):
 
 
 def simulieren(ged, ziel, rauschen=0.0, saat=1):
+    """GEDCOM -> Register-Mappe. Gibt (Zaehler je Register, Personen, Familien) zurueck."""
     indis, fams = lesen(ged)
     taufen, ehen, tote = register(indis, fams, rauschen, saat)
     return schreiben(ziel, taufen, ehen, tote), len(indis), len(fams)

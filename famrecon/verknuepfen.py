@@ -1,53 +1,77 @@
-"""Verknuepfen: aus Personen je Eintrag die realen Personen und Familien bilden.
+"""Verknuepfen: aus den Nennungen je Eintrag die realen Personen (Identitaeten) und Familien bilden.
 
-    famrecon verknuepfen daten/projekt.db
-    famrecon familien daten/projekt.db
-    famrecon pruefliste daten/projekt.db
+    famrecon verknuepfen daten/projekt.db        Lauf; Ergebnis in identitaet, familie, kind, zuordnung
+    famrecon familien daten/projekt.db           Familien mit Kindern zeigen
+    famrecon pruefliste daten/projekt.db         offene Faelle zeigen
 
-Die Eintraege laufen chronologisch durch, alle drei Register gemischt, weil
-jeder Eintrag die spaeteren ankert: Die Trauung von 1768 traegt die Taufe von
-1770 und die Trauung des Sohnes von 1795.
+DAS SCHEMA (so liest man dieses Modul)
+======================================
 
-    Taufe   Vater+Mutter -> Elternfamilie suchen (Vater: Name+Vorname, Mutter
-            bestaetigt oder widerspricht), sonst neu. Kind immer neu.
-    Trauung Braeutigam und Braut suchen (Name, Vorname, Alter, genannte Eltern),
-            sonst neu; genannte Eltern als Elternfamilie, voriger Mann als Vorehe.
-    Tod     Verstorbenen suchen (Name, Vorname, Geburt aus Alter, Vater, Ehepartner,
-            Sterbedatum aus einem Rueckverweis), mit Vetos bei ledig/verheiratet.
+  Eingabe   person: je Eintrag und Rolle eine Nennung in Normalform (kern.py), mit name, vorname,
+            name_schl (Koelner Phonetik), vorname_kanon (Einheitsform), geb (Jahr/Monat/Tag, bei
+            Toten aus dem Alter gerechnet), stand, ref (Kennung), pfad (kind, vater, braut_vater ...).
+  Zustand   Bestand: Identitaeten und Familien im Speicher, indiziert nach Lautschluessel des Nachnamens.
+  Ablauf    alle Eintraege CHRONOLOGISCH, die drei Register gemischt, je Eintrag ein Schritt:
 
-Punkte und Vetos stammen aus der Hollerbach-Pipeline (v47) von Thomas; dort an
-2.800 Eintraegen eingestellt. Jede Entscheidung bekommt eine Stufe:
+    Taufe       1. familie_finden(vater, mutter): gibt es eine Familie, deren Mann zum genannten Vater
+                   passt und deren Frau der Mutter nicht widerspricht? Zwei gleich gute -> keine.
+                2. sonst Vater und Mutter einzeln suchen (finde) oder neu anlegen, neue Familie "eltern".
+                3. Kind: immer neue Identitaet, Geburt = Geburtsdatum, sonst Taufdatum; Sterbedatum aus
+                   einem Rueckverweis der Taufzeile gleich mit. Mit Kennung: an die vorgegebene Person.
+    Trauung     Braeutigam und Braut je mit finde(...) suchen (Anker: Vorname, Alter, genannte Eltern,
+                Heiratsalter); genannte Eltern werden ihre Elternfamilie (eltern_anbinden), ein voriger
+                Ehepartner eine Vorehe. Dann Familie "ehe" anlegen oder eine "eltern"-Familie des Paares
+                (Kinder vor der Trauung) zur Ehe machen.
+    Begraebnis  Verstorbenen suchen (finde mit raten=True: bei Gleichstand den Besten, Stufe unsicher);
+                Anker: Vorname, Geburt aus dem Alter, Vater, Ehepartner, Sterbedatum aus Rueckverweis.
+                Dann die Nachpruefungen: Vetos (ledig/verheiratet), Kind ohne Anker -> eigene Person.
+                Genannter Ehepartner wird gesucht oder angelegt, genannte Eltern angebunden.
 
-    sicher          ein Anker ueber den Namen hinaus (Datum, Eltern, Partner) und kein naher Zweiter
-    wahrscheinlich  Punkte ueber der Schwelle, kein naher Zweiter
-    unsicher        Punkte ueber der Schwelle, aber ein Zweiter liegt nah -> Pruefliste
-    neu             kein Kandidat
+  Bewertung person_punkte(i, p): Punkte fuer "Nennung p ist Identitaet i" oder None (ausgeschlossen).
+            Ausschluss: Geschlecht widerspricht; Alter ausserhalb des Fensters der Rolle; Lebenslauf
+            (geboren nach dem ersten Auftreten als Erwachsener); Vorname widerspricht (0 Punkte);
+            errechnete und belegte Geburt mehr als MAX_GEB_DIFF Jahre auseinander.
+            Punkte: siehe die Konstanten unten; die Gruende werden als Klartext mitgefuehrt.
+  Entscheidung entscheiden(kandidaten, schwelle) -> Stufe:
+            sicher          ein Anker ueber den Namen hinaus und kein Zweiter innerhalb ABSTAND_SICHER
+            wahrscheinlich  ueber der Schwelle, kein Zweiter innerhalb ABSTAND_KLAR
+            unsicher        ueber der Schwelle, aber ein Zweiter liegt naeher als ABSTAND_KLAR
+            neu             kein Kandidat ueber der Schwelle
+            vorgabe         eine Kennung (Feld ref) hat entschieden
+  Vorsicht  Gleichstand bei Eltern und Brautleuten: NICHT raten, eigene Person, Kandidaten in die
+            Pruefliste (Stufe neu mit Alternativen). Begraebnis eines Kindes nur mit Anker an eine
+            Taufe. Mutter mit widersprechendem Vornamen: Veto fuer diese Familie. Vetos bei einem
+            Kandidaten mit Anker machen ihn unsicher statt ihn zu verwerfen.
+  Mensch    entscheidung: Urteile aus der Pruefliste, an der Tabellenzeile festgemacht (Datei, Blatt,
+            Zeile, Rolle), ueberleben jeden Lauf und gehen der Rechnung vor (von_hand).
+            Kennungen (Einstellung kennungen): gleiche Kennung = dieselbe Person, Widerspruch -> Pruefliste.
+  Ausgabe   schreiben(): Tabellen identitaet, familie, kind, zuordnung (je Nennung: Identitaet, Stufe,
+            Punkte, Grund, Alternativen fuer die Pruefliste). Zuletzt familien_zusammenlegen().
 
-    vorgabe         Kennung aus der Tabelle (Feld ref) hat entschieden, Experten-Schalter "kennungen"
-
-Nichts hier ist endgueltig: Die Pruefliste legt die unsicheren Faelle vor,
-und eine Entscheidung von Hand ueberschreibt die Rechnung beim naechsten Lauf.
-
-Kennungen als Vorgabe (Einstellung `kennungen`, Zuordnung > Erweitert): Autoren, die ihre
-Personen schon nummeriert haben, geben die Nummer im Feld `ref` mit. Gleiche Kennung heisst
-dann dieselbe Person, verschiedene Kennungen werden nie zusammengelegt. Spricht die Rechnung
-deutlich fuer eine andere Person, wird der Fall "unsicher" und landet in der Pruefliste.
+Die Punkte und Vetos stammen aus einer Vorgaenger-Pipeline, die an rund 2.800 echten Eintraegen
+eingestellt wurde, und sind seither an zwei handgepruefte Ortsfamilienbuecher gemessen
+(Praezision und Vollstaendigkeit ueber 0,9; Kinder zu ueber 98 % bei den richtigen Eltern).
+Jede Aenderung an Regeln wird gegen diese Bestaende und gegen beispiel/falkenrath.ged gemessen,
+bevor sie bleibt (tests/test_messung.py haelt die Untergrenzen).
 """
 import json
 
 from . import normalform as nf
 
-P_VORNAME, P_VORNAME_TEIL = 100, 70
-P_GEB_EXAKT, P_GEB_JAHR, P_GEB_NAH = 100, 50, 30
-P_VATER, P_MUTTER, P_PARTNER, P_TOD_RV = 30, 50, 50, 200
-P_NAME_EXAKT = 20
-SCHWELLE, SCHWELLE_TOD, SCHWELLE_NIEDRIG = 100, 80, 50
-ABSTAND_SICHER, ABSTAND_KLAR = 50, 30
-MAX_GEB_DIFF = 5            # Jahre zwischen gerechneter und belegter Geburt
-ALTER_VATER = (16, 75)
+# ---------------------------------------------------------------- Stellschrauben
+# Alle Zahlen, an denen die Verknuepfung haengt. Mehr sollen es nicht werden: Was sich damit nicht
+# ausdruecken laesst, ist ein Sonderfall und gehoert in die Pruefliste, nicht in eine neue Regel.
+P_VORNAME, P_VORNAME_TEIL = 100, 70      # Vorname gleich / teilweise gleich (Details: normalform.vornamen_punkte)
+P_GEB_EXAKT, P_GEB_JAHR, P_GEB_NAH = 100, 50, 30   # Geburtsdatum exakt / Jahr gleich / Jahr bis MAX_GEB_DIFF daneben
+P_VATER, P_MUTTER, P_PARTNER, P_TOD_RV = 30, 50, 50, 200   # genannter Vater, Mutter, Ehepartner passt; Sterbedatum = Rueckverweis
+P_NAME_EXAKT = 20                        # Nachname buchstabengleich (nicht nur lautgleich)
+SCHWELLE, SCHWELLE_TOD, SCHWELLE_NIEDRIG = 100, 80, 50   # Mindestpunkte: allgemein / Verstorbene / Partner und Vorehen
+ABSTAND_SICHER, ABSTAND_KLAR = 50, 30    # Vorsprung vor dem Zweiten: ab 50 "sicher", unter 30 "unsicher" (Gleichstand)
+MAX_GEB_DIFF = 5                         # Jahre zwischen gerechneter (Alter) und belegter Geburt, sonst nicht dieselbe Person
+ALTER_VATER = (16, 75)                   # plausibles Alter in der Rolle beim Ereignis; ausserhalb: ausgeschlossen
 ALTER_MUTTER = (15, 50)
 ALTER_EHE = (14, 80)
-MAX_KINDERSPANNE = 22
+MAX_KINDERSPANNE = 22                    # Jahre zwischen erstem und letztem Kind einer Familie
 
 
 class Bestand:
@@ -61,6 +85,7 @@ class Bestand:
         self.next_i = self.next_f = 1
 
     def neu_ident(self, p, pfad=None):
+        """Neue Identitaet aus einer Nennung: Geburtsname wird Hauptname, der genannte Name dann Ehename; Lautschluessel und Vornamensform gleich mit; in die Namensindizes eintragen."""
         i = dict(id=self.next_i, geschlecht=p.get("geschlecht"), name=p.get("geburtsname") or p.get("name"),
                  vorname=p.get("vorname"), geburtsname=p.get("geburtsname"),
                  ehename=p.get("name") if p.get("geburtsname") else None, unbekannt=int(bool(p.get("unbekannt"))),
@@ -92,6 +117,7 @@ class Bestand:
         self._index(i)
 
     def neu_fam(self, mann=None, frau=None, art="ehe", trauung=None, eintrag=None):
+        """Neue Familie (art: ehe = Traueintrag, eltern = nur aus Taufen/Toden erschlossen); Mann und Frau in fams_von eintragen."""
         f = dict(id=self.next_f, mann=mann, frau=frau, art=art, tr=trauung, eintrag=eintrag, kinder=[])
         self.next_f += 1
         self.fams[f["id"]] = f
@@ -101,15 +127,18 @@ class Bestand:
         return f
 
     def partner_setzen(self, f, rolle, ident):
+        """Fehlenden Partner (NN-Frau, spaeter genannter Mann) in eine bestehende Familie setzen."""
         f[rolle] = ident
         self.fams_von.setdefault(ident, []).append(f["id"])
 
     def kind_setzen(self, f, ident):
+        """Kind in die Familie haengen und famc der Identitaet setzen (eine Elternfamilie je Person)."""
         if ident not in f["kinder"]:
             f["kinder"].append(ident)
         self.idents[ident]["famc"] = f["id"]
 
     def kandidaten_name(self, name, schl, geschlecht=None):
+        """Alle Identitaeten mit lautgleichem Nachnamen, dazu kleine Schreibvarianten (gleicher Anfang, aehnliche Laenge); Geschlecht muss passen, wenn beides bekannt."""
         ids = set(self.by_schl.get(schl or nf.koelner(name), []))
         # kleine Schreibdistanz ohne gleichen Schluessel (Bindermann/Bindemann): nur gleicher Anfang, aehnliche Laenge
         if name and len(name) >= 5:
@@ -144,6 +173,7 @@ class Bestand:
         return bool({fam["mann"], fam["frau"]} & nach)
 
     def geb_jahr(self, i):
+        """Geburtsjahr der Identitaet oder None."""
         return i["geb"][0] if i["geb"] else None
 
 
@@ -272,6 +302,7 @@ def entscheiden(kandidaten, schwelle):
 
 # ------------------------------------------------------------- Durchlauf
 def lade(con):
+    """Alle Eintraege mit ihren Feldern und Nennungen aus der Projektdatei, chronologisch sortiert (Jahr, Monat, Tag; bei gleichem Datum Trauung vor Taufe vor Tod). Fehlende Monate/Tage zaehlen als Jahresmitte."""
     eintraege = {}
     for e in con.execute("SELECT id, register, jahr, monat, tag FROM eintrag"):
         eintraege[e["id"]] = dict(e) | {"personen": {}, "felder": {}}
@@ -304,6 +335,7 @@ def verknuepfen(con, kennungen=None):
     ident_von_person = {}             # fuer Entscheidungen "gleich wie Nennung X"
 
     def merke(p, i, stufe="neu", punkte=0, grund="", alt=None):
+        """Zuordnung festhalten: Nennung p gehoert zu Identitaet i (Stufe, Punkte, Grund, Alternativen); Kennung und erstes Erwachsenenjahr der Identitaet nachziehen."""
         if p and i:
             zuordnungen.append((p["id"], i["id"], stufe, punkte, grund, json.dumps(alt or [], ensure_ascii=False)))
             i["pfade"].append((p["eintrag"], p["pfad"]))
@@ -367,6 +399,7 @@ def verknuepfen(con, kennungen=None):
         return kand, ergebnis
 
     def person_oder_neu(p, jahr, geschlecht=None, schwelle=SCHWELLE, raten=False, **ctx):
+        """Nennung suchen (finde) oder neue Identitaet anlegen; die Zuordnung wird in jedem Fall gemerkt."""
         if not p:
             return None
         kand, (i, stufe, punkte, grund, alt) = finde(p, jahr, geschlecht, schwelle, raten, **ctx)
@@ -454,9 +487,10 @@ def verknuepfen(con, kennungen=None):
             return f
         return None
 
+    # ---- der Durchlauf: ein Eintrag nach dem anderen, chronologisch, alle Register gemischt
     for e in lade(con):
         P, jahr = e["personen"], e["jahr"] or 0
-        if e["register"] == "taufe":
+        if e["register"] == "taufe":                      # Taufe: Elternfamilie finden oder anlegen, Kind einhaengen
             vater_p, mutter_p, kind_p = P.get("vater"), P.get("mutter"), P.get("kind")
             f = familie_finden(vater_p, mutter_p, jahr)
             if f is None:
@@ -483,7 +517,7 @@ def verknuepfen(con, kennungen=None):
                     merke(kind_p, k, "vorgabe" if vorgabe else "neu", 999 if vorgabe else 0, "Kennung " + kind_p["ref"] if vorgabe else "")
                 # ohne Geburtsdatum gilt das Taufdatum als Geburt (Tage danach): sonst fehlt der Anker fuers Begraebnis
                 k["geb"] = k["geb"] or kind_p["geb"] or nf.datum_zerlegen(e["felder"].get("tauf_datum"))
-        elif e["register"] == "ehe":
+        elif e["register"] == "ehe":                     # Trauung: Brautleute finden, Eltern anbinden, Familie anlegen
             paar = {}
             for rolle, g in (("braeutigam", "M"), ("braut", "F")):
                 p = P.get(rolle)
@@ -514,7 +548,7 @@ def verknuepfen(con, kennungen=None):
                     vorhanden.update(art="ehe", tr=tr, eintrag=e["id"])
                 else:
                     best.neu_fam(m_id, w_id, art="ehe", trauung=tr, eintrag=e["id"])
-        else:  # tod
+        else:                                             # Begraebnis: Verstorbenen finden, Vetos, Partner, Eltern
             p = P.get("verstorbener")
             if not p:
                 continue
@@ -608,6 +642,7 @@ def familien_zusammenlegen(best):
 
 
 def schreiben(con, best, zuordnungen):
+    """Ergebnis in die Projektdatei: identitaet, familie, kind werden ersetzt, zuordnung je Nennung mit Stufe, Punkten, Grund und Alternativen (JSON) fuer die Pruefliste."""
     con.execute("DELETE FROM zuordnung"); con.execute("DELETE FROM kind"); con.execute("DELETE FROM familie"); con.execute("DELETE FROM identitaet")
     for i in best.idents.values():
         g = i["geb"] or (None, None, None)
@@ -626,6 +661,7 @@ def schreiben(con, best, zuordnungen):
 
 
 def person_schluessel(con, person_id):
+    """Stabiler Schluessel einer Nennung 'datei|blatt|zeile|pfad': ueberlebt jedes Neu-Einlesen, daran haengen die Entscheidungen von Hand."""
     r = con.execute("SELECT q.datei, q.blatt, e.zeile, p.pfad FROM person p JOIN eintrag e ON e.id=p.eintrag JOIN quelle q ON q.id=e.quelle WHERE p.id=?", (person_id,)).fetchone()
     return f"{r['datei']}|{r['blatt']}|{r['zeile']}|{r['pfad']}" if r else None
 
@@ -643,6 +679,7 @@ def entscheiden_von_hand(con, person_id, art, ziel_id=None):
 
 
 def statistik(con):
+    """Zahlen fuer die Meldung nach dem Lauf: Nennungen, Identitaeten, Familien, Kinder, Verteilung der Stufen."""
     z = dict(con.execute("SELECT stufe, COUNT(*) FROM zuordnung GROUP BY stufe"))
     n_i = con.execute("SELECT COUNT(*) FROM identitaet").fetchone()[0]
     n_p = con.execute("SELECT COUNT(*) FROM person").fetchone()[0]
@@ -653,7 +690,9 @@ def statistik(con):
 
 
 def familien_zeigen(con, limit=200):
+    """Familien mit Kindern als Text (Kommandozeile `famrecon familien`)."""
     def wer(i):
+        """Kurztext einer Identitaet fuer die Ausgabe."""
         if not i:
             return "—"
         r = con.execute("SELECT * FROM identitaet WHERE id=?", (i,)).fetchone()
@@ -671,6 +710,7 @@ def familien_zeigen(con, limit=200):
 
 
 def pruefliste_zeigen(con, stufe=None):
+    """Offene Faelle als Text (Kommandozeile `famrecon pruefliste`): unsichere Zuordnungen und neue Personen mit Kandidaten, je mit den Alternativen."""
     sql = ("SELECT z.*, p.pfad, p.roh, e.register, e.jahr, i.name iname, i.vorname ivorname, i.geb_jahr, i.id iid "
            "FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag JOIN identitaet i ON i.id=z.ident "
            "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if stufe == "alle" else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]')) ORDER BY e.jahr")

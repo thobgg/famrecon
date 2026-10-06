@@ -144,6 +144,47 @@
 <p>Ein <b>Lebenslauf</b> wird mitgeführt: Wer schon als Vater, Mutter oder Ehepartner auftrat, kann nicht danach geboren sein, ein errechnetes Geburtsjahr nach dem ersten Auftreten wird verworfen. Fehlt in einer Taufzeile das Geburtsdatum, gilt das Taufdatum als Geburt.</p>
 <p>Die Mechanik ist gemessen: Aus einem bekannten Stammbaum werden die drei Register erzeugt, verknüpft und mit dem Original verglichen. Am mitgelieferten Beispiel liegen Präzision und Vollständigkeit über 0,99; die Fehler sind Geschwister mit demselben Vornamen. Echte Register mit Schreibvarianten und Lücken sind schwerer, deshalb gibt es die Prüfliste.</p>
 
+<h3>Das Schema im Ganzen</h3>
+<p>Für alle, die genau wissen wollen, was passiert. Dieselbe Beschreibung steht als Kopf in der Quelldatei <code>famrecon/verknuepfen.py</code>, dort mit jeder Zahl als benannter Stellschraube.</p>
+<pre>
+Tabellen ──► Zuordnung ──► Einlesen ──► Normalform ──► Verknüpfung ──► Prüfliste ──► GEDCOM
+                                           │                │
+                             je Eintrag und Rolle           │ chronologisch, alle Register gemischt
+                             eine Nennung: Name,            │
+                             Vorname, Lautschlüssel,        ├─ Taufe:     Elternfamilie suchen (Vater passt, Mutter
+                             Einheitsform, Geburt           │             widerspricht nicht) sonst Eltern einzeln suchen
+                             (ggf. aus Alter), Stand,       │             oder anlegen; Kind immer neu
+                             Marker, Kennung                ├─ Trauung:   Bräutigam und Braut suchen (Vorname, Alter,
+                                                            │             Eltern, Heiratsalter); Eltern anbinden; Familie
+                                                            └─ Begräbnis: Verstorbenen suchen (Vorname, Geburt aus Alter,
+                                                                          Vater, Ehepartner, Rückverweis); Vetos; Kind
+                                                                          ohne Anker bleibt eigene Person
+
+Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
+   Punkte je Kandidat ──► über der Schwelle? ──► Vorsprung vor dem Zweiten?
+                                                  ≥ 50 und Anker ──► sicher
+                                                  ≥ 30            ──► wahrscheinlich
+                                                  &lt; 30            ──► Gleichstand: Eltern/Brautleute → eigene Person + Prüfliste
+                                                                               Verstorbene → bester Kandidat, unsicher
+   Ausschluss vorab: Geschlecht widerspricht · Alter außerhalb des Fensters der Rolle ·
+                     geboren nach dem ersten Auftreten als Erwachsener · Vorname widerspricht ·
+                     errechnete und belegte Geburt mehr als 5 Jahre auseinander
+</pre>
+<table>
+<tr><th>Stellschraube</th><th>Wert</th><th>Bedeutung</th></tr>
+<tr><td>Vorname gleich / teils</td><td>100 / 70</td><td>Rufname vorn 90, Rufname hinten 80, nur Johann/Anna/Maria gemeinsam 60 bzw. 40</td></tr>
+<tr><td>Geburt exakt / Jahr / nah</td><td>100 / 50 / 30</td><td>Geburtsdatum der Nennung gegen die bekannte Geburt der Person</td></tr>
+<tr><td>Vater / Mutter / Ehepartner passt</td><td>30 / 50 / 50</td><td>genannte Angehörige gegen die Familie der Person</td></tr>
+<tr><td>Sterbedatum aus Rückverweis</td><td>200</td><td>die Taufzeile nennt das Sterbedatum des Begräbnisses</td></tr>
+<tr><td>Nachname buchstabengleich</td><td>20</td><td>zusätzlich zur Lautgleichheit</td></tr>
+<tr><td>Schwelle allgemein / Tod / Partner</td><td>100 / 80 / 50</td><td>Mindestpunkte für einen Treffer</td></tr>
+<tr><td>Vorsprung sicher / klar</td><td>50 / 30</td><td>Abstand zum zweitbesten Kandidaten</td></tr>
+<tr><td>Altersfenster Vater / Mutter / Ehe</td><td>16–75 / 15–50 / 14–80</td><td>Alter in der Rolle beim Ereignis</td></tr>
+<tr><td>Kinderspanne, Geburtsabstand</td><td>22 / 5 Jahre</td><td>erstes bis letztes Kind; errechnete gegen belegte Geburt</td></tr>
+</table>
+<p>Entscheidungen aus der Prüfliste und Kennungen aus der Tabelle gehen der Rechnung vor. Am Ende werden Familien mit demselben Paar zusammengelegt. Jede Zuordnung behält ihre Begründung im Klartext, damit die Prüfliste zeigen kann, woran sie hing.</p>
+<p>Wer Regeln ändern will, misst: <code>make messung</code> prüft am mitgelieferten Stammbaum, und wer ein eigenes geprüftes Familienbuch hat, kann famrecons Ergebnis dagegen halten (siehe Kommandozeile). Die Erfahrung aus zwei echten Ortsfamilienbüchern: Jede Regel für einen Sonderfall macht an anderer Stelle etwas kaputt, deshalb bleiben die Stellschrauben wenige, und was sich mit ihnen nicht ausdrücken lässt, gehört in die Prüfliste.</p>
+
 <h2 id="pruefliste">Prüfliste: Entscheidungen von Hand</h2>
 <p>Die Prüfliste zeigt drei Arten von Fällen, nach Jahr geordnet, entschiedene am Ende: <b>unsichere Zuordnungen</b>, bei denen famrecon eine Person gewählt hat, aber eine zweite ähnlich gut passt; <b>Gleichstände</b>, bei denen es nicht gewählt hat, weil zwei Namensvettern ohne weiteren Anker in Frage kamen (die Nennung ist dann vorerst eine eigene Person, die Kandidaten stehen daneben); und <b>Vetos</b>, bei denen ein Widerspruch im Familienstand gegen eine sonst gut belegte Zuordnung spricht.</p>
 <h3>Ein Fall</h3>

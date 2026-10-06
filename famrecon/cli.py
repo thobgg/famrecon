@@ -7,6 +7,7 @@ from .i18n import _
 
 
 def cmd_spalten(args):
+    """Blaetter und Ueberschriften einer Tabelle zeigen."""
     for blatt, zeilen, kopf in lesen.blaetter(args.datei):
         print(_("Blatt '{blatt}': {zeilen} Zeilen").format(blatt=blatt, zeilen=zeilen))
         for buchstabe, titel in kopf:
@@ -14,6 +15,7 @@ def cmd_spalten(args):
 
 
 def cmd_zuordnung(args):
+    """Spaltenzuordnung vorschlagen und als TOML ausgeben."""
     blaetter = [b for d in args.dateien for b in zuordnung.vorschlagen(d)]
     if not blaetter:
         sys.exit(_("Kein Blatt der Zuordnung in den Dateien gefunden."))
@@ -29,6 +31,7 @@ def cmd_zuordnung(args):
 
 
 def cmd_bau(args):
+    """Tabellen nach Zuordnung einlesen und die Normalform bauen (ohne Verknuepfen)."""
     z = lesen.zuordnung_laden(args.zuordnung)
     for register, feld in lesen.unbekannte_felder(z):
         print(_("Warnung: Feld '{feld}' in [register.{register}] kennt der Katalog nicht.").format(feld=feld, register=register), file=sys.stderr)
@@ -44,6 +47,7 @@ def cmd_bau(args):
 
 
 def cmd_stand(args):
+    """Was in der Projektdatei steht: Eintraege, Nennungen, Marker."""
     con = db.oeffnen(args.db)
     for r in con.execute("SELECT register, COUNT(*) n, MIN(jahr) von, MAX(jahr) bis "
                          "FROM eintrag GROUP BY register ORDER BY register"):
@@ -59,6 +63,7 @@ def cmd_stand(args):
 
 
 def cmd_verknuepfen(args):
+    """Personen und Familien bilden; --kennungen nutzt das Feld ref als Vorgabe."""
     con = db.oeffnen(args.db)
     verknuepfen.verknuepfen(con, kennungen=True if args.kennungen else None)
     st = verknuepfen.statistik(con)
@@ -67,23 +72,28 @@ def cmd_verknuepfen(args):
 
 
 def cmd_familien(args):
+    """Familien mit Kindern zeigen."""
     verknuepfen.familien_zeigen(db.oeffnen(args.db), args.limit)
 
 
 def cmd_pruefliste(args):
+    """Offene Faelle zeigen (--alle: auch 'wahrscheinlich')."""
     verknuepfen.pruefliste_zeigen(db.oeffnen(args.db), "alle" if args.alle else None)
 
 
 def cmd_simuliere(args):
+    """Aus einer GEDCOM die drei Register erzeugen, mit versteckten Kennungen zum Messen."""
     zaehler, n_i, n_f = simulation.simulieren(args.ged, args.out, args.rauschen, args.saat)
     print(f"{n_i} Personen, {n_f} Familien -> " + ", ".join(f"{k} {v}" for k, v in zaehler.items()) + f" -> {args.out}")
 
 
 def cmd_messen(args):
+    """Verknuepfung gegen die Kennungen der Simulation messen."""
     messen.bericht(db.oeffnen(args.db), args.zeigen)
 
 
 def cmd_gedcom(args):
+    """GEDCOM 5.5.1 schreiben."""
     from pathlib import Path
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     st = gedcom.schreiben(db.oeffnen(args.db), args.out)
@@ -91,15 +101,18 @@ def cmd_gedcom(args):
 
 
 def cmd_pruefe(args):
+    """GEDCOM gegen die Eintraege abgleichen: ist jede Zeile angekommen?"""
     sys.exit(pruefe.main(db.oeffnen(args.db), args.ged))
 
 
 def cmd_start(args):
+    """Oberflaeche im Browser starten."""
     from .web import server
     server.start(args.port, args.daten, not args.kein_browser)
 
 
 def cmd_personen(args):
+    """Nennungen in Normalform zeigen."""
     con = db.oeffnen(args.db)
     kern.zeigen(con, args.register, args.limit)
 

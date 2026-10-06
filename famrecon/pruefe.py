@@ -16,14 +16,17 @@ from . import simulation
 
 
 def pruefen(con, ged):
+    """Jede Tabellenzeile in der GEDCOM wiederfinden: Taufe -> INDI mit BIRT/CHR und dieser Fundstelle, Trauung -> FAM mit MARR, Tod -> INDI mit DEAT/BURI; Namen der Hauptpersonen im Record, Verweise vorhanden. -> (Zaehler je Register, Fehlerliste)."""
     indis, fams = simulation.lesen(ged)
     fehler = []
 
     def fundstellen(rec):
+        """Alle PAGE-Werte eines Records (an den Ereignissen und am Record selbst)."""
         return {s["wert"] for ev in rec["kinder"] for s in simulation.sub(ev, "SOUR") for s in simulation.sub(s, "PAGE")} | \
                {s["wert"] for s in simulation.sub(rec, "SOUR") for s in simulation.sub(s, "PAGE")}
 
     def fund(e, fl):
+        """Fundstelle eines Eintrags, wie gedcom.py sie schreibt: Zitat, sonst Buch/Seite/Nummer, sonst Zeile."""
         return fl.get("zitat") or " ".join(x for x in (fl.get("kb"), f"S. {fl['seite']}" if fl.get("seite") else None,
                                                         f"Nr. {fl['lfd_nr']}" if fl.get("lfd_nr") else None) if x) or f"Zeile {e['zeile']}"
 

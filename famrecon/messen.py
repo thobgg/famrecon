@@ -20,6 +20,7 @@ from itertools import combinations
 
 
 def messen(con):
+    """Verknuepfung gegen die versteckten Kennungen (ref) zaehlen: Paare von Nennungen, die zusammengehoeren (gleiche ref) gegen Paare, die zusammengelegt wurden (gleiche Identitaet) -> Praezision, Vollstaendigkeit, Listen der Fehler."""
     zeilen = con.execute("SELECT p.id, p.ref, z.ident, p.pfad, e.register FROM person p "
                          "JOIN zuordnung z ON z.person=p.id JOIN eintrag e ON e.id=p.eintrag WHERE p.ref IS NOT NULL").fetchall()
     nach_ref, nach_ident = defaultdict(list), defaultdict(list)
@@ -50,6 +51,7 @@ def familien_messen(con):
         ref_von_ident.setdefault(r["ident"], set()).add(r["ref"])
 
     def ref(i):
+        """Kennung der Wahrheit zu einer Identitaet (kleinste, wenn mehrere)."""
         refs = ref_von_ident.get(i, set())
         return min(refs) if refs else None
 
@@ -78,6 +80,7 @@ def familien_messen(con):
 
 
 def bericht(con, zeigen=10):
+    """Messung als Text, mit den ersten Fehlern (`famrecon messen`)."""
     m = messen(con)
     print(f"Personenzeilen mit Ref {m['zeilen']}, davon {m['refs']} verschiedene Personen, {m['identitaeten']} Identitaeten gebildet")
     print(f"Paare: sollten zusammen {m['sollten']}, sind zusammen {m['sind']}, Treffer {m['treffer']}, verpasst {m['verpasst']}, falsch {m['falsch']}")
