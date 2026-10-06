@@ -73,7 +73,7 @@ class Oberflaeche(unittest.TestCase):
         st, html = self.hole("/p/kirchenbuchstil/zuordnung", urllib.parse.urlencode(form).encode(), "application/x-www-form-urlencoded")
         self.assertIn("Zuordnung gespeichert", html)
         st, html = self.hole("/p/kirchenbuchstil/bauen", b"", "application/x-www-form-urlencoded")
-        self.assertIn("92 Personen", html)
+        self.assertIn("92 Nennungen", html)
         st, html = self.hole("/p/kirchenbuchstil/personen?q=Haag")
         self.assertIn("Nicolaus", html)
         st, html = self.hole("/p/kirchenbuchstil/familien?q=Eberle")
@@ -101,7 +101,7 @@ class Oberflaeche(unittest.TestCase):
             sel = re.search(r'<option value="([^"]*)" selected', m.group(2)); form[m.group(1)] = sel.group(1) if sel else ""
         form["bauen"] = "1"
         st, html = self.hole("/p/ohne/zuordnung", urllib.parse.urlencode(form).encode(), "application/x-www-form-urlencoded")
-        self.assertIn("92 Personen", html)
+        self.assertIn("92 Nennungen", html)
         st, ged = self.hole("/p/kirchenbuchstil/projekt.ged")
         self.assertTrue(ged.startswith("0 HEAD"))
         self.assertIn("0 TRLR", ged)

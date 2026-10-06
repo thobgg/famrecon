@@ -154,7 +154,7 @@ def s_projekt(pr, meldung=""):
     schritte = []
     schritte.append((_("Tabellen"), ", ".join(st["tabellen"]) or _("keine hochgeladen"), bool(st["tabellen"])))
     schritte.append((_("Zuordnung"), _("liegt vor") if st["zuordnung"] else _("fehlt"), st["zuordnung"]))
-    schritte.append((_("Projektdatei"), ", ".join(f"{k} {v}" for k, v in st["eintraege"].items()) + f"; {st['personen']} " + _("Personen") if st["db"] else _("fehlt"), st["db"]))
+    schritte.append((_("Projektdatei"), ", ".join(f"{k} {v}" for k, v in st["eintraege"].items()) + f"; {st['personen']} " + _("Nennungen") if st["db"] else _("fehlt"), st["db"]))
     schritte.append((_("Verknüpfung"), f"{st['identitaeten']} " + _("Personen") + f", {st['familien']} " + _("Familien") + "; " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items()) if st["identitaeten"] else _("fehlt"), bool(st["identitaeten"])))
     schritte.append((_("Prüfliste"), f"{st['offen']} " + _("offen") if st["identitaeten"] else "–", st["identitaeten"] and not st["offen"]))
     schritte.append(("GEDCOM", _("liegt vor") if st["ged"] else _("fehlt"), st["ged"]))
@@ -488,7 +488,7 @@ class Handler(BaseHTTPRequestHandler):
             kern.personen_bauen(con)
             verknuepfen.verknuepfen(con)
             st = verknuepfen.statistik(con)
-            return self.weiter(f"/p/{pr.name}?m=" + urllib.parse.quote(_("{p} Personen -> {i} Identitäten, {f} Familien").format(p=st["personen"], i=st["identitaeten"], f=st["familien"]) + hinweis))
+            return self.weiter(f"/p/{pr.name}?m=" + urllib.parse.quote(_("{p} Nennungen -> {i} Personen, {f} Familien").format(p=st["personen"], i=st["identitaeten"], f=st["familien"]) + hinweis))
         except Exception:
             import traceback
             self.antwort(f"<pre>{h(traceback.format_exc())}</pre>", code=500)

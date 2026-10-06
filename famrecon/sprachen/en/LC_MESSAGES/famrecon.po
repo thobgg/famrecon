@@ -174,8 +174,8 @@ msgstr "Spreadsheets saved"
 msgid "Zuordnung gespeichert"
 msgstr "Mapping saved"
 
-msgid "{p} Personen -> {i} Identitäten, {f} Familien"
-msgstr "{p} persons -> {i} identities, {f} families"
+msgid "{p} Nennungen -> {i} Personen, {f} Familien"
+msgstr "{p} mentions -> {i} persons, {f} families"
 
 msgid "Projekt gelöscht"
 msgstr "Project deleted"
@@ -401,3 +401,6 @@ msgstr "stopped"
 
 msgid "famrecon {alt} läuft noch, wird durch {neu} abgelöst"
 msgstr "famrecon {alt} is still running, replaced by {neu}"
+
+msgid "Nennungen"
+msgstr "mentions"

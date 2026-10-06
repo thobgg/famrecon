@@ -175,7 +175,7 @@ msgstr ""
 msgid "Zuordnung gespeichert"
 msgstr ""
 
-msgid "{p} Personen -> {i} Identitäten, {f} Familien"
+msgid "{p} Nennungen -> {i} Personen, {f} Familien"
 msgstr ""
 
 msgid "Projekt gelöscht"
@@ -401,4 +401,7 @@ msgid "beendet"
 msgstr ""
 
 msgid "famrecon {alt} läuft noch, wird durch {neu} abgelöst"
+msgstr ""
+
+msgid "Nennungen"
 msgstr ""
