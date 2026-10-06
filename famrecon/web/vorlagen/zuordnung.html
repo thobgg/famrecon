@@ -8,7 +8,7 @@ function umschalten(sel) {
   location.search = p.toString();
 }
 </script>
-<form method="post" action="/p/$projekt/zuordnung">
+<form method="post" action="/p/$projekt/zuordnung" onsubmit="this.querySelectorAll('button').forEach(b => { b.disabled = true; }); document.activeElement.textContent = '⏳ ' + document.activeElement.textContent">
 $bloecke
 <p><label>{{Als „nicht angegeben“ gelten:}} <input name="leer" value="$leer" size="40"></label></p>
 <p><button name="bauen" value="1">{{Zuordnung bestätigen und bauen}}</button> <button class="leise">{{nur speichern}}</button> <a class="knopf leise" href="/p/$projekt">{{zurück}}</a></p>

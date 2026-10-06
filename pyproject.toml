@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "famrecon"
-version = "0.1.2"
+version = "0.1.3"
 description = "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform, Ausgabe GEDCOM"
 readme = "README.md"
 license = "MIT"

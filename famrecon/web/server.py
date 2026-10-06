@@ -60,6 +60,7 @@ def beispiele_ordner():
 
 
 DATEN = wurzel() / "daten"
+SCHREIBSPERRE = threading.Lock()      # bauen, verknuepfen, Beispiele, Entscheidungen: nacheinander, nie gleichzeitig
 
 
 def seite(name, **werte):
@@ -411,6 +412,10 @@ class Handler(BaseHTTPRequestHandler):
         laenge = int(self.headers.get("Content-Length", 0))
         form, dateien = formular(self.rfile.read(laenge), self.headers.get("Content-Type", ""))
         teile = [t for t in self.path.split("/") if t]
+        with SCHREIBSPERRE:                  # ein Doppelklick auf "bauen" soll warten, nicht kollidieren
+            self._post(teile, form, dateien)
+
+    def _post(self, teile, form, dateien):
         pr = None
         try:
             if teile == ["beenden"]:

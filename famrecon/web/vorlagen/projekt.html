@@ -2,9 +2,9 @@
 <p class="meldung">$meldung</p>
 <table class="schritte">$schritte</table>
 <div class="aktionen">
-  <form method="post" action="/p/$projekt/hochladen" enctype="multipart/form-data"><input type="file" name="dateien" multiple accept=".xlsx,.xlsm,.csv,.tsv"><button>{{Tabellen hochladen}}</button></form>
+  <form method="post" action="/p/$projekt/hochladen" enctype="multipart/form-data" onsubmit="const b=this.querySelector('button'); b.disabled=true; b.textContent='⏳ ' + b.textContent"><input type="file" name="dateien" multiple accept=".xlsx,.xlsm,.csv,.tsv"><button>{{Tabellen hochladen}}</button></form>
   <a class="knopf" href="/p/$projekt/zuordnung">{{Zuordnung durchsehen}}</a>
-  <form method="post" action="/p/$projekt/bauen"><button>{{bauen und verknüpfen}}</button></form>
+  <form method="post" action="/p/$projekt/bauen" onsubmit="const b=this.querySelector('button'); b.disabled=true; b.textContent='⏳ ' + b.textContent"><button>{{bauen und verknüpfen}}</button></form>
   <a class="knopf" href="/p/$projekt/personen">{{Personen}}</a>
   <a class="knopf" href="/p/$projekt/familien">{{Familien}}</a>
   <a class="knopf" href="/p/$projekt/pruefliste">{{Prüfliste}}</a>
