@@ -188,6 +188,35 @@ eine Tabelle im Kirchenbuchstil mit 35 Zeilen und drei Tabellen mit technischen
 Überschriften. Echte Register gehören nicht ins Repository; `daten/` und `*.db`
 sind ausgenommen.
 
+## Aufbau des Repositorys
+
+    famrecon/            das Programm, ein Modul je Schritt
+      katalog.py           Feldkatalog: Rollen, Felder, Ränge, Synonyme
+      zuordnung.py         Spaltenzuordnung aus Überschriften und Beispielwerten vorschlagen
+      lesen.py             xlsx/CSV nach Zuordnung in die Projektdatei (SQLite, schema.sql)
+      normalform.py        Zellen in Werte: Namen zerlegen, Marker, Alter, Daten, Lautschlüssel
+      kern.py              je Eintrag und Rolle eine Person in Normalform
+      verknuepfen.py       Personen und Familien bilden: Punkte, Vetos, Stufen, Entscheidungen
+      gedcom.py            GEDCOM 5.5.1 schreiben
+      pruefe.py            Abgleich GEDCOM gegen die Einträge
+      simulation.py        aus einer GEDCOM die drei Register erzeugen (Messung)
+      messen.py            Verknüpfung gegen die Kennungen der Simulation messen
+      cli.py, __main__.py  Kommandozeile `famrecon …`
+      i18n.py, sprachen/   Übersetzung (gettext), Englisch vollständig
+      web/                 Oberfläche: server.py, vorlagen/ (Seiten), static/, hilfe/ (de, en)
+    beispiel/            erfundene Beispieldaten: Kirchenbuchstil, technische Tabellen,
+                         Falkenrath-Stammbaum (GEDCOM, CC0) und seine Register als xlsx und CSV
+    tests/               unittest, `make test`
+    pruefungen/          Regelkatalog mit 64 Plausibilitätsregeln und sein Motor (`make plausibilitaet`)
+    werkzeuge/           Bauen und Prüfen: famrecon.spec und start.py (PyInstaller), deb-bauen.sh,
+                         Symbole, falkenrath-lauf.sh (Messlauf), gramps-pruefen.sh
+    .github/workflows/   paket.yml baut die Pakete für Windows, macOS und Linux
+    Makefile             Ziele: test, sprachen, start, bau, gedcom, gramps, plausibilitaet, beispiel, messung
+    daten/               lokal, von Git ignoriert: ein Ordner je Projekt (Tabellen, zuordnung.toml, projekt.db, projekt.ged)
+
+Die Startdateien `famrecon starten (…)` im Hauptordner sind für Nutzer des Quelltexts ohne
+Kommandozeile: Doppelklick startet die Oberfläche.
+
 ## Lizenz
 
 MIT, siehe [LICENSE](LICENSE). Verwandte Werkzeuge desselben Autors:

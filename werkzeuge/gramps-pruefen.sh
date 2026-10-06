@@ -1,9 +1,9 @@
 #!/bin/bash
-# pruefe_gramps.sh - unabhaengige Strukturpruefung der GEDCOM durch Gramps (lokal), uebernommen aus db-blank:
+# gramps-pruefen.sh - unabhaengige Strukturpruefung der GEDCOM durch Gramps (lokal), uebernommen aus db-blank:
 # eigene Pruefregeln und Ahnenblatt-Simulator pruefen Daten und Plausibilitaet, nicht die Dateistruktur.
 #
-#   ./pruefe_gramps.sh [datei.ged]      Import-Pruefung (Pflicht vor Weitergabe)
-#   ./pruefe_gramps.sh datei.ged -voll  zusaetzlich die Plausibilitaetspruefung
+#   ./gramps-pruefen.sh [datei.ged]      Import-Pruefung (Pflicht vor Weitergabe)
+#   ./gramps-pruefen.sh datei.ged -voll  zusaetzlich die Plausibilitaetspruefung
 set -u
 DATEI="${1:-ausgabe/projekt.ged}"
 VOLL="${2:-}"

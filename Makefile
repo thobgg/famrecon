@@ -14,7 +14,7 @@ bau:                     # Tabellen in $(P)/ nach $(P)/zuordnung.toml einlesen u
 gedcom:
 	python3 -m famrecon gedcom $(P)/projekt.db -o $(P)/projekt.ged && python3 -m famrecon pruefe $(P)/projekt.db $(P)/projekt.ged
 gramps:
-	bash werkzeuge/pruefe_gramps.sh $(P)/projekt.ged -voll
+	bash werkzeuge/gramps-pruefen.sh $(P)/projekt.ged -voll
 plausibilitaet:
 	python3 pruefungen/plausibilitaet.py $(P)/projekt.ged --zeigen 3
 beispiel:                # das Kirchenbuchstil- Beispiel als Projekt anlegen
