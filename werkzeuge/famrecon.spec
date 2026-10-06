@@ -1,9 +1,14 @@
 # PyInstaller: eine Datei, startet die Oberflaeche. Datendateien des Pakets (Schema, Sprachen,
 # Seiten) kommen mit; die Module finden sie ueber Path(__file__), das in der EXE auf den
 # entpackten Ordner zeigt.
-#     python -m PyInstaller werkzeuge/famrecon.spec --noconfirm   -> dist/famrecon[.exe]
+#     python -m PyInstaller werkzeuge/famrecon.spec --noconfirm   -> dist/famrecon[.exe], auf dem Mac dist/famrecon.app
+# Symbol: werkzeuge/famrecon.ico (Windows), werkzeuge/famrecon-512.png (Mac, PyInstaller wandelt mit Pillow
+# nach .icns). Unter Linux traegt die Einzeldatei kein Symbol; das liefert die .deb (werkzeuge/deb-bauen.sh).
+import sys
+import tomllib
 from pathlib import Path
 wurzel = Path(SPECPATH).parent
+version = tomllib.loads((wurzel / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
 daten = [(str(wurzel / "famrecon" / p), f"famrecon/{Path(p).parent}") for p in
          ("schema.sql", "sprachen/famrecon.pot", "sprachen/en/LC_MESSAGES/famrecon.mo",
           "web/static/stil.css", "web/static/symbol.png", "web/vorlagen/rahmen.html", "web/vorlagen/start.html", "web/vorlagen/projekt.html",
@@ -14,6 +19,11 @@ daten += [(str(wurzel / "beispiel" / p), "beispiel") for p in
 a = Analysis([str(wurzel / "werkzeuge" / "start.py")], pathex=[str(wurzel)], datas=daten,
              hiddenimports=["famrecon.web.server", "openpyxl"], noarchive=False)
 pyz = PYZ(a.pure)
-import sys
+mac = sys.platform == "darwin"
 symbol = str(wurzel / "werkzeuge" / ("famrecon.ico" if sys.platform.startswith("win") else "famrecon-512.png"))
-exe = EXE(pyz, a.scripts, a.binaries, a.datas, name="famrecon", console=True, upx=False, icon=symbol)
+# Konsole: unter Windows und Linux sichtbar (Protokoll, Strg+C beendet); das Mac-Programmpaket startet ohne.
+exe = EXE(pyz, a.scripts, a.binaries, a.datas, name="famrecon", console=not mac, upx=False, icon=symbol)
+if mac:
+    app = BUNDLE(exe, name="famrecon.app", icon=symbol, bundle_identifier="de.bgg-home.famrecon",
+                 info_plist={"CFBundleShortVersionString": version, "CFBundleVersion": version,
+                             "NSHighResolutionCapable": True, "LSApplicationCategoryType": "public.app-category.productivity"})

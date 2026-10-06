@@ -142,11 +142,21 @@ kein Framework, Seiten als HTML-Dateien in `famrecon/web/`.
 
     pip install .                 Befehl `famrecon` systemweit (Python 3.11+, openpyxl)
 
-Fertige Dateien zum Doppelklick entstehen auf GitHub (`.github/workflows/paket.yml`,
-PyInstaller, eine Datei je System: Windows, macOS, Linux), bei jedem Release
-angehängt oder von Hand über „Actions → Pakete“. Dasselbe Muster wie wtWin
-und wtMac in app4webtrees: Bauen dort, wo das Zielsystem läuft. Lokal:
-`pip install pyinstaller && python -m PyInstaller werkzeuge/famrecon.spec`.
+Fertige Dateien zum Doppelklick hängen an jedem Release
+(`.github/workflows/paket.yml`, PyInstaller, gebaut dort, wo das Zielsystem
+läuft, wie wtWin und wtMac in app4webtrees):
+
+    famrecon-windows.exe          Einzeldatei mit Symbol; Windows warnt einmal vor dem unbekannten Herausgeber
+    famrecon-macos-arm64.zip      Programmpaket famrecon.app; entpacken, Rechtsklick → Öffnen (unsigniert)
+    famrecon_<version>_amd64.deb  Debian/Ubuntu/Mint: Menüeintrag mit Symbol, Befehl `famrecon`
+    famrecon-linux-x64            Einzeldatei für andere Linux-Systeme (glibc 2.35+)
+
+Die Einzeldateien legen `daten/` neben sich an. Installierte Pakete (.deb,
+.app, Program Files) schreiben in den Datenordner des Benutzers:
+`~/.local/share/famrecon`, `~/Library/Application Support/famrecon` oder
+`%APPDATA%\famrecon`; der Start meldet den Ordner. Lokal bauen:
+`pip install pyinstaller pillow && python -m PyInstaller werkzeuge/famrecon.spec`,
+die .deb mit `bash werkzeuge/deb-bauen.sh dist/famrecon out`.
 
 ## Sprachen
 

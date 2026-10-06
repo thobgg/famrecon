@@ -1,7 +1,11 @@
-# Pakete fuer Windows, macOS und Linux: eine Datei je System, Doppelklick startet die Oberflaeche.
-# Gebaut auf GitHub, weil eine Windows-EXE nur unter Windows und ein Mac-Paket nur auf einem Mac entsteht
-# (dasselbe Muster wie wtWin/wtMac in app4webtrees). Von Hand: Actions > Pakete > Run workflow,
-# die Dateien liegen dann unter "Artifacts". Bei einem veroeffentlichten Release: an das Release haengen.
+# Pakete fuer Windows, macOS und Linux, gebaut auf GitHub, weil eine Windows-EXE nur unter Windows und ein
+# Mac-Programmpaket nur auf einem Mac entsteht (dasselbe Muster wie wtWin/wtMac in app4webtrees).
+#   Windows: famrecon-windows.exe        Einzeldatei mit Symbol, Doppelklick startet die Oberflaeche
+#   macOS:   famrecon-macos-arm64.zip    Programmpaket famrecon.app mit Symbol (entpacken, Rechtsklick > Oeffnen)
+#   Linux:   famrecon-linux-x64          Einzeldatei; famrecon_<version>_amd64.deb mit Menueeintrag und Symbol
+# Von Hand: Actions > Pakete > Run workflow, die Dateien liegen dann unter "Artifacts".
+# Bei einem veroeffentlichten Release: an das Release haengen.
+# Linux baut auf Ubuntu 22.04, damit die Einzeldatei auch auf aelteren Systemen (glibc 2.35) laeuft.
 name: Pakete
 
 on:
@@ -19,14 +23,11 @@ jobs:
       matrix:
         include:
           - runner: windows-latest
-            name: famrecon-windows.exe
-            bin: dist/famrecon.exe
+            name: windows
           - runner: macos-latest
-            name: famrecon-macos-arm64
-            bin: dist/famrecon
-          - runner: ubuntu-latest
-            name: famrecon-linux-x64
-            bin: dist/famrecon
+            name: macos
+          - runner: ubuntu-22.04
+            name: linux
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -34,20 +35,31 @@ jobs:
         with:
           python-version: "3.12"
       - name: Abhaengigkeiten
-        run: python -m pip install --upgrade pip openpyxl pyinstaller
+        run: python -m pip install --upgrade pip openpyxl pyinstaller pillow
       - name: Tests
         run: python -m unittest discover -s tests -t .
       - name: Paket bauen
         run: python -m PyInstaller werkzeuge/famrecon.spec --noconfirm
-      - name: Datei benennen
+      - name: Windows-Datei
+        if: runner.os == 'Windows'
         shell: bash
+        run: mkdir -p out && cp dist/famrecon.exe out/famrecon-windows.exe
+      - name: Mac-Programmpaket
+        if: runner.os == 'macOS'
         run: |
           mkdir -p out
-          cp "${{ matrix.bin }}" "out/${{ matrix.name }}"
-          ls -la out
+          ditto -c -k --keepParent dist/famrecon.app out/famrecon-macos-arm64.zip
+      - name: Linux-Datei und Debian-Paket
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p out && cp dist/famrecon out/famrecon-linux-x64
+          bash werkzeuge/deb-bauen.sh dist/famrecon out
+      - name: Ergebnis
+        shell: bash
+        run: ls -la out
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.name }}
+          name: famrecon-${{ matrix.name }}
           path: out/*
       - name: An das Release haengen
         if: github.event_name == 'release'

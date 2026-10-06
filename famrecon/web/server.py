@@ -9,6 +9,7 @@ landen in der Tabelle `entscheidung` und gelten beim naechsten Verknuepfen.
 """
 import html
 import json
+import os
 import re
 import shutil
 import sys
@@ -31,10 +32,25 @@ h = html.escape
 
 
 def wurzel():
-    """Wo famrecon liegt: der Ordner der Einzeldatei (Paket) oder das Projekt (Quelltext)."""
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path.cwd()
+    """Wo die Daten liegen: neben der Einzeldatei (Paket), im Quelltext das Arbeitsverzeichnis.
+
+    Liegt das Paket an einem Systemort (/usr/bin aus der .deb, im Mac-Programmpaket .app,
+    "Program Files") oder ist der Ordner nicht beschreibbar, dann der Datenordner des Benutzers:
+    ~/.local/share/famrecon, ~/Library/Application Support/famrecon, %APPDATA%\\famrecon."""
+    if not getattr(sys, "frozen", False):
+        return Path.cwd()
+    ordner = Path(sys.executable).parent
+    systemort = (".app/Contents/" in sys.executable or str(ordner).startswith(("/usr", "/opt", "/bin", "/snap"))
+                 or "Program Files" in str(ordner) or "WindowsApps" in str(ordner))
+    if not systemort and os.access(ordner, os.W_OK):
+        return ordner
+    if sys.platform == "win32":
+        basis = Path(os.environ.get("APPDATA") or Path.home())
+    elif sys.platform == "darwin":
+        basis = Path.home() / "Library" / "Application Support"
+    else:
+        basis = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share")
+    return basis / "famrecon"
 
 
 def beispiele_ordner():
@@ -479,10 +495,11 @@ def app_fenster(url):
 def start(port=8765, daten=None, browser=True):
     global DATEN
     DATEN = Path(daten) if daten else wurzel() / "daten"
-    DATEN.mkdir(exist_ok=True)
+    DATEN.mkdir(parents=True, exist_ok=True)
     server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
     url = f"http://127.0.0.1:{port}/"
     print(_("famrecon läuft auf {url}  (Strg+C beendet)").format(url=url))
+    print(_("Datenordner: {ordner}").format(ordner=DATEN.resolve()))
     if browser:
         threading.Timer(0.6, lambda: app_fenster(url)).start()
     try:

@@ -189,6 +189,9 @@ msgstr "Create example project (fictional family tree, 492 persons)"
 msgid "famrecon läuft auf {url}  (Strg+C beendet)"
 msgstr "famrecon is running at {url}  (Ctrl+C stops it)"
 
+msgid "Datenordner: {ordner}"
+msgstr "Data folder: {ordner}"
+
 msgid "Blätter. Jede Spalte bekommt ein Feld aus dem Katalog; die Beispiele zeigen, ob der Vorschlag stimmt. „unsicher“ bitte prüfen. Was nicht übernommen wird, fehlt später in der GEDCOM."
 msgstr "sheets. Each column gets a field from the catalogue; the examples show whether the proposal is right. Please check “uncertain”. What is not taken over will be missing from the GEDCOM."
 

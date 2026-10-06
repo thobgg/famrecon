@@ -190,6 +190,9 @@ msgstr ""
 msgid "famrecon läuft auf {url}  (Strg+C beendet)"
 msgstr ""
 
+msgid "Datenordner: {ordner}"
+msgstr ""
+
 msgid "Blätter. Jede Spalte bekommt ein Feld aus dem Katalog; die Beispiele zeigen, ob der Vorschlag stimmt. „unsicher“ bitte prüfen. Was nicht übernommen wird, fehlt später in der GEDCOM."
 msgstr ""
 
