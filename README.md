@@ -212,7 +212,7 @@ sind ausgenommen.
     tests/               unittest, `make test`
     pruefungen/          Regelkatalog mit 64 Plausibilitätsregeln und sein Motor (`make plausibilitaet`)
     werkzeuge/           Bauen und Prüfen: famrecon.spec und start.py (PyInstaller), deb-bauen.sh,
-                         Symbole, falkenrath-lauf.sh (Messlauf), gramps-pruefen.sh
+                         windows-bauen.ps1 (Bau auf dem Laptop), Symbole, falkenrath-lauf.sh (Messlauf), gramps-pruefen.sh
     .github/workflows/   paket.yml baut die Pakete für Windows, macOS und Linux
     Makefile             Ziele: test, sprachen, start, bau, gedcom, gramps, plausibilitaet, beispiel, messung
     daten/               lokal, von Git ignoriert: ein Ordner je Projekt (Tabellen, zuordnung.toml, projekt.db, projekt.ged)
