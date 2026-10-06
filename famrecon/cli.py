@@ -60,7 +60,7 @@ def cmd_stand(args):
 
 def cmd_verknuepfen(args):
     con = db.oeffnen(args.db)
-    verknuepfen.verknuepfen(con)
+    verknuepfen.verknuepfen(con, kennungen=True if args.kennungen else None)
     st = verknuepfen.statistik(con)
     print(_("{personen} Personen in Eintraegen -> {identitaeten} Identitaeten, {familien} Familien ({familien_mit_kindern} mit Kindern, {kinder} Kinder)").format(**st))
     print(_("Zuordnungen:") + " " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items()))
@@ -133,6 +133,7 @@ def main(argv=None):
 
     s = sub.add_parser("verknuepfen", help=_("Personen und Familien aus den Eintraegen bilden"))
     s.add_argument("db", nargs="?", default="daten/projekt.db")
+    s.add_argument("--kennungen", action="store_true", help=_("Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"))
     s.set_defaults(fn=cmd_verknuepfen)
 
     s = sub.add_parser("familien", help=_("Familien mit Kindern zeigen"))

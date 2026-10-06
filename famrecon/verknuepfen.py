@@ -23,8 +23,15 @@ Punkte und Vetos stammen aus der Hollerbach-Pipeline (v47) von Thomas; dort an
     unsicher        Punkte ueber der Schwelle, aber ein Zweiter liegt nah -> Pruefliste
     neu             kein Kandidat
 
+    vorgabe         Kennung aus der Tabelle (Feld ref) hat entschieden, Experten-Schalter "kennungen"
+
 Nichts hier ist endgueltig: Die Pruefliste legt die unsicheren Faelle vor,
 und eine Entscheidung von Hand ueberschreibt die Rechnung beim naechsten Lauf.
+
+Kennungen als Vorgabe (Einstellung `kennungen`, Zuordnung > Erweitert): Autoren, die ihre
+Personen schon nummeriert haben, geben die Nummer im Feld `ref` mit. Gleiche Kennung heisst
+dann dieselbe Person, verschiedene Kennungen werden nie zusammengelegt. Spricht die Rechnung
+deutlich fuer eine andere Person, wird der Fall "unsicher" und landet in der Pruefliste.
 """
 import json
 
@@ -57,7 +64,7 @@ class Bestand:
         i = dict(id=self.next_i, geschlecht=p.get("geschlecht"), name=p.get("geburtsname") or p.get("name"),
                  vorname=p.get("vorname"), geburtsname=p.get("geburtsname"),
                  ehename=p.get("name") if p.get("geburtsname") else None, unbekannt=int(bool(p.get("unbekannt"))),
-                 geb=None, geb_praefix=None, tod=None, famc=None, pfade=[])
+                 geb=None, geb_praefix=None, tod=None, famc=None, pfade=[], ref=None)
         i["name_schl"] = nf.koelner(i["name"]) or None
         i["vorname_kanon"] = nf.vorname_kanon(i["vorname"]) or None
         self.next_i += 1
@@ -259,8 +266,13 @@ def lade(con):
                                                       {"ehe": 0, "taufe": 1, "tod": 2}[e["register"]]))
 
 
-def verknuepfen(con):
+def verknuepfen(con, kennungen=None):
+    """kennungen: Kennungen (Feld ref) als Vorgabe nutzen; None = Einstellung des Projekts."""
+    if kennungen is None:
+        r = con.execute("SELECT wert FROM einstellung WHERE name='kennungen'").fetchone()
+        kennungen = bool(r and r["wert"] == "1")
     best = Bestand()
+    ident_von_ref = {}                # Kennung -> ident_id (nur mit `kennungen`)
     zuordnungen = []                  # (person_id, ident_id, stufe, punkte, grund, alternativen)
     schluessel = {r["id"]: f"{r['datei']}|{r['blatt']}|{r['zeile']}|{r['pfad']}" for r in con.execute(
         "SELECT p.id, q.datei, q.blatt, e.zeile, p.pfad FROM person p JOIN eintrag e ON e.id=p.eintrag JOIN quelle q ON q.id=e.quelle")}
@@ -276,6 +288,19 @@ def verknuepfen(con):
             zuordnungen.append((p["id"], i["id"], stufe, punkte, grund, json.dumps(alt or [], ensure_ascii=False)))
             i["pfade"].append((p["eintrag"], p["pfad"]))
             ident_von_person[p["id"]] = i["id"]
+            if kennungen and p.get("ref") and not i["ref"]:
+                i["ref"] = p["ref"]
+                ident_von_ref[p["ref"]] = i["id"]
+
+    def ref_passt(i, p):
+        """Mit Kennungen: eine Identitaet mit fremder Kennung kommt fuer p nicht in Frage."""
+        return not kennungen or not p or not p.get("ref") or i["ref"] in (None, p["ref"])
+
+    def vorgabe_fuer(p):
+        """Die Identitaet, die p laut Kennung sein muss, oder None."""
+        if kennungen and p and p.get("ref") and p["ref"] in ident_von_ref:
+            return best.idents[ident_von_ref[p["ref"]]]
+        return None
 
     def von_hand(p):
         """Entscheidung aus der Pruefliste: (ident|None, stufe) oder None, wenn keine vorliegt."""
@@ -292,15 +317,25 @@ def verknuepfen(con):
         hand = von_hand(p)
         if hand:
             return [], hand
+        vorgabe = vorgabe_fuer(p)
         if not p or (not p.get("name") and not p.get("geburtsname")):
-            return [], (None, "neu", 0, "", [])
+            return [], ((vorgabe, "vorgabe", 999, "Kennung " + p["ref"], []) if vorgabe else (None, "neu", 0, "", []))
         kand = []
         for name in {p.get("name"), p.get("geburtsname")} - {None}:
             for i in best.kandidaten_name(name, nf.koelner(name), geschlecht or p.get("geschlecht")):
+                if not vorgabe and not ref_passt(i, p):     # mit Vorgabe zaehlen alle: die Rechnung soll widersprechen duerfen
+                    continue
                 r = person_punkte(best, i, p, jahr, **ctx)
                 if r and not any(k[0]["id"] == i["id"] for k in kand):
                     kand.append((i, r[0], r[1]))
-        return kand, entscheiden(kand, schwelle)
+        ergebnis = entscheiden(kand, schwelle)
+        if vorgabe:                       # Kennung entscheidet; widerspricht die Rechnung deutlich, in die Pruefliste
+            i, stufe, punkte, grund, alt = ergebnis
+            if i is not None and i["id"] != vorgabe["id"]:
+                return kand, (vorgabe, "unsicher", 999, f"Kennung {p['ref']}; Rechnung spricht für [{i['id']}]: {grund}",
+                              [[i["id"], punkte, grund]] + alt)
+            return kand, (vorgabe, "vorgabe", 999, "Kennung " + p["ref"], [])
+        return kand, ergebnis
 
     def person_oder_neu(p, jahr, geschlecht=None, schwelle=SCHWELLE, **ctx):
         if not p:
@@ -333,8 +368,13 @@ def verknuepfen(con):
         if not vater_p or not vater_p.get("name"):
             return None
         kand = []
-        for i in best.kandidaten_name(vater_p["name"], vater_p.get("name_schl"), "M"):
+        vorgabe = vorgabe_fuer(vater_p)
+        for i in ([vorgabe] if vorgabe else best.kandidaten_name(vater_p["name"], vater_p.get("name_schl"), "M")):
+            if not ref_passt(i, vater_p):
+                continue
             r = person_punkte(best, i, vater_p, jahr, vorname_pflicht=True, tot_erlaubt=grob, alter=None if grob else ALTER_VATER)
+            if vorgabe and not r:
+                r = (SCHWELLE, ["Kennung"])
             if not r:
                 continue
             ij = best.geb_jahr(i)
@@ -348,7 +388,9 @@ def verknuepfen(con):
                 gruende = list(r[1])
                 if mutter_p:
                     mp = mutter_passt(best.idents[f["frau"]], mutter_p) if f["frau"] else 10
-                    if mp < 0:
+                    if mp < 0 or (f["frau"] and not ref_passt(best.idents[f["frau"]], mutter_p)):
+                        continue
+                    if f["frau"] and vorgabe_fuer(mutter_p) is not None and vorgabe_fuer(mutter_p)["id"] != f["frau"]:
                         continue
                     punkte += mp
                     if mp >= P_MUTTER:
@@ -398,13 +440,17 @@ def verknuepfen(con):
                 if m and (P.get("mutter_vater") or P.get("mutter_mutter")):
                     eltern_anbinden(m, P.get("mutter_vater"), P.get("mutter_mutter"), jahr)
             if kind_p:
-                k = best.neu_ident(kind_p)
-                k["geb"] = kind_p["geb"]
+                vorgabe = vorgabe_fuer(kind_p)
+                k = vorgabe or best.neu_ident(kind_p)
                 rv = nf.datum_zerlegen(e["felder"].get("sterbe_datum_rv"))
                 if rv:
                     k["tod"] = rv
                 best.kind_setzen(f, k["id"])
-                merke(kind_p, k)
+                if vorgabe and (k["geb"] or k["famc"] not in (None, f["id"])):   # zweite Taufe auf eine Kennung: Tippfehler?
+                    merke(kind_p, k, "unsicher", 999, f"Kennung {kind_p['ref']}; Rechnung spricht für eine neue Person: schon getauft {k['geb'][0] if k['geb'] else ''}", [])
+                else:
+                    merke(kind_p, k, "vorgabe" if vorgabe else "neu", 999 if vorgabe else 0, "Kennung " + kind_p["ref"] if vorgabe else "")
+                k["geb"] = k["geb"] or kind_p["geb"]
         elif e["register"] == "ehe":
             paar = {}
             for rolle, g in (("braeutigam", "M"), ("braut", "F")):
@@ -453,7 +499,7 @@ def verknuepfen(con):
                             if ki["geb"] and ki["geb"][0] == e["jahr"] and (p.get("totgeburt") or not ki["vorname"]):
                                 i, stufe, punkte, grund = ki, "sicher", 150, "Eltern und Jahr, ohne Vornamen"
             # Vetos nach Hollerbach: ledig -> Vater muss passen, wenn Familie da; verheiratet -> ein Partner muss passen
-            if i is not None:
+            if i is not None and not (kennungen and p.get("ref") and i["ref"] == p["ref"]):    # eine Kennung schlaegt Vetos
                 stand = (p.get("stand") or "").lower()
                 if stand == "ledig" and vater_p and i["famc"] and best.fams[i["famc"]]["mann"] \
                         and not vater_passt(best.idents[best.fams[i["famc"]]["mann"]], vater_p):
@@ -477,7 +523,7 @@ def verknuepfen(con):
                 for fid in best.fams_von.get(i["id"], []):
                     f = best.fams[fid]
                     pid = f["frau"] if f["mann"] == i["id"] else f["mann"]
-                    if pid and vater_passt(best.idents[pid], partner_p):
+                    if pid and vater_passt(best.idents[pid], partner_p) and ref_passt(best.idents[pid], partner_p):
                         vorhanden = best.idents[pid]
                         merke(partner_p, vorhanden, "sicher", P_PARTNER, "Ehepartner des Verstorbenen")
                         break

@@ -11,5 +11,8 @@ function umschalten(sel) {
 <form method="post" action="/p/$projekt/zuordnung" onsubmit="this.querySelectorAll('button').forEach(b => { b.disabled = true; }); document.activeElement.textContent = '⏳ ' + document.activeElement.textContent">
 $bloecke
 <p><label>{{Als „nicht angegeben“ gelten:}} <input name="leer" value="$leer" size="40"></label></p>
+<details class="erweitert"><summary>{{Erweitert}}</summary>
+<label><input type="checkbox" name="kennungen" value="1" $kennungen_checked> {{Kennungsspalten (Feld „ref“) als Vorgabe: gleiche Kennung ist dieselbe Person, verschiedene Kennungen werden nie zusammengelegt. Widerspricht die Rechnung deutlich, landet der Fall in der Prüfliste. Für Autoren, die ihre Personen schon nummeriert haben.}}</label>
+</details>
 <p><button name="bauen" value="1">{{Zuordnung bestätigen und bauen}}</button> <button class="leise">{{nur speichern}}</button> <a class="knopf leise" href="/p/$projekt">{{zurück}}</a></p>
 </form>

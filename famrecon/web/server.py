@@ -116,6 +116,8 @@ class Projekt:
             st["familien"] = con.execute("SELECT COUNT(*) FROM familie").fetchone()[0]
             st["stufen"] = dict(con.execute("SELECT stufe, COUNT(*) FROM zuordnung GROUP BY stufe"))
             st["offen"] = con.execute("SELECT COUNT(*) FROM zuordnung z WHERE z.stufe='unsicher' AND z.person NOT IN (SELECT person FROM entscheidung)").fetchone()[0]
+            r = con.execute("SELECT wert FROM einstellung WHERE name='kennungen'").fetchone()
+            st["kennungen"] = bool(r and r["wert"] == "1")
         return st
 
 
@@ -155,7 +157,8 @@ def s_projekt(pr, meldung=""):
     schritte.append((_("Tabellen"), ", ".join(st["tabellen"]) or _("keine hochgeladen"), bool(st["tabellen"])))
     schritte.append((_("Zuordnung"), _("liegt vor") if st["zuordnung"] else _("fehlt"), st["zuordnung"]))
     schritte.append((_("Projektdatei"), ", ".join(f"{k} {v}" for k, v in st["eintraege"].items()) + f"; {st['personen']} " + _("Nennungen") if st["db"] else _("fehlt"), st["db"]))
-    schritte.append((_("Verknüpfung"), f"{st['identitaeten']} " + _("Personen") + f", {st['familien']} " + _("Familien") + "; " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items()) if st["identitaeten"] else _("fehlt"), bool(st["identitaeten"])))
+    schritte.append((_("Verknüpfung"), f"{st['identitaeten']} " + _("Personen") + f", {st['familien']} " + _("Familien") + "; " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items())
+                     + (" · " + _("Kennungen als Vorgabe") if st.get("kennungen") else "") if st["identitaeten"] else _("fehlt"), bool(st["identitaeten"])))
     schritte.append((_("Prüfliste"), f"{st['offen']} " + _("offen") if st["identitaeten"] else "–", st["identitaeten"] and not st["offen"]))
     schritte.append(("GEDCOM", _("liegt vor") if st["ged"] else _("fehlt"), st["ged"]))
     liste = "".join(f'<tr class="{"ok" if ok else ""}"><th>{h(t)}</th><td>{h(w)}</td></tr>' for t, w, ok in schritte)
@@ -169,10 +172,11 @@ def s_zuordnung(pr, wahl=None):
     blaetter = []
     for t in pr.tabellen():
         blaetter += [(b, r, zu, lw, t.name) for b, r, zu, lw, *_rest in zuordnung.vorschlagen(t)]
-    vorhanden = {}
+    vorhanden, kennungen = {}, False
     if pr.toml.exists():
         try:
             z = lesen.zuordnung_laden(pr.toml)
+            kennungen = bool(z["allgemein"].get("kennungen"))
             for reg, d in z["register"].items():
                 vorhanden[(d.get("datei"), d["blatt"])] = (reg, {k: v for k, v in d["spalten"].items()})
         except Exception:
@@ -210,12 +214,13 @@ def s_zuordnung(pr, wahl=None):
         n_u = sum(1 for _b, x in zu if x["stufe"] == "unsicher"); n_0 = sum(1 for _b, x in zu if not x["feld"] and x["n"])
         bilanz.append(f"<b>{h(blatt)}</b> ({_(reg)}): " + _("{s} sicher, {w} wahrscheinlich, {u} unsicher, {n} nicht erkannt").format(s=n_s, w=n_w, u=n_u, n=n_0))
     return seite("zuordnung", projekt=pr.name, titel=_("Zuordnung"), bloecke="".join(bloecke), anzahl=len(blaetter), leer=h(", ".join(leer)),
-                 bilanz=" · ".join(bilanz))
+                 bilanz=" · ".join(bilanz), kennungen_checked="checked" if kennungen else "")
 
 
 def zuordnung_speichern(pr, form):
     n, z = 0, ["# Spaltenzuordnung, in der Oberflaeche bestaetigt", "", "[allgemein]",
-               "leer = [" + ", ".join(f'"{w.strip()}"' for w in form.get("leer", "").split(",") if w.strip()) + "]"]
+               "leer = [" + ", ".join(f'"{w.strip()}"' for w in form.get("leer", "").split(",") if w.strip()) + "]",
+               "kennungen = " + ("true" if form.get("kennungen") else "false") + "   # Feld ref als Vorgabe (Erweitert)"]
     while f"r{n}" in form:
         reg, datei, blatt = form[f"r{n}"], form[f"d{n}"], form[f"b{n}"]
         z += ["", f"[register.{reg}]", f'blatt = "{blatt}"', f'datei = "{datei}"',

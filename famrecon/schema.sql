@@ -105,6 +105,12 @@ CREATE TABLE IF NOT EXISTS zuordnung (
   alternativen TEXT                   -- JSON [[ident, punkte, grund], ...] fuer die Pruefliste
 );
 
+-- Einstellungen des Projekts, die das Verknuepfen braucht (aus [allgemein] der Zuordnung).
+CREATE TABLE IF NOT EXISTS einstellung (
+  name TEXT PRIMARY KEY,
+  wert TEXT
+);
+
 -- Entscheidungen von Hand aus der Pruefliste. Sie ueberleben jeden Lauf, weil sie
 -- an Personenzeilen haengen, nicht an den (bei jedem Lauf neu vergebenen) Identitaeten.
 CREATE TABLE IF NOT EXISTS entscheidung (

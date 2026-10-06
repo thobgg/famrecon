@@ -71,3 +71,6 @@ button.klein { padding: .2rem .6rem; font-size: .9rem; }
 .toc .knopf { text-align: center; margin-bottom: .6rem; }
 .zurueck-oben { margin: 0 0 1rem; }
 .zurueck-unten { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--linie); }
+.erweitert { margin: .8rem 0; color: var(--grau); }
+.erweitert summary { cursor: pointer; font-weight: 600; }
+.erweitert label { display: flex; gap: .5rem; align-items: flex-start; max-width: 60rem; }

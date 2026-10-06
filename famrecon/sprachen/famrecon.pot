@@ -405,3 +405,15 @@ msgstr ""
 
 msgid "Nennungen"
 msgstr ""
+
+msgid "Erweitert"
+msgstr ""
+
+msgid "Kennungsspalten (Feld „ref“) als Vorgabe: gleiche Kennung ist dieselbe Person, verschiedene Kennungen werden nie zusammengelegt. Widerspricht die Rechnung deutlich, landet der Fall in der Prüfliste. Für Autoren, die ihre Personen schon nummeriert haben."
+msgstr ""
+
+msgid "Kennungen als Vorgabe"
+msgstr ""
+
+msgid "Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"
+msgstr ""

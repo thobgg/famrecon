@@ -202,5 +202,7 @@ def einlesen(con, zuordnung, dateien):
                 n += 1
             con.execute("UPDATE quelle SET zeilen=? WHERE id=?", (n, qid))
             zaehler[register] = zaehler.get(register, 0) + n
+    con.execute("INSERT OR REPLACE INTO einstellung(name, wert) VALUES ('kennungen', ?)",
+                ("1" if zuordnung["allgemein"].get("kennungen") else "0"))
     con.commit()
     return zaehler

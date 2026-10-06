@@ -70,8 +70,14 @@ class Oberflaeche(unittest.TestCase):
             sel = re.search(r'<option value="([^"]*)" selected', m.group(2))
             form[m.group(1)] = sel.group(1) if sel else ""
         form["leer"] = "k.A., —"
+        self.assertIn('name="kennungen"', html)                               # Erweitert: Kennungen als Vorgabe
+        form["kennungen"] = "1"
         st, html = self.hole("/p/kirchenbuchstil/zuordnung", urllib.parse.urlencode(form).encode(), "application/x-www-form-urlencoded")
         self.assertIn("Zuordnung gespeichert", html)
+        self.assertIn("kennungen = true", (Path(self.tmp.name) / "kirchenbuchstil" / "zuordnung.toml").read_text(encoding="utf-8"))
+        self.assertIn('name="kennungen" value="1" checked', self.hole("/p/kirchenbuchstil/zuordnung")[1])
+        del form["kennungen"]
+        self.hole("/p/kirchenbuchstil/zuordnung", urllib.parse.urlencode(form).encode(), "application/x-www-form-urlencoded")
         st, html = self.hole("/p/kirchenbuchstil/bauen", b"", "application/x-www-form-urlencoded")
         self.assertIn("92 Nennungen", html)
         st, html = self.hole("/p/kirchenbuchstil/personen?q=Haag")

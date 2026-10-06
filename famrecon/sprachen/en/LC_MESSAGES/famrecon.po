@@ -404,3 +404,15 @@ msgstr "famrecon {alt} is still running, replaced by {neu}"
 
 msgid "Nennungen"
 msgstr "mentions"
+
+msgid "Erweitert"
+msgstr "Advanced"
+
+msgid "Kennungsspalten (Feld „ref“) als Vorgabe: gleiche Kennung ist dieselbe Person, verschiedene Kennungen werden nie zusammengelegt. Widerspricht die Rechnung deutlich, landet der Fall in der Prüfliste. Für Autoren, die ihre Personen schon nummeriert haben."
+msgstr "Use identifier columns (field “ref”) as given: the same identifier is the same person, different identifiers are never merged. If the computation clearly disagrees, the case goes to the review list. For authors who have already numbered their persons."
+
+msgid "Kennungen als Vorgabe"
+msgstr "identifiers as given"
+
+msgid "Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"
+msgstr "identifiers (field ref) as given: the same identifier is the same person"
