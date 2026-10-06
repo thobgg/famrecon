@@ -1,0 +1,242 @@
+<h1>Help</h1>
+<p class="hilfe">This help describes every page of the interface, explains how famrecon computes its results, and answers frequent questions. The <b>? Help</b> button at the top right of every page leads to the matching section.</p>
+
+<h2 id="ueberblick">What famrecon does</h2>
+<p>famrecon builds families from <b>baptism, marriage and burial registers in table form</b> and writes them as a <b>GEDCOM file</b>. The input is a table as local family book authors keep it: one row per parish register entry, columns in the author's own layout. The output is read by every genealogy program (Gramps, Ahnenblatt, webtrees, online family books).</p>
+<p>In between lies <b>family reconstitution</b>: the program recognises which mentions in different entries refer to the same person (the child baptised in 1770, the groom of 1795, the deceased of 1831) and forms persons and families from them. What is clearly documented it links itself; close calls go to the <a href="#pruefliste">review list</a>. Nothing is discarded: every table row ends up in the GEDCOM, and a check verifies that.</p>
+<p>The path in five steps: <b>load tables → review the mapping → build → review list → GEDCOM</b>.</p>
+<p>What famrecon does <b>not</b> do: it does not read scans or handwriting, it does not add data from the internet, and it never changes your tables. Everything runs on your computer; no data leaves it (see <a href="#daten">Data and safety</a>).</p>
+
+<h2 id="start">Start page and projects</h2>
+<p>A <b>project</b> is one place or one set of registers. Technically it is a folder inside the data folder (the path is shown at the bottom of the start page). It holds your uploaded tables, the mapping (<code>zuordnung.toml</code>), the project file (<code>projekt.db</code>) and the finished GEDCOM (<code>projekt.ged</code>).</p>
+<h3>Creating a project</h3>
+<dl>
+<dt>Name</dt><dd>Letters, digits, hyphen and underscore, no spaces. The name becomes the folder name and the GEDCOM file name, for example <code>millbrook</code>.</dd>
+<dt>Tables</dt><dd>One Excel workbook (<code>.xlsx</code>, <code>.xlsm</code>) with one sheet per register, or several files, or CSV/TSV files. You can select several at once. For CSV the delimiter (semicolon, comma, tab, pipe) and the encoding (UTF-8, Windows-1252, Latin-1) are detected.</dd>
+</dl>
+<p>After creating the project you land on the <a href="#zuordnung">mapping</a>. A project without tables can be created and filled later from the project page.</p>
+<h3>Example project</h3>
+<p>The button <b>Create example project</b> builds a complete project from a fictional family tree with 492 persons over seven generations. It is a good way to get to know the pages before loading your own data. It can be deleted at any time.</p>
+<h3>Which tables work</h3>
+<ul>
+<li>The <b>first row</b> holds the headers; from the second row on, each row is one entry.</li>
+<li><b>One sheet or file per register</b> (baptisms, marriages, burials). Sheet names such as "Baptisms", "Marriages", "Burials" help recognition but are not required: the register can be switched on the mapping page.</li>
+<li>Dates as text (<code>1778-08-31</code>, <code>31.08.1778</code>, <code>1778</code>, also <code>1699-08-00</code> for "month known, day not") or as Excel dates.</li>
+<li>Persons either <b>in one cell</b> ("Haag, Nicolaus, weyl., former coachman") or <b>split</b> into surname, given name, occupation. Both are fine; the <a href="#bauen">normal form</a> brings them together.</li>
+<li>Placeholders for "not given" such as <code>n/a</code>, <code>—</code> or <code>?</code> do no harm; the mapping recognises them as empty words.</li>
+<li>Formulas are read as their last calculated value. Merged cells, images and formatting play no role.</li>
+</ul>
+
+<h2 id="projekt">The project page</h2>
+<p>The table at the top shows the <b>six steps</b> and their state. A check mark means: done. The rows in detail:</p>
+<dl>
+<dt>Tables</dt><dd>The uploaded files. More files can be added at any time; a file with the same name replaces the old one.</dd>
+<dt>Mapping</dt><dd>Whether a confirmed column mapping exists. Without it, "build and link" first leads to the mapping page.</dd>
+<dt>Project file</dt><dd>How many entries per register were read and how many person mentions resulted (one baptism row yields up to three: child, father, mother).</dd>
+<dt>Linking</dt><dd>How many real persons and families were formed, and how the assignments are distributed over the levels certain, probable, uncertain and new.</dd>
+<dt>Review list</dt><dd>How many uncertain cases still lack your decision. The check mark appears when none is open.</dd>
+<dt>GEDCOM</dt><dd>Whether the file has been written. The "Download GEDCOM" button appears as soon as it exists.</dd>
+</dl>
+<h3>The buttons</h3>
+<dl>
+<dt>Upload tables</dt><dd>Put more or changed tables into the project. Then review the mapping, because new sheets need one.</dd>
+<dt>Review mapping</dt><dd>Opens the <a href="#zuordnung">mapping page</a>.</dd>
+<dt>build and link</dt><dd>Reads all tables again according to the mapping, forms the normal form and links. This takes seconds for a few thousand rows and a few minutes for a hundred thousand. Every run rebuilds persons and families from scratch; your decisions from the review list are kept and applied again.</dd>
+<dt>Persons, Families, Review list</dt><dd>The views of the result, see the following sections.</dd>
+<dt>Write and check GEDCOM</dt><dd>Writes the GEDCOM and immediately checks it against the entries.</dd>
+<dt>Delete project</dt><dd>Removes the project folder including uploaded tables, mapping, decisions and GEDCOM. This cannot be undone. Your original files outside the data folder are untouched.</dd>
+</dl>
+<div class="tipp">After every change to tables or mapping: "build and link" again, then look at the review list, then write the GEDCOM anew.</div>
+
+<h2 id="zuordnung">Mapping: assigning columns to fields</h2>
+<p>Every author keeps tables differently. That is why famrecon has a fixed <b>field catalogue</b> inside and needs a small <b>mapping</b> outside: which sheet is which register, and which column is which field. The program proposes the mapping from headers and sample values; you review and confirm it.</p>
+<h3>Layout of the page</h3>
+<p>One block per sheet. The heading shows the file, the sheet name and a selector for the <b>register</b> (baptism, marriage, death). If the program guessed the register wrong, switch it here; the field list is then proposed anew for the new register. Below it the table:</p>
+<table>
+<tr><th>Column</th><th>Meaning</th></tr>
+<tr><td>Col.</td><td>The column letter of your table. A range such as <code>S-BF</code> means these columns together form one field, for example forty godparent columns as <code>paten</code>.</td></tr>
+<tr><td>Header</td><td>Your header from the first row.</td></tr>
+<tr><td>Examples</td><td>A few cell values from this column. This is the quickest way to see whether the proposal is right.</td></tr>
+<tr><td>Field</td><td>The field in famrecon. The list shows every field name with a short explanation. "– do not import –" drops the column.</td></tr>
+<tr><td>Proposal</td><td>How certain the program is: <b>sicher</b> (header and values fit), <b>wahrscheinlich</b> (the header fits), <b>unsicher</b> (yellow; only a weak similarity, or the values look different from what is expected, such as text in a date column). Empty means not recognised; the column would be dropped.</td></tr>
+</table>
+<p>The <b>balance</b> line at the top counts the levels per sheet. Goal: no "unsicher" and no "not recognised" columns that you actually need.</p>
+<h3>Reading field names</h3>
+<p>Fields belong to <b>roles</b>. Every register has main roles: baptism <code>kind</code> (child), <code>vater</code> (father), <code>mutter</code> (mother); marriage <code>braeutigam</code> (groom), <code>braut</code> (bride); death <code>verstorbener</code> (deceased). A role can have sub-roles: the bride her father, her mother and her previous husband (<code>vorehe</code>), the deceased his or her spouse (<code>ehepartner</code>). The field name is the path with underscores:</p>
+<table>
+<tr><td><code>braut_name</code></td><td>surname of the bride</td></tr>
+<tr><td><code>braut_vater_beruf</code></td><td>occupation of the bride's father</td></tr>
+<tr><td><code>verstorbener_ehepartner</code></td><td>spouse of the deceased as a whole cell ("Haag, Catharina")</td></tr>
+<tr><td><code>kind_vorname</code></td><td>given name of the baptised child</td></tr>
+<tr><td><code>vater</code></td><td>father as a whole cell: name, given name, markers and occupation are split when building</td></tr>
+</table>
+<p>Without a role come the fields of the entry itself: <code>tauf_datum</code> (baptism date), <code>trauung_datum</code> (marriage date), <code>sterbe_datum</code> (death date), <code>begraebnis_datum</code> (burial date), places, <code>paten</code> (godparents), <code>zeugen</code> (witnesses), <code>todesursache</code> (cause of death), <code>unehelich</code> (illegitimate), plus the citation (<code>kb</code> register book, <code>seite</code> page, <code>lfd_nr</code> number, <code>zitat</code> citation) and <code>bemerkung</code> (remark). Fields ending in <code>_rv</code> are <b>back references</b>: a death date the author already wrote into the baptism row. famrecon uses them for linking.</p>
+<p>Two suffixes exist everywhere: <code>_kb</code> for the literal <b>register spelling</b> next to a normalised column ("Hanß" next to "Johann"); it is written to the GEDCOM as an additional name form. <code>_praefix</code> for a date qualifier such as "about", "before", "calculated" (GEDCOM ABT, BEF, CAL).</p>
+<h3>Ranks: what is mandatory</h3>
+<p>Every field has a rank. <b>Mandatory</b>: without it the entry cannot be used. Per register these are: baptism a given name of the child, a birth or baptism date and at least one parent; marriage a marriage date, groom and bride; death the deceased and a death or burial date. <b>Linking</b>: helps to connect persons across registers (given names, age, origin, parents, spouse, back references). <b>Supplementary</b>: carried along and written out, but decides nothing (godparents, witnesses, minister, remarks).</p>
+<h3>Treated as "not given"</h3>
+<p>The input field at the bottom lists placeholders that mean "empty" in your cells: <code>n/a</code>, <code>—</code>, <code>?</code>, <code>[ ]</code>. The program proposes what it found in the cells. Such values are not read as a name or date but are kept as raw text.</p>
+<h3>Confirming</h3>
+<p><b>Confirm mapping and build</b> saves and reads in immediately. <b>save only</b> saves without reading. The mapping then lies in the project folder as a readable text file <code>zuordnung.toml</code>; it can be copied and reused for another project with the same table layout (see <a href="#faq">FAQ</a>).</p>
+<div class="achtung">Whatever is set to "do not import" or was not recognised will be missing from the GEDCOM later. Check above all the columns with names, dates and parents.</div>
+
+<h2 id="bauen">Building: reading and normal form</h2>
+<p>When building, famrecon reads every row according to the mapping and brings the values into a <b>normal form</b> it can compute with. The raw value of every cell is kept alongside and appears in the person list and in the review list.</p>
+<h3>Splitting person cells</h3>
+<p>A cell such as "Haag, Nicolaus, weyl., gewesener adelicher Kutscher" becomes surname <i>Haag</i>, given name <i>Nicolaus</i>, death marker, occupation <i>gewesener adelicher Kutscher</i>. Recognised markers (German register conventions):</p>
+<table>
+<tr><td><code>(W)</code>, <code>Witwe</code></td><td>widowed</td></tr>
+<tr><td><code>(in)</code>, ending <code>-in</code></td><td>female (Hagin = Hag)</td></tr>
+<tr><td><code>geb. X</code>, <code>geborene X</code></td><td>birth name X; the name given becomes the married name</td></tr>
+<tr><td><code>N.</code>, <code>NN.</code>, <code>NN</code></td><td>name unknown</td></tr>
+<tr><td><code>?</code>, <code>(?)</code>, <code>(??)</code></td><td>uncertain reading</td></tr>
+<tr><td><code>weyl.</code>, <code>weil.</code>, <code>sel.</code>, <code>selig</code>, <code>+</code>, <code>†</code></td><td>already deceased at the time of the mention</td></tr>
+<tr><td>"Rosenfeld von"</td><td>becomes "von Rosenfeld" (nobility particle moved to the front)</td></tr>
+<tr><td>"Mädchen - totgeboren", "anonymus"</td><td>stillbirth; the sex from Mädchen (girl), Knabe (boy), Söhnlein, Töchterlein</td></tr>
+</table>
+<h3>Age and dates</h3>
+<p>Age in six notations ("59 J 10 M 4 T", "3 J., 7 M., 14 T", "24 Wochen", "1 Monat", "½ Jahr", "0") is converted to days; from it a <b>calculated birth date</b> with the qualifier CAL results, which is compared with the baptism when linking. Dates with month but no day, or year only, stay as precise as they are.</p>
+<h3>Phonetic keys</h3>
+<p>Surnames get a phonetic key (Cologne phonetics) so that <i>Haag</i> and <i>Hag</i>, <i>Kriehmann</i> and <i>Kriemann</i> find each other. Given names get a unified form: <i>Nicolaus</i> = <i>Nikolaus</i>, <i>Hanß</i> = <i>Johann</i>, <i>Catharina</i> = <i>Katharina</i>. The spelling of the entry is kept and appears in the GEDCOM as an additional name form.</p>
+
+<h2 id="personen">Persons</h2>
+<p>This list shows <b>every mention</b> of a person in the entries, that is the rows of the normal form, not the merged persons. A baptism row yields up to three mentions, a marriage row up to eight (the couple, their parents, previous spouses).</p>
+<table>
+<tr><th>Column</th><th>Meaning</th></tr>
+<tr><td>Reg., Year</td><td>Register and year of the entry.</td></tr>
+<tr><td>Role</td><td>The path: <code>kind</code>, <code>braut_vater</code>, <code>verstorbener_ehepartner</code> and so on.</td></tr>
+<tr><td>Name, Given name</td><td>Normalised. A dash means: not mentioned.</td></tr>
+<tr><td>Markers</td><td><b>†</b> mentioned as deceased, <b>?</b> uncertain reading, <b>NN</b> name unknown, <b>Totgeburt</b> stillbirth.</td></tr>
+<tr><td>Birth</td><td>Birth year if known or calculated; <code>CAL</code> in front means calculated from the age.</td></tr>
+<tr><td>Status, Occupation</td><td>Marital status and occupation as the entry gives them.</td></tr>
+<tr><td>Person</td><td>Which real person the mention belongs to, as a number in square brackets (link into the families), and the <a href="#verknuepfung">level</a> of the assignment.</td></tr>
+</table>
+<p>The search looks in surname, given name and the raw text of the cell; the selector limits to one register. At most 500 rows are shown, so narrow down for large sets.</p>
+
+<h2 id="familien">Families</h2>
+<p>One box per family: number <b>F…</b>, marriage year with <b>⚭</b>, husband and wife, below them the children by year of birth. Every person appears with surname, given name, birth and death year and their number in square brackets; for women the birth name comes first and the married name in parentheses when both are known.</p>
+<p><b>(Ehe erschlossen)</b> means: there is no marriage entry; the family was inferred from baptisms or burials naming the same parents. This is normal for marriages before the register begins or at another place.</p>
+<p>The search finds families in which husband, wife or a child matches the search term. At most 300 families are shown. Sorting follows the marriage year, otherwise the first baptism.</p>
+
+<h2 id="verknuepfung">How linking computes</h2>
+<p>All entries run through <b>chronologically</b>, the three registers mixed, because every entry anchors the later ones: the marriage of 1768 carries the baptism of 1770 and the son's marriage of 1795.</p>
+<dl>
+<dt>Baptism</dt><dd>Father and mother are looked up as a parent family: the father via surname (phonetic key) and given name, the mother confirms or contradicts. If none exists, a new family is created. The child is always a new person.</dd>
+<dt>Marriage</dt><dd>Groom and bride are looked up via name, given name, age or birth date and the parents named. Named parents become the parent family, a previous spouse a previous marriage. If nobody is found, a new person is created.</dd>
+<dt>Death</dt><dd>The deceased is looked up via name, given name, the birth year calculated from the age, the father named, the spouse and back references. Two <b>vetoes</b>: "single" does not fit a person with a marriage, "married" or "widowed" does not fit one without a matching partner.</dd>
+</dl>
+<h3>Points and levels</h3>
+<p>Every candidate receives points: same given name 100, partial 70; birth date exact 100, year 50, close 30; matching father 30, matching mother 50, matching spouse 50; a death date from a back reference 200; identical spelling of the surname 20. The threshold is 100 points (death 80). Plausibility windows: fathers 16 to 75 years, mothers 15 to 50, marriage 14 to 80, at most 22 years between first and last child of a family, at most 5 years between calculated and documented birth.</p>
+<table>
+<tr><td><b>sicher</b> (certain)</td><td>An anchor beyond the name (date, parents, partner) and no close runner-up.</td></tr>
+<tr><td><b>wahrscheinlich</b> (probable)</td><td>Points above the threshold, no runner-up nearby.</td></tr>
+<tr><td><b>unsicher</b> (uncertain)</td><td>Points above the threshold, but a second candidate is less than 30 points behind. Goes to the review list.</td></tr>
+<tr><td><b>neu</b> (new)</td><td>No candidate above the threshold: a new person.</td></tr>
+</table>
+<p>Every assignment carries a plain-text reason ("given name, birth year, father") that appears in the review list. Two families with the same couple are merged into one.</p>
+<p>The mechanics are measured: from a known family tree the three registers are generated, linked, and compared with the original. On the bundled example, precision and recall are above 0.99; the errors are siblings with the same given name. Real registers with spelling variants and gaps are harder, which is what the review list is for.</p>
+
+<h2 id="pruefliste">Review list: decisions by hand</h2>
+<p>The review list shows the <b>uncertain assignments</b>: mentions where two or more persons fit about equally well. It is ordered by year; cases already decided are at the end.</p>
+<h3>One case</h3>
+<p>The heading names the mention: register, year, role and the raw text of the cell, plus its number and level. Below, one card per <b>candidate</b> with surname, given name, birth and death year, the person number, the points and the reason, then all <b>evidence</b> for this person: every entry assigned to them so far, with register, year, role and raw text. The first candidate is the program's current choice.</p>
+<h3>The buttons</h3>
+<dl>
+<dt>ist diese Person (is this person)</dt><dd>The mention belongs to this person. On every candidate card.</dd>
+<dt>eigene Person (own person, none of these)</dt><dd>The mention means someone else who is not yet in the data.</dd>
+<dt>Entscheidung zurücknehmen (withdraw decision)</dt><dd>The program's computation applies again.</dd>
+</dl>
+<p>After every click, linking runs again immediately and the list reloads. A green field <b>von Hand</b> (by hand) marks decided cases.</p>
+<h3>What a decision does</h3>
+<p>Decisions are attached to the <b>table row</b> (file, sheet, row number, role), not to the person numbers, which are reassigned on every run. That is why they survive every rebuild, including after adding tables. They apply before the computation and pull follow-up decisions along: whoever has been merged once receives matching later entries as well.</p>
+<h3>How to proceed</h3>
+<ol>
+<li>First decide the cases with a clear anchor: a piece of evidence names the same father, the same birth year, the same spouse.</li>
+<li>Leave doubtful cases open. Open cases still go into the GEDCOM, with the program's choice and a note naming the alternatives.</li>
+<li>After a series of decisions, look at the <a href="#familien">families</a>: did the decisions merge or split families as expected?</li>
+<li><b>also show "wahrscheinlich"</b> adds the next level. Worthwhile for small sets or when you want to check a name specifically.</li>
+</ol>
+
+<h2 id="gedcom">Writing and checking the GEDCOM</h2>
+<p>The page writes the GEDCOM file (version 5.5.1, UTF-8) and checks it immediately. At the top you see how many persons, families and lines were written.</p>
+<h3>What goes where</h3>
+<table>
+<tr><td>Name</td><td>Given name and surname; birth name as first name, married name as second (TYPE married); different spellings from the entries and register forms as additional names (TYPE aka).</td></tr>
+<tr><td>Birth, baptism</td><td>From the baptism entry with date and place; godparents as a note under the baptism.</td></tr>
+<tr><td>Marriage</td><td>From the marriage entry with date and place; witnesses and minister as a note.</td></tr>
+<tr><td>Death, burial</td><td>From the death entry; cause of death (CAUS) and age (AGE) at death.</td></tr>
+<tr><td>Occupation</td><td>One occupation per mention with the date of the entry; origin as a note.</td></tr>
+<tr><td>Source</td><td>Every event with source (file, sheet) and citation (register book, page, number or quote), so you can trace every statement back to its table row.</td></tr>
+<tr><td>Notes</td><td>Remarks of the entries; for an uncertain assignment a note "famrecon: Zuordnung … unsicher" with the alternatives and their points.</td></tr>
+</table>
+<p>Nothing is discarded: whatever has no GEDCOM field becomes a note on the person or the event.</p>
+<h3>The check</h3>
+<p>For every table row, famrecon looks for the record in the GEDCOM that must document it: for a baptism a person with birth or baptism and this citation, for a marriage a family with marriage, for a death a person with death or burial. It also verifies that the names of the main persons appear in the record and that all references between persons and families point to existing records. <b>0 errors</b> means every row arrived. Errors are listed individually; the typical cause is a mandatory field missing from the mapping.</p>
+<h3>Afterwards</h3>
+<p><b>Download GEDCOM</b> saves the file. Import it into Gramps, Ahnenblatt, webtrees, or upload it to an online family book. Gramps offers a database check under Tools that verifies age windows and references once more. Command line users find a rule catalogue with further plausibility checks under <a href="#kommandozeile">Command line</a>.</p>
+
+<h2 id="kommandozeile">Command line</h2>
+<p>The interface calls the same modules as the command line and decides nothing itself. If you prefer the terminal or want to automate runs, use the command <code>famrecon</code> (after <code>pip install .</code>) or <code>python3 -m famrecon</code>:</p>
+<table>
+<tr><td><code>spalten file.xlsx</code></td><td>show sheets and headers</td></tr>
+<tr><td><code>zuordnung file.xlsx -o zuordnung.toml</code></td><td>propose the column mapping</td></tr>
+<tr><td><code>bau zuordnung.toml file.xlsx -o projekt.db</code></td><td>read in according to the mapping</td></tr>
+<tr><td><code>verknuepfen projekt.db</code></td><td>form persons and families</td></tr>
+<tr><td><code>personen</code>, <code>familien</code>, <code>pruefliste</code></td><td>show the result (<code>pruefliste --alle</code> includes "wahrscheinlich")</td></tr>
+<tr><td><code>gedcom projekt.db -o projekt.ged</code></td><td>write the GEDCOM</td></tr>
+<tr><td><code>pruefe projekt.db projekt.ged</code></td><td>check; exit code 1 if anything is missing</td></tr>
+<tr><td><code>simuliere tree.ged -o register.xlsx --rauschen 0.3</code></td><td>generate the three registers from a GEDCOM (measurement)</td></tr>
+<tr><td><code>messen projekt.db</code></td><td>measure the linking against the simulation's identifiers</td></tr>
+<tr><td><code>stand projekt.db</code></td><td>what the project file contains</td></tr>
+<tr><td><code>start --port 8765 --daten folder --kein-browser</code></td><td>start the interface</td></tr>
+</table>
+<p>The source tree contains a Makefile with the targets <code>test</code>, <code>bau</code>, <code>gedcom</code>, <code>gramps</code> (Gramps reads and checks the file) and <code>plausibilitaet</code> (a rule catalogue with 64 checks). The environment variable <code>FAMRECON_SPRACHE=en</code> forces English.</p>
+
+<h2 id="daten">Data and safety</h2>
+<ul>
+<li><b>Everything local.</b> famrecon is a program on your computer that shows a page in the browser. It accepts connections only from your own machine (address 127.0.0.1) and never connects to the internet itself. There is no telemetry, no account, no cloud.</li>
+<li><b>Data folder.</b> As a single file in your download folder, famrecon creates the folder <code>daten</code> next to itself. Installed (Debian package, Mac application, Windows under "Program Files") it uses the user's data folder: <code>~/.local/share/famrecon</code>, <code>~/Library/Application Support/famrecon</code> or <code>%APPDATA%\famrecon</code>. The start page shows the path.</li>
+<li><b>Backup.</b> Copy the project folder, done. It contains your tables, the mapping, the decisions and the GEDCOM. The project file <code>projekt.db</code> is a build product and can be regenerated from tables and mapping at any time; the decisions, however, live only in it. So back up the whole folder.</li>
+<li><b>Deleting.</b> "Delete project" removes the folder irrevocably. Your original files elsewhere are not affected.</li>
+<li><b>Living persons.</b> famrecon does not distinguish living persons; 20th century registers may contain data of living people. Before publishing the GEDCOM, check the protection periods of your archive and the privacy rules of your target system (Gramps and webtrees can hide living persons).</li>
+<li><b>Log.</b> Without a console window, famrecon writes messages and errors to the file <code>famrecon.log</code> in the data folder. It helps with bug reports.</li>
+</ul>
+
+<h2 id="beenden">Window, quitting, second start</h2>
+<p>famrecon opens its own window without an address bar if Chrome, Chromium, Brave or Edge is installed; otherwise the default browser. The program keeps running in the background even when you close the window.</p>
+<dl>
+<dt>Quit</dt><dd>The button at the top right quits famrecon. All data is saved at that moment; there is nothing unsaved. Afterwards the window can be closed.</dd>
+<dt>Window closed, famrecon still running</dt><dd>Simply start famrecon again: it notices that it is already running and only opens a new window.</dd>
+<dt>Address</dt><dd>Default is <code>http://127.0.0.1:8765/</code>. If another program occupies the port, famrecon takes a free one and opens the window with the right address. The command line lets you set a port.</dd>
+<dt>Several windows</dt><dd>You can open the address in more browser windows, for example review list and families side by side. There is only one data set; all windows show the same state after the next reload.</dd>
+</dl>
+
+<h2 id="faq">Frequently asked questions</h2>
+<details><summary>My column is not recognised or proposed wrongly.</summary><p>Choose the right field from the list on the mapping page; the proposal is only a proposal. If it helps to make the header in the table more telling ("Given name groom" instead of "GN2"), it will be recognised in the next project. If a field is missing from the catalogue entirely, map the column to <code>bemerkung</code>; its content then goes into the GEDCOM as a note.</p></details>
+<details><summary>Two sheets are both baptisms (two volumes, two parishes).</summary><p>Assign both to the register baptism. Several sheets or files of the same register are allowed; the citation distinguishes them, and the fields <code>kb</code> or <code>ort</code> can carry the volume or parish.</p></details>
+<details><summary>My dates have only the year.</summary><p>That is enough. With the year alone, linking becomes a little coarser (birth year instead of date) but remains possible. The GEDCOM then receives only the year.</p></details>
+<details><summary>Special characters are broken (CSV).</summary><p>famrecon tries UTF-8, Windows-1252 and Latin-1. If the mapping still shows wrong characters in the examples, save the CSV in your spreadsheet program as "CSV UTF-8" or upload the table as xlsx.</p></details>
+<details><summary>Why do persons appear as NN?</summary><p>The entry gives no name (such as "N." or a mother without a name). famrecon creates a person with an unknown name so the family stays complete. If a later entry names the same partner, the person receives the name.</p></details>
+<details><summary>The same person appears twice.</summary><p>Two mentions do not share enough anchors (given name spelled differently, no age, no parents), or a veto separated them. Only close calls appear in the review list; clear separations you find via Persons or Families. There is no merge button there, but: if the mention appears in the review list with "also show wahrscheinlich", choose "ist diese Person" there. Otherwise it helps to give the entry a distinguishing field in the table (age, father) and rebuild.</p></details>
+<details><summary>Two different persons were merged.</summary><p>In the review list choose "eigene Person (keiner davon)" for the case in question. If the case is not in the review list because the program was certain, try "also show wahrscheinlich". Same given names among siblings (after a child died young the name was often given again) are the most frequent cause; a death back reference in the baptism row resolves them.</p></details>
+<details><summary>Why does a family have no marriage?</summary><p>It was inferred from baptisms or burials ("Ehe erschlossen"). The marriage took place before the register begins or elsewhere, or is in a table not yet loaded.</p></details>
+<details><summary>How large may a data set be?</summary><p>Tens of thousands of entries run in seconds to a few minutes. The views are limited to 500 persons and 300 families per page, so use the search for large sets.</p></details>
+<details><summary>Can I reuse the mapping for a second project?</summary><p>Yes. Copy the file <code>zuordnung.toml</code> from the project folder into the folder of the new project before building there. It fits when sheet names and columns have the same layout; deviations show on the mapping page.</p></details>
+<details><summary>Do my tables change?</summary><p>No. famrecon reads copies in the project folder and never writes to your files. The uploaded copies remain unchanged too.</p></details>
+<details><summary>Windows warns about an unknown publisher.</summary><p>The program file is not signed because a certificate costs money every year. Choose "More info" and "Run anyway". The file comes from the project's release page; make sure you downloaded it from there.</p></details>
+<details><summary>The Mac says the application cannot be opened.</summary><p>Right-click famrecon.app, "Open", then "Open" again in the dialog. This is only needed on the first start. Alternatively in the terminal: <code>xattr -d com.apple.quarantine famrecon.app</code>.</p></details>
+<details><summary>How do I switch to German?</summary><p>famrecon follows the system language. The language can be forced with the environment variable <code>FAMRECON_SPRACHE=de</code> (or <code>en</code>) before starting.</p></details>
+<details><summary>I see an error page with a lot of text (traceback).</summary><p>A bug in the program. The last line names the cause, often an unexpected cell. Please report the text together with a description of what you did; the file <code>famrecon.log</code> in the data folder contains it as well. Your data is not affected; after reloading the page you can continue.</p></details>
+
+<h2 id="fehler">Messages and their meaning</h2>
+<dl>
+<dt>Zuerst Tabellen hochladen. (Upload tables first.)</dt><dd>The project has no table yet. Upload on the project page.</dd>
+<dt>Zuerst bauen und verknüpfen. (Build and link first.)</dt><dd>Persons, families, review list and GEDCOM need a project file. "build and link" on the project page.</dd>
+<dt>Confirm mapping and build (the mapping appears instead of the build)</dt><dd>There is no confirmed mapping yet. Review and confirm; then the build runs.</dd>
+<dt>… Personen → … Identitäten, … Familien</dt><dd>The build succeeded: that many mentions became that many real persons and families.</dd>
+<dt>Keine offenen Fälle. (No open cases.)</dt><dd>The review list is empty, either because everything is assigned with certainty or because everything has been decided.</dd>
+<dt>n Fehler (errors, GEDCOM)</dt><dd>That many table rows were not found in the GEDCOM or references point nowhere. The list below names every row; usually a mandatory field is missing from the mapping.</dd>
+<dt>nicht gefunden (not found)</dt><dd>The address in the browser matches no page, for example a deleted project in an old bookmark.</dd>
+<dt>Port … ist belegt, weiche auf … aus (port busy, switching)</dt><dd>Only in the log: another program uses the default port; famrecon took another one and opened the window with the right address.</dd>
+</dl>
+<p class="hilfe">Something missing from this help? Suggestions and bug reports are welcome at <a href="https://github.com/thobgg/famrecon/issues">github.com/thobgg/famrecon</a>.</p>

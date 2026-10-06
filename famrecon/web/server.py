@@ -23,11 +23,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from string import Template
 
-from .. import db, gedcom, katalog, kern, lesen, messen, pruefe, verknuepfen, zuordnung
-from ..i18n import _
+from .. import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, verknuepfen, zuordnung
+from ..i18n import _, SPRACHE
 
 HIER = Path(__file__).parent
-STATIC, VORLAGEN = HIER / "static", HIER / "vorlagen"
+STATIC, VORLAGEN, HILFE = HIER / "static", HIER / "vorlagen", HIER / "hilfe"
 h = html.escape
 
 
@@ -65,11 +65,12 @@ DATEN = wurzel() / "daten"
 def seite(name, **werte):
     kopf = (VORLAGEN / "rahmen.html").read_text(encoding="utf-8")
     roh = (VORLAGEN / f"{name}.html").read_text(encoding="utf-8")
+    werte.setdefault("hilfe", f'<a class="hilfe-link" href="/hilfe#{name}">{_("Mehr in der Hilfe")} →</a>')
     inhalt = Template(re.sub(r"\{\{(.+?)\}\}", lambda m: _(m.group(1)), roh)).safe_substitute(**werte)
     kopf = re.sub(r"\{\{(.+?)\}\}", lambda m: _(m.group(1)), kopf)
     pr = werte.get("projekt", "")
     nav = "".join(f'<a href="/p/{pr}/{w}">{t}</a>' for w, t in (("", pr), ("zuordnung", _("Zuordnung")), ("personen", _("Personen")), ("familien", _("Familien")), ("pruefliste", _("Prüfliste")), ("gedcom", "GEDCOM"))) if pr else ""
-    return Template(kopf).safe_substitute(inhalt=inhalt, titel=werte.get("titel", "famrecon"), projekt_nav=nav)
+    return Template(kopf).safe_substitute(inhalt=inhalt, titel=werte.get("titel", "famrecon"), projekt_nav=nav, hilfe_ziel=f"/hilfe#{name}")
 
 
 def projekte():
@@ -314,6 +315,16 @@ def s_gedcom(pr):
                  fehlerliste="".join(f"<li>{h(f)}</li>" for f in fehler[:50]))
 
 
+def s_hilfe():
+    """Die Hilfe: eine HTML-Datei je Sprache in web/hilfe/, Inhaltsverzeichnis aus den h2-Ueberschriften.
+    Jede Seite verweist mit /hilfe#<seite> auf ihren Abschnitt."""
+    datei = HILFE / f"{SPRACHE}.html"
+    text = (datei if datei.exists() else HILFE / "de.html").read_text(encoding="utf-8")
+    punkte = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', text)
+    toc = "".join(f'<a href="#{i}">{re.sub("<[^>]+>", "", ueberschrift)}</a>' for i, ueberschrift in punkte)
+    return seite("hilfe", titel=_("Hilfe"), text=text, toc=toc, version=__version__)
+
+
 # ----------------------------------------------------------------- Server
 def formular(body, ctype):
     """application/x-www-form-urlencoded oder multipart/form-data -> (felder, dateien[(name, bytes)])"""
@@ -356,6 +367,10 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if not teile:
                 return self.antwort(s_start(q.get("m", "")))
+            if teile == ["hilfe"]:
+                return self.antwort(s_hilfe())
+            if teile == ["ping"]:                              # fuer den zweiten Start: laeuft hier schon famrecon?
+                return self.antwort(f"famrecon {__version__}", "text/plain; charset=utf-8")
             if teile[0] == "static" and len(teile) == 2:
                 p = STATIC / teile[1]
                 typ = {"css": "text/css", "js": "text/javascript", "svg": "image/svg+xml", "png": "image/png"}.get(p.suffix[1:], "application/octet-stream")
@@ -395,6 +410,9 @@ class Handler(BaseHTTPRequestHandler):
         teile = [t for t in self.path.split("/") if t]
         pr = None
         try:
+            if teile == ["beenden"]:
+                threading.Thread(target=self.server.shutdown, daemon=True).start()
+                return self.antwort(seite("beendet", titel=_("Beendet")))
             if teile == ["beispiele"]:
                 beispiele_anlegen()
                 return self.weiter("/?m=" + urllib.parse.quote(_("Beispielprojekt angelegt")))
@@ -492,12 +510,48 @@ def app_fenster(url):
     return False
 
 
-def start(port=8765, daten=None, browser=True):
+def laeuft_schon(port):
+    """Antwortet auf diesem Port bereits ein famrecon? Dann nur das Fenster oeffnen."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/ping", timeout=1) as r:
+            return r.read().startswith(b"famrecon")
+    except Exception:
+        return False
+
+
+def protokoll_umleiten(datei):
+    """Ohne Konsole (Programmpaket per Doppelklick) landen Meldungen und Fehler in einer Datei."""
+    if sys.stdout is None or sys.stderr is None or getattr(sys, "frozen", False) and not sys.stdout.isatty():
+        f = open(datei, "a", encoding="utf-8", buffering=1)
+        sys.stdout = sys.stderr = f
+        print(f"\n--- {datetime.now().isoformat(timespec='seconds')} famrecon {__version__}")
+
+
+def vorbereiten(port=8765, daten=None):
+    """Datenordner anlegen, Protokoll umleiten, Server binden. -> (server, url) oder (None, url),
+    wenn auf dem Port schon ein famrecon laeuft. Ist der Port anderweitig belegt, nimmt es einen freien."""
     global DATEN
     DATEN = Path(daten) if daten else wurzel() / "daten"
     DATEN.mkdir(parents=True, exist_ok=True)
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    url = f"http://127.0.0.1:{port}/"
+    protokoll_umleiten(DATEN.parent / "famrecon.log" if DATEN.name == "daten" else DATEN / "famrecon.log")
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    except OSError:
+        if laeuft_schon(port):
+            print(_("famrecon läuft bereits auf {url}, Fenster wird geöffnet").format(url=f"http://127.0.0.1:{port}/"))
+            return None, f"http://127.0.0.1:{port}/"
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        print(_("Port {port} ist belegt, weiche auf {neu} aus").format(port=port, neu=server.server_address[1]))
+    return server, f"http://127.0.0.1:{server.server_address[1]}/"
+
+
+def start(port=8765, daten=None, browser=True):
+    server, url = vorbereiten(port, daten)
+    if server is None:
+        if browser:
+            app_fenster(url)
+        return
     print(_("famrecon läuft auf {url}  (Strg+C beendet)").format(url=url))
     print(_("Datenordner: {ordner}").format(ordner=DATEN.resolve()))
     if browser:
@@ -505,4 +559,6 @@ def start(port=8765, daten=None, browser=True):
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nbeendet")
+        pass
+    server.server_close()
+    print(_("beendet"))

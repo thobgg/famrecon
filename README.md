@@ -138,6 +138,13 @@ wird gespeichert und gilt bei jedem weiteren Lauf. Die Oberfläche ruft dieselbe
 Module wie die Kommandozeile und entscheidet nichts selbst. Standardbibliothek,
 kein Framework, Seiten als HTML-Dateien in `famrecon/web/`.
 
+Oben rechts auf jeder Seite: **? Hilfe** führt zum passenden Abschnitt der
+eingebauten Hilfe (`famrecon/web/hilfe/de.html`, `en.html`: jede Seite erklärt,
+die Rechenregeln, FAQ, Meldungen), **Beenden** stoppt das Programm. Die Pakete
+laufen ohne Konsolenfenster; Meldungen landen in `famrecon.log` im Datenordner.
+Ein zweiter Start erkennt das laufende Programm und öffnet nur ein Fenster; ist
+der Port belegt, nimmt famrecon einen freien.
+
 ## Installieren und Pakete
 
     pip install .                 Befehl `famrecon` systemweit (Python 3.11+, openpyxl)
@@ -146,7 +153,7 @@ Fertige Dateien zum Doppelklick hängen an jedem Release
 (`.github/workflows/paket.yml`, PyInstaller, gebaut dort, wo das Zielsystem
 läuft, wie wtWin und wtMac in app4webtrees):
 
-    famrecon-windows.exe          Einzeldatei mit Symbol; Windows warnt einmal vor dem unbekannten Herausgeber
+    famrecon-windows.exe          Einzeldatei mit Symbol, ohne Konsolenfenster; Windows warnt einmal vor dem unbekannten Herausgeber
     famrecon-macos-arm64.zip      Programmpaket famrecon.app; entpacken, Rechtsklick → Öffnen (unsigniert)
     famrecon_<version>_amd64.deb  Debian/Ubuntu/Mint: Menüeintrag mit Symbol, Befehl `famrecon`
     famrecon-linux-x64            Einzeldatei für andere Linux-Systeme (glibc 2.35+)

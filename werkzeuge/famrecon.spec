@@ -13,7 +13,8 @@ daten = [(str(wurzel / "famrecon" / p), f"famrecon/{Path(p).parent}") for p in
          ("schema.sql", "sprachen/famrecon.pot", "sprachen/en/LC_MESSAGES/famrecon.mo",
           "web/static/stil.css", "web/static/symbol.png", "web/vorlagen/rahmen.html", "web/vorlagen/start.html", "web/vorlagen/projekt.html",
           "web/vorlagen/zuordnung.html", "web/vorlagen/personen.html", "web/vorlagen/familien.html",
-          "web/vorlagen/pruefliste.html", "web/vorlagen/gedcom.html")]
+          "web/vorlagen/pruefliste.html", "web/vorlagen/gedcom.html", "web/vorlagen/hilfe.html", "web/vorlagen/beendet.html",
+          "web/hilfe/de.html", "web/hilfe/en.html")]
 daten += [(str(wurzel / "beispiel" / p), "beispiel") for p in
           ("falkenrath-taufen.csv", "falkenrath-ehen.csv", "falkenrath-tote.csv")]
 a = Analysis([str(wurzel / "werkzeuge" / "start.py")], pathex=[str(wurzel)], datas=daten,
@@ -22,8 +23,8 @@ a = Analysis([str(wurzel / "werkzeuge" / "start.py")], pathex=[str(wurzel)], dat
 pyz = PYZ(a.pure)
 mac = sys.platform == "darwin"
 symbol = str(wurzel / "werkzeuge" / ("famrecon.ico" if sys.platform.startswith("win") else "famrecon-512.png"))
-# Konsole: unter Windows und Linux sichtbar (Protokoll, Strg+C beendet); das Mac-Programmpaket startet ohne.
-exe = EXE(pyz, a.scripts, a.binaries, a.datas, name="famrecon", console=not mac, upx=False, icon=symbol)
+# Ohne Konsolenfenster: Beenden ueber den Knopf in der Oberflaeche, Meldungen in famrecon.log im Datenordner.
+exe = EXE(pyz, a.scripts, a.binaries, a.datas, name="famrecon", console=False, upx=False, icon=symbol)
 if mac:
     app = BUNDLE(exe, name="famrecon.app", icon=symbol, bundle_identifier="de.bgg-home.famrecon",
                  info_plist={"CFBundleShortVersionString": version, "CFBundleVersion": version,

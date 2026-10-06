@@ -365,3 +365,36 @@ msgstr "Field in famrecon"
 
 msgid "Vorschlag"
 msgstr "Proposal"
+
+msgid "Hilfe"
+msgstr "Help"
+
+msgid "Hilfe zu dieser Seite"
+msgstr "Help for this page"
+
+msgid "Beenden"
+msgstr "Quit"
+
+msgid "famrecon beenden? Alle Daten sind gespeichert."
+msgstr "Quit famrecon? All data is saved."
+
+msgid "Beendet"
+msgstr "Quit"
+
+msgid "famrecon ist beendet"
+msgstr "famrecon has quit"
+
+msgid "Alle Projekte sind gespeichert. Dieses Fenster kann geschlossen werden; der nächste Start öffnet die Oberfläche wieder."
+msgstr "All projects are saved. This window can be closed; the next start opens the interface again."
+
+msgid "Mehr in der Hilfe"
+msgstr "More in the help"
+
+msgid "famrecon läuft bereits auf {url}, Fenster wird geöffnet"
+msgstr "famrecon is already running at {url}, opening the window"
+
+msgid "Port {port} ist belegt, weiche auf {neu} aus"
+msgstr "Port {port} is busy, switching to {neu}"
+
+msgid "beendet"
+msgstr "stopped"

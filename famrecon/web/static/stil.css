@@ -46,3 +46,25 @@ code { background: #eee; padding: 0 .3rem; border-radius: 3px; }
 .symbol { width: 28px; height: 28px; border-radius: 6px; }
 .zu tr.gruppe th { background: #eef2f6; text-align: center; border-bottom: 2px solid var(--linie); }
 .zu tr.gruppe th:first-child { border-right: 2px solid var(--linie); }
+header .rechts { margin-left: auto; display: flex; gap: .8rem; align-items: center; }
+header .rechts form { display: inline; }
+.hilfe-knopf { color: var(--akzent); text-decoration: none; font-weight: 600; }
+button.klein { padding: .2rem .6rem; font-size: .9rem; }
+.hilfe-link { white-space: nowrap; }
+.hilfe-seite { display: grid; grid-template-columns: 15rem 1fr; gap: 2rem; align-items: start; }
+.toc { position: sticky; top: 1rem; display: flex; flex-direction: column; gap: .25rem; font-size: .92rem; background: #fff; border: 1px solid var(--linie); border-radius: 8px; padding: .8rem; }
+.toc a { text-decoration: none; }
+.toc small { color: var(--grau); margin-bottom: .4rem; }
+.hilfetext { max-width: 48rem; }
+.hilfetext h2 { margin-top: 2.2rem; padding-top: .6rem; border-top: 1px solid var(--linie); scroll-margin-top: 1rem; }
+.hilfetext h2:target { background: var(--warn); border-radius: 6px; padding: .4rem .6rem; border-top: 0; }
+.hilfetext h3 { margin-top: 1.3rem; }
+.hilfetext dl dt { font-weight: 600; margin-top: .7rem; }
+.hilfetext dl dd { margin: .15rem 0 0 0; }
+.hilfetext details { background: #fff; border: 1px solid var(--linie); border-radius: 6px; padding: .4rem .8rem; margin: .4rem 0; }
+.hilfetext summary { cursor: pointer; font-weight: 600; }
+.hilfetext table { font-size: .92rem; margin: .5rem 0; }
+.hilfetext kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 0 .3rem; font-family: inherit; }
+.hilfetext .tipp { background: var(--ok); border-radius: 6px; padding: .5rem .8rem; margin: .6rem 0; }
+.hilfetext .achtung { background: var(--rot); border-radius: 6px; padding: .5rem .8rem; margin: .6rem 0; }
+@media (max-width: 900px) { .hilfe-seite { grid-template-columns: 1fr; } .toc { position: static; } }

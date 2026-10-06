@@ -106,6 +106,37 @@ class Oberflaeche(unittest.TestCase):
         self.assertTrue(ged.startswith("0 HEAD"))
         self.assertIn("0 TRLR", ged)
 
+    def test_hilfe_und_rahmen(self):
+        st, html = self.hole("/hilfe")
+        for abschnitt in ("ueberblick", "start", "projekt", "zuordnung", "personen", "familien", "pruefliste", "gedcom", "faq", "fehler"):
+            self.assertIn(f'<h2 id="{abschnitt}">', html)
+            self.assertIn(f'href="#{abschnitt}"', html)                 # Inhaltsverzeichnis
+        self.assertIn("Prüfliste", html)
+        st, html = self.hole("/p/kirchenbuchstil")                      # jede Seite verweist auf ihren Abschnitt
+        self.assertIn('href="/hilfe#projekt"', html)
+        self.assertIn('action="/beenden"', html)
+        st, text = self.hole("/ping")
+        self.assertTrue(text.startswith("famrecon "))
+        self.assertTrue(server.laeuft_schon(self.port))
+        self.assertFalse(server.laeuft_schon(1))
+
+    def test_beenden(self):
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
+        t = threading.Thread(target=srv.serve_forever, daemon=True)
+        t.start()
+        req = urllib.request.Request(f"http://127.0.0.1:{srv.server_address[1]}/beenden", data=b"", method="POST")
+        with urllib.request.urlopen(req) as r:
+            self.assertIn("beendet", r.read().decode("utf-8"))
+        t.join(5)
+        self.assertFalse(t.is_alive())                                  # serve_forever ist zurueckgekehrt
+        srv.server_close()
+
+    def test_vorbereiten_port_belegt(self):
+        # der Testserver haelt self.port: vorbereiten erkennt das laufende famrecon
+        srv, url = server.vorbereiten(self.port, self.tmp.name)
+        self.assertIsNone(srv)
+        self.assertIn(str(self.port), url)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Debian-Paket aus der PyInstaller-Einzeldatei: Befehl famrecon, Menueeintrag mit Symbol, keine Abhaengigkeiten
-# (alles steckt in der Einzeldatei). Daten landen beim ersten Start in ~/.local/share/famrecon/daten.
+# (alles steckt in der Einzeldatei). Daten landen beim ersten Start in ~/.local/share/famrecon/daten,
+# Meldungen in ~/.local/share/famrecon/famrecon.log; beendet wird ueber den Knopf in der Oberflaeche.
 #     bash werkzeuge/deb-bauen.sh dist/famrecon out            -> out/famrecon_<version>_amd64.deb
 set -euo pipefail
 bin=${1:?Einzeldatei}; ziel=${2:-out}
@@ -21,7 +22,7 @@ Comment=Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform, Ausgabe GE
 Comment[en]=Families from baptism, marriage and burial registers in table form, GEDCOM output
 Exec=famrecon
 Icon=famrecon
-Terminal=true
+Terminal=false
 Categories=Office;
 Keywords=Genealogie;GEDCOM;Kirchenbuch;Ortsfamilienbuch;
 Keywords[en]=genealogy;GEDCOM;parish register;

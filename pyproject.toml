@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "famrecon"
-version = "0.1.1"
+version = "0.1.2"
 description = "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform, Ausgabe GEDCOM"
 readme = "README.md"
 license = "MIT"
@@ -18,4 +18,4 @@ famrecon = "famrecon.cli:main"
 packages = ["famrecon"]
 
 [tool.setuptools.package-data]
-famrecon = ["schema.sql", "sprachen/*/LC_MESSAGES/*.mo", "sprachen/*.pot", "web/static/*", "web/vorlagen/*"]
+famrecon = ["schema.sql", "sprachen/*/LC_MESSAGES/*.mo", "sprachen/*.pot", "web/static/*", "web/vorlagen/*", "web/hilfe/*"]

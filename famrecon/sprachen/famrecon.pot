@@ -366,3 +366,36 @@ msgstr ""
 
 msgid "Vorschlag"
 msgstr ""
+
+msgid "Hilfe"
+msgstr ""
+
+msgid "Hilfe zu dieser Seite"
+msgstr ""
+
+msgid "Beenden"
+msgstr ""
+
+msgid "famrecon beenden? Alle Daten sind gespeichert."
+msgstr ""
+
+msgid "Beendet"
+msgstr ""
+
+msgid "famrecon ist beendet"
+msgstr ""
+
+msgid "Alle Projekte sind gespeichert. Dieses Fenster kann geschlossen werden; der nächste Start öffnet die Oberfläche wieder."
+msgstr ""
+
+msgid "Mehr in der Hilfe"
+msgstr ""
+
+msgid "famrecon läuft bereits auf {url}, Fenster wird geöffnet"
+msgstr ""
+
+msgid "Port {port} ist belegt, weiche auf {neu} aus"
+msgstr ""
+
+msgid "beendet"
+msgstr ""

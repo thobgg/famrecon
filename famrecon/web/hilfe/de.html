@@ -1,0 +1,242 @@
+<h1>Hilfe</h1>
+<p class="hilfe">Diese Hilfe beschreibt jede Seite der Oberfläche, erklärt, wie famrecon rechnet, und beantwortet häufige Fragen. Der Knopf <b>? Hilfe</b> oben rechts führt von jeder Seite zum passenden Abschnitt.</p>
+
+<h2 id="ueberblick">Was famrecon macht</h2>
+<p>famrecon baut aus <b>Tauf-, Ehe- und Sterberegistern in Tabellenform</b> Familien und schreibt sie als <b>GEDCOM-Datei</b>. Die Eingabe ist eine Tabelle, wie Ortsfamilienbuch-Autoren sie führen: eine Zeile je Kirchenbucheintrag, Spalten nach eigenem Muster. Die Ausgabe liest jedes Genealogieprogramm (Gramps, Ahnenblatt, webtrees, Online-OFB).</p>
+<p>Dazwischen liegt die <b>Familienrekonstitution</b>: Das Programm erkennt, welche Nennungen in verschiedenen Einträgen dieselbe Person meinen (der Täufling von 1770, der Bräutigam von 1795, der Verstorbene von 1831), und bildet daraus Personen und Familien. Was eindeutig belegt ist, verknüpft es selbst; was knapp ist, legt es in der <a href="#pruefliste">Prüfliste</a> vor. Nichts wird verworfen: Jede Tabellenzeile landet in der GEDCOM, und ein Abgleich prüft das.</p>
+<p>Der Weg in fünf Schritten: <b>Tabellen laden → Zuordnung durchsehen → bauen → Prüfliste → GEDCOM</b>.</p>
+<p>Was famrecon <b>nicht</b> macht: Es liest keine Scans oder Handschriften, es ergänzt keine Daten aus dem Internet, und es verändert Ihre Tabellen nicht. Alles läuft auf Ihrem Rechner; keine Daten verlassen ihn (siehe <a href="#daten">Daten und Sicherheit</a>).</p>
+
+<h2 id="start">Startseite und Projekte</h2>
+<p>Ein <b>Projekt</b> ist ein Ort oder ein Register-Bestand. Technisch ist es ein Ordner im Datenordner (der Pfad steht unten auf der Startseite). Darin liegen Ihre hochgeladenen Tabellen, die Zuordnung (<code>zuordnung.toml</code>), die Projektdatei (<code>projekt.db</code>) und die fertige GEDCOM (<code>projekt.ged</code>).</p>
+<h3>Neues Projekt anlegen</h3>
+<dl>
+<dt>Name</dt><dd>Buchstaben, Ziffern, Bindestrich und Unterstrich, keine Leerzeichen. Der Name wird Ordnername und Dateiname der GEDCOM, zum Beispiel <code>muehlenstadt</code>.</dd>
+<dt>Tabellen</dt><dd>Eine Excel-Mappe (<code>.xlsx</code>, <code>.xlsm</code>) mit einem Blatt je Register, oder mehrere Dateien, oder CSV/TSV-Dateien. Mehrfachauswahl ist möglich. Bei CSV werden Trennzeichen (Semikolon, Komma, Tabulator, senkrechter Strich) und Kodierung (UTF-8, Windows-1252, Latin-1) erkannt.</dd>
+</dl>
+<p>Nach dem Anlegen landen Sie direkt auf der <a href="#zuordnung">Zuordnung</a>. Ein Projekt ohne Tabellen können Sie anlegen und später auf der Projektseite füllen.</p>
+<h3>Beispielprojekt</h3>
+<p>Der Knopf <b>Beispielprojekt anlegen</b> erzeugt ein fertiges Projekt aus einem erfundenen Stammbaum mit 492 Personen über sieben Generationen. Es eignet sich, um die Seiten kennenzulernen, bevor Sie eigene Daten laden. Es darf jederzeit gelöscht werden.</p>
+<h3>Welche Tabellen eignen sich</h3>
+<ul>
+<li>Die <b>erste Zeile</b> enthält die Überschriften, ab der zweiten Zeile folgt je Zeile ein Eintrag.</li>
+<li>Ein <b>Blatt oder eine Datei je Register</b> (Taufen, Ehen, Tote). Blattnamen wie „Taufen“, „Trauungen“, „Beerdigungen“ helfen beim Erkennen, sind aber nicht nötig: Das Register lässt sich in der Zuordnung umschalten.</li>
+<li>Daten als Text (<code>1778-08-31</code>, <code>31.08.1778</code>, <code>1778</code>, auch <code>1699-08-00</code> für „Monat bekannt, Tag nicht“) oder als Excel-Datum.</li>
+<li>Personen entweder <b>in einer Zelle</b> („Haag, Nicolaus, weyl., gewesener Kutscher“) oder <b>aufgeteilt</b> in Nachname, Vorname, Beruf. Beides ist richtig; die <a href="#bauen">Normalform</a> führt es zusammen.</li>
+<li>Platzhalter für „nicht angegeben“ wie <code>k.A.</code>, <code>—</code> oder <code>?</code> stören nicht; sie werden in der Zuordnung als Leerwörter erkannt.</li>
+<li>Formeln werden als ihr letzter berechneter Wert gelesen. Verbundene Zellen, Bilder und Formatierungen spielen keine Rolle.</li>
+</ul>
+
+<h2 id="projekt">Die Projektseite</h2>
+<p>Die Tabelle oben zeigt die <b>sechs Schritte</b> und ihren Stand. Ein Haken bedeutet: erledigt. Die Zeilen im Einzelnen:</p>
+<dl>
+<dt>Tabellen</dt><dd>Die hochgeladenen Dateien. Weitere Dateien lassen sich jederzeit nachladen; eine Datei gleichen Namens ersetzt die alte.</dd>
+<dt>Zuordnung</dt><dd>Ob eine bestätigte Spaltenzuordnung vorliegt. Ohne sie führt „bauen und verknüpfen“ zuerst auf die Zuordnungsseite.</dd>
+<dt>Projektdatei</dt><dd>Wie viele Einträge je Register gelesen wurden und wie viele Personennennungen daraus entstanden (eine Taufzeile ergibt bis zu drei: Kind, Vater, Mutter).</dd>
+<dt>Verknüpfung</dt><dd>Wie viele reale Personen und Familien gebildet wurden, und wie sich die Zuordnungen auf die Stufen sicher, wahrscheinlich, unsicher und neu verteilen.</dd>
+<dt>Prüfliste</dt><dd>Wie viele unsichere Fälle noch ohne Ihre Entscheidung sind. Der Haken erscheint, wenn keiner mehr offen ist.</dd>
+<dt>GEDCOM</dt><dd>Ob die Datei geschrieben wurde. Der Knopf „GEDCOM herunterladen“ erscheint, sobald sie vorliegt.</dd>
+</dl>
+<h3>Die Knöpfe</h3>
+<dl>
+<dt>Tabellen hochladen</dt><dd>Weitere oder geänderte Tabellen in das Projekt legen. Danach die Zuordnung durchsehen, denn neue Blätter brauchen eine Zuordnung.</dd>
+<dt>Zuordnung durchsehen</dt><dd>Öffnet die <a href="#zuordnung">Zuordnungsseite</a>.</dd>
+<dt>bauen und verknüpfen</dt><dd>Liest alle Tabellen nach der Zuordnung neu ein, bildet die Normalform und verknüpft. Das dauert bei einigen tausend Zeilen Sekunden, bei hunderttausend einige Minuten. Jeder Lauf baut Personen und Familien von Grund auf neu; Ihre Entscheidungen aus der Prüfliste bleiben erhalten und werden erneut angewandt.</dd>
+<dt>Personen, Familien, Prüfliste</dt><dd>Die Ansichten des Ergebnisses, siehe die folgenden Abschnitte.</dd>
+<dt>GEDCOM schreiben und prüfen</dt><dd>Schreibt die GEDCOM und gleicht sie sofort gegen die Einträge ab.</dd>
+<dt>Projekt löschen</dt><dd>Entfernt den Projektordner samt hochgeladenen Tabellen, Zuordnung, Entscheidungen und GEDCOM. Das ist nicht rückgängig zu machen. Ihre Originaldateien außerhalb des Datenordners bleiben unberührt.</dd>
+</dl>
+<div class="tipp">Nach jeder Änderung an Tabellen oder Zuordnung: erneut „bauen und verknüpfen“, dann die Prüfliste ansehen, dann die GEDCOM neu schreiben.</div>
+
+<h2 id="zuordnung">Zuordnung: Spalten den Feldern zuweisen</h2>
+<p>Jeder Autor führt seine Tabellen anders. Deshalb kennt famrecon innen einen festen <b>Feldkatalog</b> und braucht außen eine kleine <b>Zuordnung</b>: Welches Blatt ist welches Register, und welche Spalte ist welches Feld. Das Programm schlägt die Zuordnung aus Überschriften und Beispielwerten vor; Sie sehen sie durch und bestätigen.</p>
+<h3>Aufbau der Seite</h3>
+<p>Je Blatt ein Block. In der Überschrift steht die Datei, der Blattname und ein Auswahlfeld für das <b>Register</b> (Taufe, Ehe, Tod). Wenn das Programm das Register falsch geraten hat, hier umschalten; die Feldliste wird dann für das neue Register neu vorgeschlagen. Darunter die Tabelle:</p>
+<table>
+<tr><th>Spalte</th><th>Bedeutung</th></tr>
+<tr><td>Sp.</td><td>Der Spaltenbuchstabe Ihrer Tabelle. Ein Bereich wie <code>S-BF</code> bedeutet: Diese Spalten bilden zusammen ein Feld, zum Beispiel vierzig Patenspalten als <code>paten</code>.</td></tr>
+<tr><td>Überschrift</td><td>Ihre Überschrift aus der ersten Zeile.</td></tr>
+<tr><td>Beispiele</td><td>Einige Zellwerte aus dieser Spalte. Daran erkennen Sie am schnellsten, ob der Vorschlag stimmt.</td></tr>
+<tr><td>Feld</td><td>Das Feld in famrecon. Die Liste zeigt jeden Feldnamen mit einer kurzen Erklärung. „– nicht übernehmen –“ lässt die Spalte weg.</td></tr>
+<tr><td>Vorschlag</td><td>Wie sicher das Programm ist: <b>sicher</b> (Überschrift und Werte passen), <b>wahrscheinlich</b> (die Überschrift passt), <b>unsicher</b> (gelb; nur eine schwache Ähnlichkeit, oder die Werte sehen anders aus als erwartet, etwa Text in einer Datumsspalte). Leer heißt: nicht erkannt, die Spalte würde wegfallen.</td></tr>
+</table>
+<p>Die Zeile <b>Bilanz</b> oben zählt die Stufen je Blatt. Ziel: keine „unsicher“ und keine „nicht erkannt“, die Sie eigentlich brauchen.</p>
+<h3>Feldnamen lesen</h3>
+<p>Felder hängen an <b>Rollen</b>. Jedes Register hat Hauptrollen: Taufe <code>kind</code>, <code>vater</code>, <code>mutter</code>; Ehe <code>braeutigam</code>, <code>braut</code>; Tod <code>verstorbener</code>. Eine Rolle kann Unterrollen haben: die Braut ihren Vater, ihre Mutter und ihren vorigen Mann (<code>vorehe</code>), der Verstorbene seinen Ehepartner. Der Feldname ist der Pfad mit Unterstrichen:</p>
+<table>
+<tr><td><code>braut_name</code></td><td>Nachname der Braut</td></tr>
+<tr><td><code>braut_vater_beruf</code></td><td>Beruf des Vaters der Braut</td></tr>
+<tr><td><code>verstorbener_ehepartner</code></td><td>Ehepartner des Verstorbenen als ganze Zelle („Haag, Catharina“)</td></tr>
+<tr><td><code>kind_vorname</code></td><td>Vorname des Täuflings</td></tr>
+<tr><td><code>vater</code></td><td>Vater als ganze Zelle: Name, Vorname, Zusätze und Beruf werden beim Bauen zerlegt</td></tr>
+</table>
+<p>Ohne Rolle stehen die Felder des Eintrags selbst: <code>tauf_datum</code>, <code>trauung_datum</code>, <code>sterbe_datum</code>, <code>begraebnis_datum</code>, Orte, <code>paten</code>, <code>zeugen</code>, <code>todesursache</code>, <code>unehelich</code>, dazu die Fundstelle (<code>kb</code> Kirchenbuch, <code>seite</code>, <code>lfd_nr</code>, <code>zitat</code>) und <code>bemerkung</code>. Felder mit <code>_rv</code> sind <b>Rückverweise</b>: ein Sterbedatum, das der Autor schon in die Taufzeile geschrieben hat. famrecon nutzt sie zum Verknüpfen.</p>
+<p>Zwei Nachsilben gibt es überall: <code>_kb</code> für die wörtliche <b>Kirchenbuchform</b> neben einer normalisierten Spalte (etwa „Hanß“ neben „Johann“); sie wird in der GEDCOM als weitere Namensform ausgegeben. <code>_praefix</code> für einen Datumszusatz wie „um“, „vor“, „errechnet“ (GEDCOM ABT, BEF, CAL).</p>
+<h3>Ränge: was Pflicht ist</h3>
+<p>Jedes Feld hat einen Rang. <b>Pflicht</b>: ohne das Feld ist der Eintrag nicht verwendbar. Je Register sind das: Taufe ein Vorname des Kindes, ein Geburts- oder Taufdatum und mindestens ein Elternteil; Ehe ein Trauungsdatum, Bräutigam und Braut; Tod der Verstorbene und ein Sterbe- oder Begräbnisdatum. <b>Verknüpfung</b>: hilft, Personen über Register hinweg zu verbinden (Vornamen, Alter, Herkunft, Eltern, Ehepartner, Rückverweise). <b>Ergänzend</b>: wird mitgenommen und ausgegeben, entscheidet aber nichts (Paten, Zeugen, Pfarrer, Bemerkungen).</p>
+<h3>Als „nicht angegeben“ gelten</h3>
+<p>Das Eingabefeld unten listet Platzhalter, die in Ihren Zellen „leer“ bedeuten: <code>k.A.</code>, <code>—</code>, <code>?</code>, <code>[ ]</code>. Das Programm schlägt vor, was es in den Zellen gefunden hat. Solche Werte werden nicht als Name oder Datum gelesen, bleiben aber als Rohtext erhalten.</p>
+<h3>Bestätigen</h3>
+<p><b>Zuordnung bestätigen und bauen</b> speichert und liest sofort ein. <b>nur speichern</b> speichert ohne Einlesen. Die Zuordnung liegt danach als lesbare Textdatei <code>zuordnung.toml</code> im Projektordner; sie lässt sich kopieren und für ein weiteres Projekt mit gleichem Tabellenaufbau wiederverwenden (siehe <a href="#faq">FAQ</a>).</p>
+<div class="achtung">Was auf „nicht übernehmen“ steht oder nicht erkannt wurde, fehlt später in der GEDCOM. Prüfen Sie vor allem Spalten mit Namen, Daten und Eltern.</div>
+
+<h2 id="bauen">Bauen: Einlesen und Normalform</h2>
+<p>Beim Bauen liest famrecon jede Zeile nach der Zuordnung ein und bringt die Werte in eine <b>Normalform</b>, mit der sich rechnen lässt. Der Rohwert jeder Zelle bleibt daneben erhalten und erscheint in der Personenliste und in der Prüfliste.</p>
+<h3>Personenzeilen zerlegen</h3>
+<p>Eine Zelle wie „Haag, Nicolaus, weyl., gewesener adelicher Kutscher“ wird zu Nachname <i>Haag</i>, Vorname <i>Nicolaus</i>, Sterbevermerk, Beruf <i>gewesener adelicher Kutscher</i>. Erkannte Marker:</p>
+<table>
+<tr><td><code>(W)</code>, <code>Witwe</code></td><td>verwitwet</td></tr>
+<tr><td><code>(in)</code>, Endung <code>-in</code></td><td>weiblich (Hagin = Hag)</td></tr>
+<tr><td><code>geb. X</code>, <code>geborene X</code></td><td>Geburtsname X, der genannte Name wird Ehename</td></tr>
+<tr><td><code>N.</code>, <code>NN.</code>, <code>NN</code></td><td>Name unbekannt</td></tr>
+<tr><td><code>?</code>, <code>(?)</code>, <code>(??)</code></td><td>Lesart unsicher</td></tr>
+<tr><td><code>weyl.</code>, <code>weil.</code>, <code>sel.</code>, <code>selig</code>, <code>+</code>, <code>†</code></td><td>bei der Nennung bereits verstorben</td></tr>
+<tr><td>„Rosenfeld von“</td><td>wird „von Rosenfeld“ (Adelsprädikat nachgestellt)</td></tr>
+<tr><td>„Mädchen - totgeboren“, „anonymus“</td><td>Totgeburt; das Geschlecht aus Mädchen, Knabe, Söhnlein, Töchterlein</td></tr>
+</table>
+<h3>Alter und Daten</h3>
+<p>Alter in sechs Schreibweisen („59 J 10 M 4 T“, „3 J., 7 M., 14 T“, „24 Wochen“, „1 Monat“, „½ Jahr“, „0“) wird zu Tagen gerechnet; daraus entsteht ein <b>errechnetes Geburtsdatum</b> mit dem Zusatz CAL, das beim Verknüpfen mit der Taufe verglichen wird. Daten mit Monat ohne Tag oder nur Jahr bleiben so genau, wie sie sind.</p>
+<h3>Lautschlüssel</h3>
+<p>Nachnamen bekommen einen Lautschlüssel nach der Kölner Phonetik, damit <i>Haag</i> und <i>Hag</i>, <i>Kriehmann</i> und <i>Kriemann</i> zusammenfinden. Vornamen bekommen eine Einheitsform: <i>Nicolaus</i> = <i>Nikolaus</i>, <i>Hanß</i> = <i>Johann</i>, <i>Catharina</i> = <i>Katharina</i>. Die Schreibweise des Eintrags bleibt erhalten und steht in der GEDCOM als weitere Namensform.</p>
+
+<h2 id="personen">Personen</h2>
+<p>Diese Liste zeigt <b>jede Nennung</b> einer Person in den Einträgen, also die Zeilen der Normalform, nicht die zusammengeführten Personen. Eine Taufzeile liefert bis zu drei Nennungen, eine Ehezeile bis zu acht (Brautleute, deren Eltern, vorige Ehepartner).</p>
+<table>
+<tr><th>Spalte</th><th>Bedeutung</th></tr>
+<tr><td>Reg., Jahr</td><td>Register und Jahr des Eintrags.</td></tr>
+<tr><td>Rolle</td><td>Der Pfad: <code>kind</code>, <code>braut_vater</code>, <code>verstorbener_ehepartner</code> und so weiter.</td></tr>
+<tr><td>Name, Vorname</td><td>Normalisiert. Ein Strich bedeutet: nicht genannt.</td></tr>
+<tr><td>Marker</td><td><b>†</b> als verstorben genannt, <b>?</b> unsichere Lesart, <b>NN</b> Name unbekannt, <b>Totgeburt</b>.</td></tr>
+<tr><td>Geburt</td><td>Geburtsjahr, wenn bekannt oder errechnet; <code>CAL</code> davor heißt: aus dem Alter gerechnet.</td></tr>
+<tr><td>Stand, Beruf</td><td>Familienstand und Beruf, wie der Eintrag sie nennt.</td></tr>
+<tr><td>Person</td><td>Zu welcher realen Person die Nennung gehört, als Nummer in eckigen Klammern (Verweis in die Familien), und die <a href="#verknuepfung">Stufe</a> der Zuordnung.</td></tr>
+</table>
+<p>Die Suche sucht in Name, Vorname und im Rohtext der Zelle; das Auswahlfeld begrenzt auf ein Register. Angezeigt werden höchstens 500 Zeilen, deshalb bei großen Beständen eingrenzen.</p>
+
+<h2 id="familien">Familien</h2>
+<p>Je Familie ein Kasten: Nummer <b>F…</b>, Trauungsjahr mit <b>⚭</b>, Mann und Frau, darunter die Kinder nach Geburtsjahr. Jede Person erscheint mit Name, Vorname, Geburts- und Sterbejahr und ihrer Nummer in eckigen Klammern; bei Frauen steht der Geburtsname zuerst und der Ehename in Klammern, wenn beide bekannt sind.</p>
+<p><b>(Ehe erschlossen)</b> bedeutet: Es gibt keinen Traueintrag, die Familie entstand aus Taufen oder Sterbeeinträgen, die dieselben Eltern nennen. Das ist normal für Ehen vor Beginn des Registers oder an einem anderen Ort.</p>
+<p>Die Suche findet Familien, in denen Mann, Frau oder ein Kind zum Suchwort passt. Höchstens 300 Familien werden angezeigt. Die Sortierung folgt dem Trauungsjahr, ersatzweise der ersten Taufe.</p>
+
+<h2 id="verknuepfung">Wie die Verknüpfung rechnet</h2>
+<p>Alle Einträge laufen <b>chronologisch</b> durch, die drei Register gemischt, weil jeder Eintrag die späteren verankert: Die Trauung von 1768 trägt die Taufe von 1770 und die Trauung des Sohnes von 1795.</p>
+<dl>
+<dt>Taufe</dt><dd>Vater und Mutter werden als Elternfamilie gesucht: der Vater über Nachname (Lautschlüssel) und Vornamen, die Mutter bestätigt oder widerspricht. Gibt es keine, entsteht eine neue Familie. Das Kind ist immer eine neue Person.</dd>
+<dt>Trauung</dt><dd>Bräutigam und Braut werden gesucht über Name, Vorname, Alter oder Geburtsdatum und die genannten Eltern. Genannte Eltern werden zur Elternfamilie, ein voriger Ehepartner zur Vorehe. Findet sich niemand, entsteht eine neue Person.</dd>
+<dt>Tod</dt><dd>Der Verstorbene wird gesucht über Name, Vorname, das aus dem Alter errechnete Geburtsjahr, den genannten Vater, den Ehepartner und Rückverweise. Zwei <b>Vetos</b>: „ledig“ passt nicht zu einer Person mit Ehe, „verheiratet“ oder „verwitwet“ nicht zu einer ohne passenden Partner.</dd>
+</dl>
+<h3>Punkte und Stufen</h3>
+<p>Jeder Kandidat bekommt Punkte: gleicher Vorname 100, teilweise 70; Geburtsdatum exakt 100, Jahr 50, nah 30; passender Vater 30, passende Mutter 50, passender Ehepartner 50; ein Sterbedatum aus einem Rückverweis 200; exakt gleiche Schreibung des Nachnamens 20. Die Schwelle liegt bei 100 Punkten (Tod 80). Plausibilitätsfenster: Väter 16 bis 75 Jahre, Mütter 15 bis 50, Eheschließung 14 bis 80, höchstens 22 Jahre zwischen erstem und letztem Kind einer Familie, höchstens 5 Jahre zwischen errechneter und belegter Geburt.</p>
+<table>
+<tr><td><b>sicher</b></td><td>Ein Anker über den Namen hinaus (Datum, Eltern, Partner) und kein naher Zweiter.</td></tr>
+<tr><td><b>wahrscheinlich</b></td><td>Punkte über der Schwelle, kein Zweiter in der Nähe.</td></tr>
+<tr><td><b>unsicher</b></td><td>Punkte über der Schwelle, aber ein zweiter Kandidat liegt weniger als 30 Punkte dahinter. Geht in die Prüfliste.</td></tr>
+<tr><td><b>neu</b></td><td>Kein Kandidat über der Schwelle: eine neue Person.</td></tr>
+</table>
+<p>Jede Zuordnung trägt eine Begründung im Klartext („Vorname, Geburtsjahr, Vater“), die in der Prüfliste erscheint. Zwei Familien mit demselben Paar werden zu einer zusammengelegt.</p>
+<p>Die Mechanik ist gemessen: Aus einem bekannten Stammbaum werden die drei Register erzeugt, verknüpft und mit dem Original verglichen. Am mitgelieferten Beispiel liegen Präzision und Vollständigkeit über 0,99; die Fehler sind Geschwister mit demselben Vornamen. Echte Register mit Schreibvarianten und Lücken sind schwerer, deshalb gibt es die Prüfliste.</p>
+
+<h2 id="pruefliste">Prüfliste: Entscheidungen von Hand</h2>
+<p>Die Prüfliste zeigt die <b>unsicheren Zuordnungen</b>: Nennungen, bei denen zwei oder mehr Personen ähnlich gut passen. Sie ordnet nach Jahr; bereits entschiedene Fälle stehen am Ende.</p>
+<h3>Ein Fall</h3>
+<p>Die Überschrift nennt die Nennung: Register, Jahr, Rolle und den Rohtext der Zelle, dazu ihre Nummer und die Stufe. Darunter je <b>Kandidat</b> eine Karte mit Name, Vorname, Geburts- und Sterbejahr, der Personennummer, den Punkten und der Begründung, dann alle <b>Belege</b> dieser Person: jeder Eintrag, der ihr bisher zugeordnet ist, mit Register, Jahr, Rolle und Rohtext. Der erste Kandidat ist die aktuelle Wahl des Programms.</p>
+<h3>Die Knöpfe</h3>
+<dl>
+<dt>ist diese Person</dt><dd>Die Nennung gehört zu dieser Person. Steht auf jeder Kandidatenkarte.</dd>
+<dt>eigene Person (keiner davon)</dt><dd>Die Nennung meint jemand anderen, der noch nicht im Bestand ist.</dd>
+<dt>Entscheidung zurücknehmen</dt><dd>Die Rechnung des Programms gilt wieder.</dd>
+</dl>
+<p>Nach jedem Klick wird sofort neu verknüpft, die Liste lädt neu. Ein grünes Feld <b>von Hand</b> markiert entschiedene Fälle.</p>
+<h3>Was eine Entscheidung bewirkt</h3>
+<p>Entscheidungen hängen an der <b>Tabellenzeile</b> (Datei, Blatt, Zeilennummer, Rolle), nicht an den Personennummern, die bei jedem Lauf neu vergeben werden. Darum überleben sie jedes erneute Bauen, auch nach dem Nachladen von Tabellen. Sie gelten vor der Rechnung und ziehen Folgeentscheidungen nach sich: Wer einmal zusammengelegt ist, bekommt später passende Einträge mit.</p>
+<h3>Vorgehen</h3>
+<ol>
+<li>Zuerst die Fälle mit einem klaren Anker entscheiden: ein Beleg nennt denselben Vater, dasselbe Geburtsjahr, denselben Ehepartner.</li>
+<li>Zweifelsfälle offen lassen. Offene Fälle gehen trotzdem in die GEDCOM, mit der Wahl des Programms und einem Vermerk, der die Alternativen nennt.</li>
+<li>Nach einer Reihe von Entscheidungen die <a href="#familien">Familien</a> ansehen: Haben die Entscheidungen Familien zusammengeführt oder gespalten, wie erwartet?</li>
+<li><b>auch „wahrscheinlich“ zeigen</b> blendet die nächste Stufe ein. Das lohnt bei kleinen Beständen oder wenn Sie den Namen gezielt prüfen wollen.</li>
+</ol>
+
+<h2 id="gedcom">GEDCOM schreiben und prüfen</h2>
+<p>Die Seite schreibt die GEDCOM-Datei (Version 5.5.1, UTF-8) und gleicht sie sofort ab. Oben steht, wie viele Personen, Familien und Zeilen geschrieben wurden.</p>
+<h3>Was wo landet</h3>
+<table>
+<tr><td>Name</td><td>Vorname und Nachname; Geburtsname als erster Name, Ehename als zweiter (TYPE married); abweichende Schreibungen aus den Einträgen und Kirchenbuchformen als weitere Namen (TYPE aka).</td></tr>
+<tr><td>Geburt, Taufe</td><td>Aus dem Taufeintrag mit Datum und Ort; Paten als Notiz unter der Taufe.</td></tr>
+<tr><td>Trauung</td><td>Aus dem Traueintrag mit Datum und Ort; Zeugen und Pfarrer als Notiz.</td></tr>
+<tr><td>Tod, Begräbnis</td><td>Aus dem Sterbeeintrag; Todesursache (CAUS) und Alter (AGE) am Tod.</td></tr>
+<tr><td>Beruf</td><td>Je Nennung ein Beruf mit dem Datum des Eintrags; Herkunft als Notiz.</td></tr>
+<tr><td>Quelle</td><td>Jedes Ereignis mit Quelle (Datei, Blatt) und Fundstelle (Kirchenbuch, Seite, Nummer oder Zitat), damit Sie jede Angabe zur Tabellenzeile zurückverfolgen können.</td></tr>
+<tr><td>Notizen</td><td>Bemerkungen der Einträge; bei unsicherer Zuordnung ein Vermerk „famrecon: Zuordnung … unsicher“ mit den Alternativen und ihren Punkten.</td></tr>
+</table>
+<p>Nichts wird verworfen: Was kein GEDCOM-Feld hat, wird zur Notiz an der Person oder am Ereignis.</p>
+<h3>Der Abgleich</h3>
+<p>Für jede Tabellenzeile sucht famrecon den Datensatz in der GEDCOM, der sie belegen muss: zur Taufe eine Person mit Geburt oder Taufe und dieser Fundstelle, zur Trauung eine Familie mit Trauung, zum Tod eine Person mit Tod oder Begräbnis. Dazu prüft es, dass die Namen der Hauptpersonen im Datensatz stehen und alle Verweise zwischen Personen und Familien auf vorhandene Datensätze zeigen. <b>0 Fehler</b> heißt: Jede Zeile ist angekommen. Fehler werden einzeln aufgelistet; typische Ursache ist ein Pflichtfeld, das in der Zuordnung fehlt.</p>
+<h3>Danach</h3>
+<p><b>GEDCOM herunterladen</b> speichert die Datei. Importieren Sie sie in Gramps, Ahnenblatt, webtrees oder laden Sie sie zum Online-OFB hoch. Gramps bietet unter Werkzeuge eine Datenbankprüfung, die Altersfenster und Verweise noch einmal prüft. Wer die Kommandozeile nutzt, findet unter <a href="#kommandozeile">Kommandozeile</a> den Regelkatalog mit weiteren Plausibilitätsprüfungen.</p>
+
+<h2 id="kommandozeile">Kommandozeile</h2>
+<p>Die Oberfläche ruft dieselben Module wie die Kommandozeile und entscheidet nichts selbst. Wer lieber im Terminal arbeitet oder Läufe automatisieren will, nutzt den Befehl <code>famrecon</code> (nach <code>pip install .</code>) oder <code>python3 -m famrecon</code>:</p>
+<table>
+<tr><td><code>spalten datei.xlsx</code></td><td>Blätter und Überschriften zeigen</td></tr>
+<tr><td><code>zuordnung datei.xlsx -o zuordnung.toml</code></td><td>Spaltenzuordnung vorschlagen</td></tr>
+<tr><td><code>bau zuordnung.toml datei.xlsx -o projekt.db</code></td><td>nach Zuordnung einlesen</td></tr>
+<tr><td><code>verknuepfen projekt.db</code></td><td>Personen und Familien bilden</td></tr>
+<tr><td><code>personen</code>, <code>familien</code>, <code>pruefliste</code></td><td>Ergebnis zeigen (<code>pruefliste --alle</code> auch „wahrscheinlich“)</td></tr>
+<tr><td><code>gedcom projekt.db -o projekt.ged</code></td><td>GEDCOM schreiben</td></tr>
+<tr><td><code>pruefe projekt.db projekt.ged</code></td><td>Abgleich; Rückgabewert 1, wenn etwas fehlt</td></tr>
+<tr><td><code>simuliere stammbaum.ged -o register.xlsx --rauschen 0.3</code></td><td>aus einer GEDCOM die drei Register erzeugen (Messung)</td></tr>
+<tr><td><code>messen projekt.db</code></td><td>Verknüpfung gegen die Kennungen der Simulation messen</td></tr>
+<tr><td><code>stand projekt.db</code></td><td>Was in der Projektdatei steht</td></tr>
+<tr><td><code>start --port 8765 --daten ordner --kein-browser</code></td><td>Oberfläche starten</td></tr>
+</table>
+<p>Im Quelltext liegt ein Makefile mit den Zielen <code>test</code>, <code>bau</code>, <code>gedcom</code>, <code>gramps</code> (Gramps liest und prüft die Datei) und <code>plausibilitaet</code> (ein Regelkatalog mit 64 Prüfungen). Die Umgebungsvariable <code>FAMRECON_SPRACHE=en</code> erzwingt Englisch.</p>
+
+<h2 id="daten">Daten und Sicherheit</h2>
+<ul>
+<li><b>Alles lokal.</b> famrecon ist ein Programm auf Ihrem Rechner, das eine Seite im Browser anzeigt. Es nimmt nur Verbindungen vom eigenen Rechner an (Adresse 127.0.0.1) und baut selbst keine Verbindung ins Internet auf. Es gibt keine Telemetrie, kein Konto, keine Cloud.</li>
+<li><b>Datenordner.</b> Als Einzeldatei im Download-Ordner legt famrecon den Ordner <code>daten</code> neben sich an. Installiert (Debian-Paket, Mac-Programm, Windows unter „Programme“) nutzt es den Datenordner des Benutzers: <code>~/.local/share/famrecon</code>, <code>~/Library/Application Support/famrecon</code> oder <code>%APPDATA%\famrecon</code>. Die Startseite nennt den Pfad.</li>
+<li><b>Sichern.</b> Den Projektordner kopieren, fertig. Er enthält Ihre Tabellen, die Zuordnung, die Entscheidungen und die GEDCOM. Die Projektdatei <code>projekt.db</code> ist ein Bauprodukt und lässt sich jederzeit aus Tabellen und Zuordnung neu erzeugen; die Entscheidungen stehen aber nur in ihr. Deshalb den ganzen Ordner sichern.</li>
+<li><b>Löschen.</b> „Projekt löschen“ entfernt den Ordner unwiderruflich. Ihre Originaldateien an anderer Stelle sind davon nicht betroffen.</li>
+<li><b>Lebende Personen.</b> famrecon unterscheidet nicht nach Lebenden; Register des 20. Jahrhunderts enthalten möglicherweise Daten lebender Menschen. Prüfen Sie vor einer Veröffentlichung der GEDCOM die Schutzfristen Ihres Archivs und die Datenschutzregeln Ihres Zielsystems (Gramps und webtrees können Lebende ausblenden).</li>
+<li><b>Protokoll.</b> Ohne Konsolenfenster schreibt famrecon Meldungen und Fehler in die Datei <code>famrecon.log</code> im Datenordner. Sie hilft bei Fehlerberichten.</li>
+</ul>
+
+<h2 id="beenden">Fenster, Beenden, zweiter Start</h2>
+<p>famrecon öffnet ein eigenes Fenster ohne Adressleiste, wenn Chrome, Chromium, Brave oder Edge installiert sind; sonst den Standardbrowser. Das Programm läuft im Hintergrund weiter, auch wenn Sie das Fenster schließen.</p>
+<dl>
+<dt>Beenden</dt><dd>Der Knopf oben rechts beendet famrecon. Alle Daten sind zu diesem Zeitpunkt gespeichert; es gibt nichts Ungesichertes. Danach lässt sich das Fenster schließen.</dd>
+<dt>Fenster geschlossen, famrecon läuft noch</dt><dd>Einfach famrecon erneut starten: Es merkt, dass es schon läuft, und öffnet nur ein neues Fenster.</dd>
+<dt>Adresse</dt><dd>Standard ist <code>http://127.0.0.1:8765/</code>. Ist der Port von einem anderen Programm belegt, nimmt famrecon einen freien und öffnet das Fenster mit der richtigen Adresse. Mit der Kommandozeile lässt sich ein Port festlegen.</dd>
+<dt>Mehrere Fenster</dt><dd>Sie können die Adresse in weiteren Browserfenstern öffnen, etwa Prüfliste und Familien nebeneinander. Es gibt nur einen Bestand, alle Fenster zeigen denselben Stand nach dem nächsten Neuladen.</dd>
+</dl>
+
+<h2 id="faq">Häufige Fragen</h2>
+<details><summary>Meine Spalte wird nicht erkannt oder falsch vorgeschlagen.</summary><p>In der Zuordnung das richtige Feld aus der Liste wählen; der Vorschlag ist nur ein Vorschlag. Hilft es, die Überschrift in der Tabelle sprechender zu machen („Vorname Bräutigam“ statt „VN2“), wird sie beim nächsten Projekt erkannt. Fehlt ein Feld im Katalog ganz, ordnen Sie die Spalte <code>bemerkung</code> zu; der Inhalt geht dann als Notiz in die GEDCOM.</p></details>
+<details><summary>Zwei Blätter sind beide Taufen (zwei Bände, zwei Pfarreien).</summary><p>Beide dem Register Taufe zuweisen. Mehrere Blätter oder Dateien desselben Registers sind erlaubt; die Fundstelle unterscheidet sie, und das Blatt <code>kb</code> oder <code>ort</code> kann den Band oder die Pfarrei tragen.</p></details>
+<details><summary>Meine Daten haben nur das Jahr.</summary><p>Das genügt. Mit Jahr allein wird die Verknüpfung etwas gröber (Geburtsjahr statt Datum), bleibt aber möglich. Die GEDCOM erhält dann nur das Jahr.</p></details>
+<details><summary>Umlaute sind kaputt (CSV).</summary><p>famrecon probiert UTF-8, Windows-1252 und Latin-1. Zeigt die Zuordnung dennoch falsche Zeichen in den Beispielen, speichern Sie die CSV in Ihrer Tabellenkalkulation als „CSV UTF-8“ oder laden Sie die Tabelle als xlsx hoch.</p></details>
+<details><summary>Warum stehen Personen als NN?</summary><p>Der Eintrag nennt keinen Namen (etwa „N.“ oder eine Mutter ohne Namen). famrecon legt dafür eine Person mit unbekanntem Namen an, damit die Familie vollständig bleibt. Nennt ein späterer Eintrag denselben Partner mit Namen, bekommt die Person den Namen nachgetragen.</p></details>
+<details><summary>Dieselbe Person erscheint doppelt.</summary><p>Zwei Nennungen haben nicht genug gemeinsame Anker (Vorname anders geschrieben, kein Alter, keine Eltern), oder ein Veto trennte sie. In der Prüfliste auftauchen tun nur knappe Fälle; klare Trennungen finden Sie über Personen oder Familien. Dort gibt es keinen Knopf zum Zusammenlegen, aber: Taucht die Nennung in der Prüfliste mit „auch wahrscheinlich zeigen“ auf, wählen Sie dort „ist diese Person“. Andernfalls hilft es, dem Eintrag in der Tabelle ein unterscheidendes Feld zu geben (Alter, Vater), und neu zu bauen.</p></details>
+<details><summary>Zwei verschiedene Personen wurden zusammengelegt.</summary><p>In der Prüfliste beim betreffenden Fall „eigene Person (keiner davon)“ wählen. Steht der Fall nicht in der Prüfliste, weil das Programm sich sicher war: „auch wahrscheinlich zeigen“ probieren. Gleiche Vornamen unter Geschwistern (nach einem früh verstorbenen Kind wurde der Name oft neu vergeben) sind der häufigste Grund; ein Sterbe-Rückverweis in der Taufzeile löst sie auf.</p></details>
+<details><summary>Warum hat eine Familie keine Trauung?</summary><p>Sie ist aus Taufen oder Sterbeeinträgen erschlossen („Ehe erschlossen“). Die Trauung fand vor Beginn des Registers oder anderswo statt oder steht in einer Tabelle, die noch nicht geladen ist.</p></details>
+<details><summary>Wie groß darf ein Bestand sein?</summary><p>Einige zehntausend Einträge laufen in Sekunden bis wenigen Minuten. Die Anzeigen begrenzen auf 500 Personen und 300 Familien je Seite, deshalb bei großen Beständen die Suche nutzen.</p></details>
+<details><summary>Kann ich die Zuordnung für ein zweites Projekt wiederverwenden?</summary><p>Ja. Die Datei <code>zuordnung.toml</code> aus dem Projektordner in den Ordner des neuen Projekts kopieren, bevor Sie dort bauen. Sie passt, wenn Blattnamen und Spalten gleich aufgebaut sind; Abweichungen zeigt die Zuordnungsseite.</p></details>
+<details><summary>Ändern sich meine Tabellen?</summary><p>Nein. famrecon liest Kopien im Projektordner und schreibt nie in Ihre Dateien. Auch die hochgeladenen Kopien bleiben unverändert.</p></details>
+<details><summary>Windows warnt vor einem unbekannten Herausgeber.</summary><p>Die Programmdatei ist nicht signiert, weil ein Zertifikat jährlich Geld kostet. „Weitere Informationen“ und „Trotzdem ausführen“ wählen. Die Datei stammt vom Veröffentlichungsort des Projekts; prüfen Sie, dass Sie sie von dort geladen haben.</p></details>
+<details><summary>Der Mac sagt, das Programm könne nicht geöffnet werden.</summary><p>Rechtsklick auf famrecon.app, „Öffnen“, dann im Dialog noch einmal „Öffnen“. Das ist nur beim ersten Start nötig. Alternativ im Terminal: <code>xattr -d com.apple.quarantine famrecon.app</code>.</p></details>
+<details><summary>Wie stelle ich auf Englisch um?</summary><p>famrecon folgt der Systemsprache. Erzwingen lässt sich die Sprache über die Umgebungsvariable <code>FAMRECON_SPRACHE=en</code> (oder <code>de</code>) vor dem Start.</p></details>
+<details><summary>Ich sehe eine Fehlerseite mit viel Text (Traceback).</summary><p>Ein Fehler im Programm. Die letzte Zeile nennt die Ursache, oft eine unerwartete Zelle. Bitte den Text zusammen mit der Beschreibung, was Sie getan haben, als Fehlerbericht melden; die Datei <code>famrecon.log</code> im Datenordner enthält ihn ebenfalls. Ihre Daten sind nicht betroffen; nach einem Neuladen der Seite geht es weiter.</p></details>
+
+<h2 id="fehler">Meldungen und ihre Bedeutung</h2>
+<dl>
+<dt>Zuerst Tabellen hochladen.</dt><dd>Das Projekt hat noch keine Tabelle. Auf der Projektseite hochladen.</dd>
+<dt>Zuerst bauen und verknüpfen.</dt><dd>Personen, Familien, Prüfliste und GEDCOM brauchen eine Projektdatei. Auf der Projektseite „bauen und verknüpfen“.</dd>
+<dt>Zuordnung bestätigen und bauen (statt des Baus erscheint die Zuordnung)</dt><dd>Es gibt noch keine bestätigte Zuordnung. Durchsehen und bestätigen; dann wird gebaut.</dd>
+<dt>… Personen → … Identitäten, … Familien</dt><dd>Der Bau ist gelungen: so viele Nennungen wurden zu so vielen realen Personen und Familien.</dd>
+<dt>Keine offenen Fälle.</dt><dd>Die Prüfliste ist leer, entweder weil alles sicher zugeordnet ist oder weil alles entschieden wurde.</dd>
+<dt>n Fehler (GEDCOM)</dt><dd>So viele Tabellenzeilen wurden in der GEDCOM nicht wiedergefunden oder Verweise zeigen ins Leere. Die Liste darunter nennt jede Zeile; meist fehlt ein Pflichtfeld in der Zuordnung.</dd>
+<dt>nicht gefunden</dt><dd>Die Adresse im Browser passt zu keiner Seite, zum Beispiel ein gelöschtes Projekt in einem alten Lesezeichen.</dd>
+<dt>Port … ist belegt, weiche auf … aus</dt><dd>Nur im Protokoll: Ein anderes Programm nutzt den Standardport; famrecon hat einen anderen genommen und das Fenster mit der richtigen Adresse geöffnet.</dd>
+</dl>
+<p class="hilfe">Fehlt etwas in dieser Hilfe? Vorschläge und Fehlerberichte bitte unter <a href="https://github.com/thobgg/famrecon/issues">github.com/thobgg/famrecon</a>.</p>

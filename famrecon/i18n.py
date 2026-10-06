@@ -14,3 +14,5 @@ ORDNER = Path(__file__).with_name("sprachen")
 _sprachen = [os.environ["FAMRECON_SPRACHE"]] if os.environ.get("FAMRECON_SPRACHE") else None
 _t = gettext.translation("famrecon", localedir=ORDNER, languages=_sprachen, fallback=True)
 _ = _t.gettext
+_mo = gettext.find("famrecon", localedir=ORDNER, languages=_sprachen)
+SPRACHE = Path(_mo).parts[-3] if _mo else "de"      # Sprachkuerzel der geladenen Uebersetzung, sonst die Quellsprache
