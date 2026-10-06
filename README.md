@@ -163,7 +163,10 @@ Die Einzeldateien legen `daten/` neben sich an. Installierte Pakete (.deb,
 `~/.local/share/famrecon`, `~/Library/Application Support/famrecon` oder
 `%APPDATA%\famrecon`; der Start meldet den Ordner. Lokal bauen:
 `pip install pyinstaller pillow && python -m PyInstaller werkzeuge/famrecon.spec`,
-die .deb mit `bash werkzeuge/deb-bauen.sh dist/famrecon out`.
+die .deb mit `bash werkzeuge/deb-bauen.sh dist/famrecon out`. Ohne GitHub geht die Windows-Datei
+auch auf dem eigenen Laptop: `make bundle` erzeugt `out/famrecon.bundle`, das zusammen mit
+`werkzeuge/windows-bauen.ps1` auf den Windows-Rechner kommt; Doppelklick auf das Skript holt den
+Quelltext aus dem Bundle, legt eine Python-Umgebung an, testet und baut (Python 3.11+ und Git nötig).
 
 ## Sprachen
 
