@@ -257,8 +257,9 @@ def koelner(name):
     return out[0] + out[1:].replace("0", "") if out else ""
 
 
-VORNAME_REGELN = [(r"(?<!s)c(?=[aou])", "k"), (r"ck", "k"), (r"th", "t"), (r"ph", "f"), (r"y", "i"), (r"ie$", "i"), (r"ia$", "ia"),
-                  (r"(.)\1", r"\1"), (r"dt$", "t"), (r"ae", "ä"), (r"oe", "ö"), (r"ue", "ü"), (r"ß", "ss")]
+VORNAME_REGELN = [(r"(?<!s)c(?=[aou])", "k"), (r"ck", "k"), (r"th", "t"), (r"ph", "f"), (r"y", "i"), (r"ie", "i"), (r"ia$", "ia"),
+                  (r"(.)\1", r"\1"), (r"dt$", "t"), (r"ae", "ä"), (r"oe", "ö"), (r"ue", "ü"), (r"ß", "ss"),
+                  (r"(?<=[^aeiou])a$", "e")]        # weibliche Endung a/e wechselt (Friderica/Friderike, Catharina/Catharine)
 VORNAME_TABELLE = {"johannes": "johann", "joannes": "johann", "johan": "johann", "georgius": "georg", "jacobus": "jacob",
                    "jakobus": "jacob", "jakob": "jacob", "nicolaus": "nikolaus", "conrad": "konrad", "carl": "karl", "caspar": "kaspar",
                    "catharina": "katharina", "christoph": "kristof", "christof": "kristof", "christina": "kristina", "christine": "kristina", "christian": "kristian",
@@ -266,7 +267,7 @@ VORNAME_TABELLE = {"johannes": "johann", "joannes": "johann", "johan": "johann",
                    "fridrich": "friedrich", "friderich": "friedrich", "friederich": "friedrich",
                    "friderica": "friederike", "friederika": "friederike", "friedrika": "friederike", "friederica": "friederike",
                    "luisa": "luise", "louise": "luise", "luise": "luise", "elisabetha": "elisabeth", "katarina": "katharina",
-                   "margretha": "margaretha", "margarete": "margaretha", "magdalene": "magdalena", "christine": "christina",
+                   "margretha": "margaretha", "margarete": "margaretha", "magdalene": "magdalena",
                    "dorothee": "dorothea", "sophie": "sophia", "marie": "maria", "rosine": "rosina", "regine": "regina"}
 
 
@@ -336,7 +337,9 @@ def namen_aehnlich(a, b, schl_a=None, schl_b=None):
     return d <= 1 or (d == 2 and max(len(a), len(b)) >= 7 and a[:3].lower() == b[:3].lower())   # gleichem Anfang (Aberle/Aberlin, nicht Weber/Wegmer)
 
 
-FUELLNAMEN = {"johan", "johann", "anna", "maria"}       # Beinamen, die fast jeder traegt: allein ein schwacher Treffer
+
+
+FUELLNAMEN = {w for n in ("Johann", "Johannes", "Hans", "Anna", "Maria") for w in vorname_kanon(n).split()}   # Beinamen, die fast jeder traegt
 
 
 def vornamen_punkte(a_kanon, b_kanon):
