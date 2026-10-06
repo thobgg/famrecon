@@ -11,3 +11,6 @@ dist/
 werkzeuge/tmp/
 tmp/
 out/
+werkzeuge/windows/famrecon.bundle
+werkzeuge/windows/*.log
+werkzeuge/windows/famrecon.exe

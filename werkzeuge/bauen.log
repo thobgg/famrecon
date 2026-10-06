@@ -1,0 +1,25 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261006165825
+Benutzername: X13\thoma
+RunAs-Benutzer: X13\thoma
+Konfigurationsname: 
+Computer: X13 (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -file  C:\Users\thoma\AI-Projects\famrecon\werkzeuge\windows-bauen.ps1 
+Prozess-ID: 11544
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Python: C:\Users\thoma\AppData\Local\Microsoft\WindowsApps\py.exe
+
+FEHLER: famrecon.bundle liegt nicht neben dem Skript (C:\Users\thoma\AI-Projects\famrecon\werkzeuge) und C:\famrecon\famrecon ist kein Klon.
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261006165825
+**********************

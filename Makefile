@@ -21,5 +21,5 @@ beispiel:                # das Kirchenbuchstil- Beispiel als Projekt anlegen
 	mkdir -p daten/kirchenbuchstil && cp beispiel/kirchenbuchstil.xlsx daten/kirchenbuchstil/ && cp beispiel/kirchenbuchstil.toml daten/kirchenbuchstil/zuordnung.toml && $(MAKE) PROJEKT=kirchenbuchstil bau
 messung:                 # Rundlauf an der Falkenrath-GEDCOM, optional RAUSCHEN=0.3
 	bash werkzeuge/falkenrath-lauf.sh $(RAUSCHEN) 8
-bundle:                  # Git-Bundle fuer den Bau der Windows-Datei auf dem Laptop (werkzeuge/windows-bauen.ps1)
-	mkdir -p out && git bundle create out/famrecon.bundle main && ls -la out/famrecon.bundle
+bundle:                  # Git-Bundle in werkzeuge/windows/ legen; den ganzen Ordner auf den Laptop kopieren
+	git bundle create werkzeuge/windows/famrecon.bundle main && ls -la werkzeuge/windows/famrecon.bundle

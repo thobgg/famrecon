@@ -164,9 +164,10 @@ Die Einzeldateien legen `daten/` neben sich an. Installierte Pakete (.deb,
 `%APPDATA%\famrecon`; der Start meldet den Ordner. Lokal bauen:
 `pip install pyinstaller pillow && python -m PyInstaller werkzeuge/famrecon.spec`,
 die .deb mit `bash werkzeuge/deb-bauen.sh dist/famrecon out`. Ohne GitHub geht die Windows-Datei
-auch auf dem eigenen Laptop: `make bundle` erzeugt `out/famrecon.bundle`, das zusammen mit
-`werkzeuge/windows-bauen.ps1` auf den Windows-Rechner kommt; Doppelklick auf das Skript holt den
-Quelltext aus dem Bundle, legt eine Python-Umgebung an, testet und baut (Python 3.11+ und Git nötig).
+auch auf dem eigenen Laptop: `make bundle` legt `famrecon.bundle` in `werkzeuge/windows/`, der ganze
+Ordner kommt auf den Windows-Rechner (oder liegt per NAS-Abgleich schon dort); `windows-bauen.cmd` holt den
+Quelltext aus dem Bundle, legt eine Python-Umgebung an, testet und baut, `windows-starten.cmd`
+startet ohne exe direkt aus dem Quelltext; `windows-einrichten.cmd` installiert einmalig Python und Git.
 
 ## Sprachen
 
@@ -212,7 +213,7 @@ sind ausgenommen.
     tests/               unittest, `make test`
     pruefungen/          Regelkatalog mit 64 Plausibilitätsregeln und sein Motor (`make plausibilitaet`)
     werkzeuge/           Bauen und Prüfen: famrecon.spec und start.py (PyInstaller), deb-bauen.sh,
-                         windows-bauen.ps1 (Bau auf dem Laptop), Symbole, falkenrath-lauf.sh (Messlauf), gramps-pruefen.sh
+                         windows/ (Bau und Start auf dem Laptop per Doppelklick), Symbole, falkenrath-lauf.sh (Messlauf), gramps-pruefen.sh
     .github/workflows/   paket.yml baut die Pakete für Windows, macOS und Linux
     Makefile             Ziele: test, sprachen, start, bau, gedcom, gramps, plausibilitaet, beispiel, messung
     daten/               lokal, von Git ignoriert: ein Ordner je Projekt (Tabellen, zuordnung.toml, projekt.db, projekt.ged)

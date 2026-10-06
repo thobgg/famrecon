@@ -13,6 +13,7 @@ try {
 $hier = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repo = "C:\famrecon\famrecon"
 $bundle = Join-Path $hier "famrecon.bundle"
+if (-not (Test-Path $bundle) -and (Test-Path (Join-Path $hier "..\..\out\famrecon.bundle"))) { $bundle = Join-Path $hier "..\..\out\famrecon.bundle" }
 
 $py = Get-Command py -ErrorAction SilentlyContinue
 if (-not $py) { $py = Get-Command python -ErrorAction SilentlyContinue }
