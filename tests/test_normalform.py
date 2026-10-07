@@ -89,3 +89,15 @@ class Schluessel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Datumsfehler(unittest.TestCase):
+    """Tippfehler in Daten (Monat 93, 31. Februar) duerfen nicht abbrechen, sondern gelten als unbekannt."""
+
+    def test_unmoeglicher_monat(self):
+        from famrecon import normalform as nf
+        self.assertEqual(nf.datum_zerlegen("1793-93-04"), (1793, None, None))
+        self.assertEqual(nf.datum_zerlegen("04.13.1793"), (1793, None, None))
+        self.assertEqual(nf.datum_zerlegen("1793-02-31"), (1793, 2, 31))
+        self.assertTrue(nf.tage_seit((1793, 2, 31)) > 0)
+        self.assertIsNotNone(nf.datum_minus_tage((1793, 93, 4), 100))

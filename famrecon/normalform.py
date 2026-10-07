@@ -161,21 +161,28 @@ def alter_tage(text):
 
 
 # ------------------------------------------------------------------ Datum
+def _gueltig(j, mo, ta):
+    """Unmoegliche Monate oder Tage (Tippfehler wie 1793-93-04) gelten als unbekannt, das Jahr bleibt."""
+    mo = mo if mo and 1 <= mo <= 12 else None
+    ta = ta if ta and 1 <= ta <= 31 and mo else None
+    return j, mo, ta
+
+
 def datum_zerlegen(text):
-    """-> (jahr, monat|None, tag|None) oder None. 00 heisst unbekannt."""
+    """-> (jahr, monat|None, tag|None) oder None. 00 heisst unbekannt; unmoegliche Werte ebenso."""
     if _leer(text):
         return None
     t = str(text).strip()
     m = re.match(r"(\d{4})-(\d{1,2})-(\d{1,2})", t)
     if m:
         j, mo, ta = (int(x) for x in m.groups())
-        return j, (mo or None), (ta or None)
+        return _gueltig(j, mo, ta)
     m = re.match(r"(\d{4})-(\d{1,2})$", t)
     if m:
-        return int(m.group(1)), int(m.group(2)) or None, None
+        return _gueltig(int(m.group(1)), int(m.group(2)), None)
     m = re.match(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", t)
     if m:
-        return int(m.group(3)), int(m.group(2)) or None, int(m.group(1)) or None
+        return _gueltig(int(m.group(3)), int(m.group(2)), int(m.group(1)))
     m = re.search(r"\b(1[5-9]\d\d|20\d\d)\b", t)
     return (int(m.group(1)), None, None) if m else None
 
@@ -193,7 +200,10 @@ def tage_seit(jmt):
     """Ordinal eines (jahr, monat, tag) mit Ersatz fuer Unbekanntes (Mitte)."""
     import datetime as dt
     j, m, t = jmt
-    return dt.date(j, m or 6, t or 15).toordinal()
+    try:
+        return dt.date(j, m or 6, t or 15).toordinal()
+    except ValueError:                                       # 31. Februar, Monat 93 und aehnliche Schreibfehler
+        return dt.date(j, m if m and 1 <= m <= 12 else 6, 1).toordinal()
 
 
 def datum_minus_tage(jmt, tage):

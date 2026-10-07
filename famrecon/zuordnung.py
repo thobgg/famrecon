@@ -242,13 +242,17 @@ def toml_text(datei, blaetter, mit_datei=False):
          "", "[allgemein]"]
     leer = sorted({w for _, _, _, lw, *_ in blaetter for w in lw})
     z.append("leer = [" + ", ".join(f'"{w}"' for w in leer) + "]")
+    gesehen = {}
     for blatt, register, zuordnung, _, *rest in blaetter:
-        z += ["", f"[register.{register}]", f'blatt = "{blatt}"']
+        # Mehrere Blaetter desselben Registers (zwei Baende, zwei Zeitraeume): eindeutige Abschnitte taufe, taufe_2 ...
+        gesehen[register] = gesehen.get(register, 0) + 1
+        abschnitt = register if gesehen[register] == 1 else f"{register}_{gesehen[register]}"
+        z += ["", f"[register.{abschnitt}]", f'register = "{register}"', f'blatt = "{blatt}"']
         if mit_datei and rest:
             z.append(f'datei = "{rest[0]}"')
         z += [
               "leitdatum = [" + ", ".join(f'"{f}"' for f in katalog.LEITDATUM[register]) + "]",
-              "", f"[register.{register}.spalten]"]
+              "", f"[register.{abschnitt}.spalten]"]
         for b, s in zuordnung:
             key = b if "-" not in b else f'"{b}"'
             bsp = " | ".join(s["werte"]) if s["werte"] else "(leer)"

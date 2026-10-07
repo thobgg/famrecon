@@ -186,8 +186,8 @@ def s_zuordnung(pr, wahl=None):
         try:
             z = lesen.zuordnung_laden(pr.toml)
             kennungen = bool(z["allgemein"].get("kennungen"))
-            for reg, d in z["register"].items():
-                vorhanden[(d.get("datei"), d["blatt"])] = (reg, {k: v for k, v in d["spalten"].items()})
+            for _abschnitt, d in z["register"].items():
+                vorhanden[(d.get("datei"), d["blatt"])] = (d["register"], {k: v for k, v in d["spalten"].items()})
         except Exception:
             pass
     bloecke = []
@@ -231,10 +231,13 @@ def zuordnung_speichern(pr, form):
     n, z = 0, ["# Spaltenzuordnung, in der Oberflaeche bestaetigt", "", "[allgemein]",
                "leer = [" + ", ".join(f'"{w.strip()}"' for w in form.get("leer", "").split(",") if w.strip()) + "]",
                "kennungen = " + ("true" if form.get("kennungen") else "false") + "   # Feld ref als Vorgabe (Erweitert)"]
+    gesehen = {}
     while f"r{n}" in form:
         reg, datei, blatt = form[f"r{n}"], form[f"d{n}"], form[f"b{n}"]
-        z += ["", f"[register.{reg}]", f'blatt = "{blatt}"', f'datei = "{datei}"',
-              "leitdatum = [" + ", ".join(f'"{f}"' for f in katalog.LEITDATUM[reg]) + "]", "", f"[register.{reg}.spalten]"]
+        gesehen[reg] = gesehen.get(reg, 0) + 1
+        abschnitt = reg if gesehen[reg] == 1 else f"{reg}_{gesehen[reg]}"   # zwei Blaetter desselben Registers
+        z += ["", f"[register.{abschnitt}]", f'register = "{reg}"', f'blatt = "{blatt}"', f'datei = "{datei}"',
+              "leitdatum = [" + ", ".join(f'"{f}"' for f in katalog.LEITDATUM[reg]) + "]", "", f"[register.{abschnitt}.spalten]"]
         for k, v in form.items():
             if k.startswith(f"f{n}:") and v:
                 sp = k.split(":", 1)[1]

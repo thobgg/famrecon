@@ -78,3 +78,31 @@ class CSV(unittest.TestCase):
         erste = next(lesen.zeilen_lesen(HIER / "beispiel" / "falkenrath-taufen.csv", "falkenrath-taufen"))
         self.assertEqual(erste[0], 2)
         self.assertRegex(str(erste[1][0]), r"^\d{4}-\d{2}-\d{2}$")
+
+
+class ZweiBlaetterEinRegister(unittest.TestCase):
+    """Zwei Taufblaetter (zwei Baende) in einer Mappe: die Zuordnung muss eindeutige Abschnitte schreiben
+    (taufe, taufe_2) und das Einlesen beide als Register taufe lesen."""
+
+    def test_zwei_taufblaetter(self):
+        import openpyxl, tempfile
+        from famrecon import zuordnung as zu
+        quelle = openpyxl.load_workbook(XLSX)
+        with tempfile.TemporaryDirectory() as d:
+            ziel = Path(d) / "zwei.xlsx"
+            wb = openpyxl.Workbook(); wb.remove(wb.active)
+            for titel, von in (("Taufen 1700", "Taufen"), ("Taufen 1750", "Taufen"), ("Ehen", "Ehen"), ("Tote", "Tote")):
+                ws = wb.create_sheet(titel)
+                for row in quelle[von].iter_rows(values_only=True):
+                    ws.append(list(row))
+            wb.save(ziel)
+            text = zu.toml_text(str(ziel), zu.vorschlagen(ziel))
+            self.assertIn("[register.taufe_2]", text)
+            self.assertIn('register = "taufe"', text)
+            toml = Path(d) / "z.toml"; toml.write_text(text, encoding="utf-8")
+            z = lesen.zuordnung_laden(toml)                                # kein 'Cannot declare twice' mehr
+            self.assertEqual(sorted(r["register"] for r in z["register"].values()), ["ehe", "taufe", "taufe", "tod"])
+            con = db.oeffnen(":memory:")
+            n = lesen.einlesen(con, z, [ziel])
+            self.assertEqual(n["taufe"], 14)                               # 7 Taufen je Blatt, beide gelesen
+            self.assertEqual(con.execute("SELECT COUNT(*) FROM quelle WHERE register='taufe'").fetchone()[0], 2)

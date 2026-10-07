@@ -29,6 +29,7 @@ def zuordnung_laden(pfad):
     z.setdefault("allgemein", {}).setdefault("leer", [])
     for name, reg in z.get("register", {}).items():
         reg["_spalten"] = _spalten_aufloesen(reg["spalten"])
+        reg.setdefault("register", name)          # Abschnitt taufe_2 -> Register taufe
     return z
 
 
@@ -173,7 +174,8 @@ def einlesen(con, zuordnung, dateien):
     for datei in dateien:
         datei = Path(datei)
         wb_blaetter = [b for b, _, _ in blaetter(datei)]
-        for register, reg in zuordnung["register"].items():
+        for _abschnitt, reg in zuordnung["register"].items():
+            register = reg["register"]
             if reg["blatt"] not in wb_blaetter:
                 continue
             if reg.get("datei") and reg["datei"] != datei.name:
