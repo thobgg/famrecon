@@ -486,3 +486,18 @@ msgstr ""
 
 msgid "{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}"
 msgstr ""
+
+msgid "Rekonstitution gegen eine Referenz-GEDCOM (geprueftes Familienbuch) messen"
+msgstr ""
+
+msgid "nur Eintraege ab diesem Jahr"
+msgstr ""
+
+msgid "ueber Name und Jahr koppeln statt ueber Fundstellen"
+msgstr ""
+
+msgid "Abweichungen als Tabelle schreiben"
+msgstr ""
+
+msgid "{n} Abweichungen -> {datei}"
+msgstr ""

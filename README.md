@@ -145,7 +145,15 @@ laufen ohne Konsolenfenster; Meldungen landen in `famrecon.log` im Datenordner.
 Ein zweiter Start erkennt das laufende Programm und öffnet nur ein Fenster; ist
 der Port belegt, nimmt famrecon einen freien.
 
-## Buch und Urteile
+## Abgleich, Buch und Urteile
+
+    famrecon vergleiche daten/x/projekt.db referenz.ged [--ab 1747] [--inhalt] [--xlsx abweichungen.xlsx]
+
+Misst die Rekonstitution gegen ein geprüftes Familienbuch desselben Orts: Kopplung je Eintrag über die
+Fundstellen (oder über Name und Jahr), Präzision und Vollständigkeit der Personenpaare, Eltern je Taufe,
+Treffsicherheit der Stufen, Abweichungen in beide Richtungen als Liste oder Tabelle. So wurden die
+Regeln kalibriert; so kann jeder Autor prüfen, was famrecon bei ihm anrichtet, bevor er ihm glaubt.
+
 
     make PROJEKT=x buch       Website im Stil eines Ortsfamilienbuchs -> daten/x/buch (statisch, Titel aus daten/x/buch.toml)
     make PROJEKT=x urteile    Prüfliste als Excel-Tabelle -> daten/x/pruefliste.xlsx; zurück mit `famrecon urteile ... --lesen`

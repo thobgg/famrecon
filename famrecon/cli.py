@@ -2,7 +2,7 @@
 import argparse
 import sys
 
-from . import __version__, buch, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, urteile, verknuepfen, zuordnung
+from . import __version__, buch, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, urteile, vergleich, verknuepfen, zuordnung
 from .i18n import _
 
 
@@ -129,6 +129,16 @@ def cmd_buch(args):
     print(_("{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}").format(f=st["familien"], p=st["personen"], s=st["seiten"], u=st["prueffaelle"], o=st["ordner"]))
 
 
+def cmd_vergleiche(args):
+    """Rekonstitution gegen eine Referenz-GEDCOM messen; Abweichungen als Text oder xlsx."""
+    con = db.oeffnen(args.db)
+    v = vergleich.vergleichen(con, args.referenz, args.ab or 0, "inhalt" if args.inhalt else "fundstelle")
+    print(vergleich.bericht(v, args.zeigen))
+    if args.xlsx:
+        n = vergleich.tabelle(v, args.xlsx)
+        print(_("{n} Abweichungen -> {datei}").format(n=n, datei=args.xlsx))
+
+
 def cmd_start(args):
     """Oberflaeche im Browser starten."""
     from .web import server
@@ -204,6 +214,15 @@ def main(argv=None):
     s.add_argument("db")
     s.add_argument("ged")
     s.set_defaults(fn=cmd_pruefe)
+
+    s = sub.add_parser("vergleiche", help=_("Rekonstitution gegen eine Referenz-GEDCOM (geprueftes Familienbuch) messen"))
+    s.add_argument("db")
+    s.add_argument("referenz", help="GEDCOM mit Fundstellen (PAGE) an den Ereignissen")
+    s.add_argument("--ab", type=int, help=_("nur Eintraege ab diesem Jahr"))
+    s.add_argument("--inhalt", action="store_true", help=_("ueber Name und Jahr koppeln statt ueber Fundstellen"))
+    s.add_argument("--xlsx", help=_("Abweichungen als Tabelle schreiben"))
+    s.add_argument("--zeigen", type=int, default=10)
+    s.set_defaults(fn=cmd_vergleiche)
 
     s = sub.add_parser("buch", help=_("Website im Stil eines Ortsfamilienbuchs schreiben (statisch)"))
     s.add_argument("db", nargs="?", default="daten/projekt.db")

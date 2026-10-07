@@ -485,3 +485,18 @@ msgstr "include GEDCOM for download"
 
 msgid "{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}"
 msgstr "{f} families, {p} persons, {s} pages, {u} review cases -> {o}"
+
+msgid "Rekonstitution gegen eine Referenz-GEDCOM (geprueftes Familienbuch) messen"
+msgstr "Measure the reconstitution against a reference GEDCOM (reviewed family book)"
+
+msgid "nur Eintraege ab diesem Jahr"
+msgstr "only entries from this year on"
+
+msgid "ueber Name und Jahr koppeln statt ueber Fundstellen"
+msgstr "couple via name and year instead of citations"
+
+msgid "Abweichungen als Tabelle schreiben"
+msgstr "write deviations as table"
+
+msgid "{n} Abweichungen -> {datei}"
+msgstr "{n} deviations -> {datei}"
