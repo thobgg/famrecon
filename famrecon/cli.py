@@ -2,7 +2,7 @@
 import argparse
 import sys
 
-from . import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, verknuepfen, zuordnung
+from . import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, urteile, verknuepfen, zuordnung
 from .i18n import _
 
 
@@ -105,6 +105,21 @@ def cmd_pruefe(args):
     sys.exit(pruefe.main(db.oeffnen(args.db), args.ged))
 
 
+def cmd_urteile(args):
+    """Pruefliste als Tabelle schreiben oder Urteile daraus als Entscheidungen einlesen."""
+    con = db.oeffnen(args.db)
+    if args.schreiben:
+        n = urteile.tabelle_schreiben(con, args.schreiben, args.alle)
+        print(_("{n} Fälle -> {datei}").format(n=n, datei=args.schreiben))
+    if args.lesen:
+        st = urteile.tabelle_lesen(con, args.lesen)
+        print(_("Urteile: {g} gleich, {n} neu, {z} zurückgenommen, {u} übergangen").format(g=st["gleich"], n=st["neu"], z=st["zurueck"], u=st["uebergangen"]))
+        for f in st["fehler"]:
+            print("  !", f)
+        if st["gleich"] or st["neu"] or st["zurueck"]:
+            print(_("Jetzt neu verknüpfen: famrecon verknuepfen {db}").format(db=args.db))
+
+
 def cmd_start(args):
     """Oberflaeche im Browser starten."""
     from .web import server
@@ -180,6 +195,13 @@ def main(argv=None):
     s.add_argument("db")
     s.add_argument("ged")
     s.set_defaults(fn=cmd_pruefe)
+
+    s = sub.add_parser("urteile", help=_("Pruefliste als Tabelle (xlsx) schreiben / Urteile daraus einlesen"))
+    s.add_argument("db", nargs="?", default="daten/projekt.db")
+    s.add_argument("--schreiben", metavar="XLSX", help=_("Pruefliste als Tabelle schreiben"))
+    s.add_argument("--lesen", metavar="XLSX", help=_("Urteile aus der Tabelle als Entscheidungen speichern"))
+    s.add_argument("--alle", action="store_true", help="auch 'wahrscheinlich'")
+    s.set_defaults(fn=cmd_urteile)
 
     s = sub.add_parser("start", help=_("Oberflaeche im Browser starten"))
     s.add_argument("--port", type=int, default=8765)

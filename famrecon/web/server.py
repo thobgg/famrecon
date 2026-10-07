@@ -23,7 +23,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from string import Template
 
-from .. import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, verknuepfen, zuordnung
+from .. import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, urteile, verknuepfen, zuordnung
 from ..i18n import _, SPRACHE
 
 HIER = Path(__file__).parent
@@ -298,13 +298,14 @@ def s_familien(pr, q):
     return seite("familien", projekt=pr.name, titel=_("Familien"), bloecke="".join(bloecke), q=h(q), anzahl=len(bloecke))
 
 
-def s_pruefliste(pr, alle=False):
+def s_pruefliste(pr, alle=False, meldung=""):
     """Pruefliste: unsichere Zuordnungen und neue Personen mit Kandidaten, je Fall die Karten der Kandidaten mit Belegen und Knoepfen."""
     con = pr.con()
     sql = ("SELECT z.*, p.pfad, p.roh, e.register, e.jahr, i.name iname, i.vorname ivorname, i.geb_jahr, i.tod_jahr, i.id iid, en.art hart, en.ziel hziel "
            "FROM zuordnung z JOIN person p ON p.id=z.person JOIN eintrag e ON e.id=p.eintrag JOIN quelle q ON q.id=e.quelle JOIN identitaet i ON i.id=z.ident "
            "LEFT JOIN entscheidung en ON en.schluessel = q.datei||'|'||q.blatt||'|'||e.zeile||'|'||p.pfad "
-           "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if alle else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]')) ORDER BY (en.art IS NOT NULL), e.jahr")
+           "WHERE (z.stufe IN ('unsicher'" + (",'wahrscheinlich'" if alle else "") + ") OR (z.stufe='neu' AND z.alternativen<>'[]') OR en.art IS NOT NULL) "
+           "ORDER BY (en.art IS NOT NULL), e.jahr")           # Entschiedenes bleibt sichtbar (zum Zuruecknehmen), am Ende
 
     def belege(ident):
         """Alle Nennungen einer Identitaet als Liste (Register, Jahr, Rolle, Rohtext)."""
@@ -327,7 +328,7 @@ def s_pruefliste(pr, alle=False):
                        f'<h3>{r["register"]} {r["jahr"]} · {r["pfad"]}: {h(r["roh"] or "")} <small>#{r["person"]} · {r["stufe"]}</small> {erledigt}</h3>'
                        f'<div class="kandidaten">{"".join(karten)}</div>'
                        f'<p><button name="neu" value="1">{_("eigene Person (keiner davon)")}</button> <button name="loeschen" value="1" class="leise">{_("Entscheidung zurücknehmen")}</button></p></form>')
-    return seite("pruefliste", projekt=pr.name, titel=_("Prüfliste"), bloecke="".join(bloecke) or "<p>" + _("Keine offenen Fälle.") + "</p>", anzahl=len(bloecke),
+    return seite("pruefliste", projekt=pr.name, titel=_("Prüfliste"), bloecke="".join(bloecke) or "<p>" + _("Keine offenen Fälle.") + "</p>", anzahl=len(bloecke), meldung=h(meldung),
                  alle_link=f'<a href="/p/{pr.name}/pruefliste?alle=1">" + _("auch „wahrscheinlich“ zeigen") + "</a>' if not alle else f'<a href="/p/{pr.name}/pruefliste">" + _("nur „unsicher“") + "</a>')
 
 
@@ -423,11 +424,15 @@ class Handler(BaseHTTPRequestHandler):
                 if was == "familien":
                     return self.antwort(s_familien(pr, q.get("q", "")))
                 if was == "pruefliste":
-                    return self.antwort(s_pruefliste(pr, bool(q.get("alle"))))
+                    return self.antwort(s_pruefliste(pr, bool(q.get("alle")), q.get("m", "")))
                 if was == "gedcom":
                     return self.antwort(s_gedcom(pr))
                 if was == "projekt.ged" and pr.ged.exists():
                     return self.antwort(pr.ged.read_bytes(), "text/plain; charset=utf-8")
+                if was == "pruefliste.xlsx" and pr.dbpfad.exists():          # Urteilstabelle fuer Excel
+                    ziel = pr.ordner / "pruefliste.xlsx"
+                    urteile.tabelle_schreiben(pr.con(), ziel, bool(q.get("alle")))
+                    return self.antwort(ziel.read_bytes(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             self.antwort("nicht gefunden", code=404)
         except Exception as e:                                 # die Seite soll den Fehler zeigen, nicht der Server sterben
             import traceback
@@ -497,6 +502,19 @@ class Handler(BaseHTTPRequestHandler):
                         verknuepfen.entscheiden_von_hand(con, person, "gleich", int(form["gleich"]))
                     verknuepfen.verknuepfen(con)
                     return self.weiter(f"/p/{pr.name}/pruefliste")
+                if was == "urteile":                                     # Urteilstabelle zurueck: Entscheidungen, dann neu verknuepfen
+                    if not dateien or not pr.dbpfad.exists():
+                        return self.weiter(f"/p/{pr.name}/pruefliste")
+                    ziel = pr.ordner / "pruefliste-urteile.xlsx"
+                    ziel.write_bytes(dateien[0][1])
+                    con = pr.con()
+                    st = urteile.tabelle_lesen(con, ziel)
+                    if st["gleich"] or st["neu"] or st["zurueck"]:
+                        verknuepfen.verknuepfen(con)
+                    meldung = _("Urteile: {g} gleich, {n} neu, {z} zurückgenommen, {u} übergangen").format(g=st["gleich"], n=st["neu"], z=st["zurueck"], u=st["uebergangen"])
+                    if st["fehler"]:
+                        meldung += " · " + _("{k} nicht zuzuordnen").format(k=len(st["fehler"]))
+                    return self.weiter(f"/p/{pr.name}/pruefliste?m=" + urllib.parse.quote(meldung))
                 if was == "loeschen":
                     pr.schliessen()
                     shutil.rmtree(pr.ordner)

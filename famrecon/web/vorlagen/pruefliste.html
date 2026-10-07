@@ -1,3 +1,10 @@
 <h1>{{Prüfliste}} · $projekt</h1>
+<p class="meldung">$meldung</p>
 <p class="hilfe">$anzahl {{Fälle. Jeder Fall: eine Nennung in einem Eintrag und die Personen, zu denen sie passen könnte, mit allen Belegen. Eine Entscheidung gilt ab sofort und bei jedem weiteren Lauf.}} $alle_link · $hilfe</p>
 $bloecke
+<div class="karte urteile">
+  <h2>{{Urteile in Excel}}</h2>
+  <p class="hilfe">{{Alle Fälle als Tabelle: eine Zeile je Fall mit Kandidaten. In die Spalte URTEIL kommt die Nummer des richtigen Kandidaten, „neu“ für eine eigene Person oder „offen“. Die ausgefüllte Tabelle hier wieder hochladen; famrecon speichert die Urteile als Entscheidungen und verknüpft neu.}}</p>
+  <p><a class="knopf" href="/p/$projekt/pruefliste.xlsx">{{Tabelle herunterladen}}</a> <a class="knopf leise" href="/p/$projekt/pruefliste.xlsx?alle=1">{{auch „wahrscheinlich“}}</a></p>
+  <form method="post" action="/p/$projekt/urteile" enctype="multipart/form-data"><input type="file" name="dateien" accept=".xlsx"> <button class="leise">{{Urteile einlesen}}</button></form>
+</div>

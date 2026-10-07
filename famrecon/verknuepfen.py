@@ -429,6 +429,8 @@ def verknuepfen(con, kennungen=None):
         """Familie, in der vater_p Mann ist (und mutter_p nicht widerspricht). None, wenn keine passt."""
         if not vater_p or not vater_p.get("name"):
             return None
+        if von_hand(vater_p) or von_hand(mutter_p):          # Urteil zu Vater oder Mutter: die Einzelsuche (finde) folgt ihm
+            return None
         kand = []
         vorgabe = vorgabe_fuer(vater_p)
         for i in ([vorgabe] if vorgabe else best.kandidaten_name(vater_p["name"], vater_p.get("name_schl"), "M")):

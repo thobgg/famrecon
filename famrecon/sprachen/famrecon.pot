@@ -429,3 +429,39 @@ msgstr ""
 
 msgid "famrecon ist beendet. Dieses Fenster kann geschlossen werden."
 msgstr ""
+
+msgid "Urteile in Excel"
+msgstr ""
+
+msgid "Alle Fälle als Tabelle: eine Zeile je Fall mit Kandidaten. In die Spalte URTEIL kommt die Nummer des richtigen Kandidaten, „neu“ für eine eigene Person oder „offen“. Die ausgefüllte Tabelle hier wieder hochladen; famrecon speichert die Urteile als Entscheidungen und verknüpft neu."
+msgstr ""
+
+msgid "Tabelle herunterladen"
+msgstr ""
+
+msgid "auch „wahrscheinlich“"
+msgstr ""
+
+msgid "Urteile einlesen"
+msgstr ""
+
+msgid "Urteile: {g} gleich, {n} neu, {z} zurückgenommen, {u} übergangen"
+msgstr ""
+
+msgid "{k} nicht zuzuordnen"
+msgstr ""
+
+msgid "{n} Fälle -> {datei}"
+msgstr ""
+
+msgid "Jetzt neu verknüpfen: famrecon verknuepfen {db}"
+msgstr ""
+
+msgid "Pruefliste als Tabelle (xlsx) schreiben / Urteile daraus einlesen"
+msgstr ""
+
+msgid "Pruefliste als Tabelle schreiben"
+msgstr ""
+
+msgid "Urteile aus der Tabelle als Entscheidungen speichern"
+msgstr ""
