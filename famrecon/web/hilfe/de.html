@@ -206,6 +206,14 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <li><b>auch „wahrscheinlich“ zeigen</b> blendet die nächste Stufe ein. Das lohnt bei kleinen Beständen oder wenn Sie den Namen gezielt prüfen wollen.</li>
 </ol>
 
+<h3>Urteile in Excel</h3>
+<p>Wer lieber in einer Tabelle arbeitet als zu klicken, lädt unten auf der Prüfliste die <b>Urteilstabelle</b> herunter: eine Zeile je Fall mit Register, Jahr, Fundstelle, der Nennung im Wortlaut, famrecons Wahl und Begründung und allen Kandidaten mit Nummer. In die Spalte URTEIL kommt die Nummer des richtigen Kandidaten, „neu“ für eine eigene Person, „offen“ zum Übergehen oder „zurueck“, um ein früheres Urteil aufzuheben. Die ausgefüllte Tabelle wird an derselben Stelle wieder hochgeladen; famrecon speichert die Urteile als Entscheidungen, verknüpft neu und meldet, wie viele es übernommen hat. Dieselbe Tabelle lässt sich weitergeben, etwa an den Erfasser der Register, der die Fälle am besten kennt. Kommandozeile: <code>famrecon urteile projekt.db --schreiben pruefliste.xlsx</code> und <code>--lesen</code>.</p>
+
+<h2 id="buch">Das Buch: Website zur Durchsicht</h2>
+<p>Der Knopf <b>Buch (Website) erzeugen</b> auf der Projektseite schreibt eine Website im Stil eines Ortsfamilienbuchs in den Ordner buch im Projektordner: Familien A bis Z als Artikel mit Mann, Frau, Trauung und Kindern, Register für Personen, Orte, Berufe und Quellen, dazu Prüffälle, Stufen und Statistik, und die GEDCOM zum Herunterladen. Alles statisch, also reine HTML-Dateien: Der Ordner kann auf jeden Webserver kopiert oder per Doppelklick auf index.html geöffnet werden, nichts läuft darauf, nichts kann kaputtgehen. Jeder neue Stand ersetzt den Ordner.</p>
+<p>Die Site ist für die <b>Durchsicht</b> gebaut, nicht als fertiges Buch, und sagt das auch: Jede Seite trägt den Hinweis Arbeitsfassung mit Datum, ist für Suchmaschinen gesperrt, jede Angabe nennt ihre Fundstelle, jede Verbindung zwischen Einträgen ihre Stufe, sicher ohne Zeichen, wahrscheinlich kursiv, unsicher mit ?, unentschieden mit ??. Unter jeder Person stehen aufklappbar alle Belege, also die Registerzeilen, aus denen sie besteht. Die Seite Prüffälle ist dieselbe Liste wie die Prüfliste, die Seite Stufen zeigt erschlossene Ehen und Kinder ohne Vater. Wer einen Fehler findet, nennt am besten die Familiennummer (F…) oder die Fundstelle.</p>
+<p>Titel, Untertitel, Einleitung, Erfasser, Bearbeiter, Impressum und Datenschutztext kommen aus der Datei <code>buch.toml</code> im Projektordner; fehlt sie, gelten Standardwerte aus dem Projektnamen. Kommandozeile: <code>famrecon buch projekt.db -o buch --konfig buch.toml --ged projekt.ged</code>.</p>
+
 <h2 id="gedcom">GEDCOM schreiben und prüfen</h2>
 <p>Die Seite schreibt die GEDCOM-Datei (Version 5.5.1, UTF-8) und gleicht sie sofort ab. Oben steht, wie viele Personen, Familien und Zeilen geschrieben wurden.</p>
 <h3>Was wo landet</h3>

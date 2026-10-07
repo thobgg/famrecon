@@ -10,5 +10,7 @@
   <a class="knopf" href="/p/$projekt/pruefliste">{{Prüfliste}}</a>
   <a class="knopf" href="/p/$projekt/gedcom">{{GEDCOM schreiben und prüfen}}</a>
   $ged_link
+  <form method="post" action="/p/$projekt/buch" onsubmit="const b=this.querySelector('button'); b.disabled=true; b.textContent='⏳ ' + b.textContent"><button class="leise" title="{{Statische Website im Stil eines Ortsfamilienbuchs nach daten/Projekt/buch; Titel und Einleitung aus buch.toml im Projektordner}}">{{Buch (Website) erzeugen}}</button></form>
+  $buch_link
   <form method="post" action="/p/$projekt/loeschen" onsubmit="return rueckfrage(this, '{{Projekt samt Tabellen löschen?}}')"><button class="leise">{{Projekt löschen}}</button></form>
 </div>

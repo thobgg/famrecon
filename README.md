@@ -145,6 +145,17 @@ laufen ohne Konsolenfenster; Meldungen landen in `famrecon.log` im Datenordner.
 Ein zweiter Start erkennt das laufende Programm und öffnet nur ein Fenster; ist
 der Port belegt, nimmt famrecon einen freien.
 
+## Buch und Urteile
+
+    make PROJEKT=x buch       Website im Stil eines Ortsfamilienbuchs -> daten/x/buch (statisch, Titel aus daten/x/buch.toml)
+    make PROJEKT=x urteile    Prüfliste als Excel-Tabelle -> daten/x/pruefliste.xlsx; zurück mit `famrecon urteile ... --lesen`
+
+Das Buch ist zur Durchsicht gedacht: Arbeitsfassung mit Datum, noindex, jede Angabe mit
+Fundstelle, jede Verbindung mit Stufe, Belege je Person aufklappbar, Prüffälle und Stufen
+als eigene Seiten, GEDCOM zum Herunterladen. Die Urteilstabelle schließt den Kreis: Wer die
+Register erfasst hat, trägt in Excel je Fall die Nummer des richtigen Kandidaten ein, famrecon
+liest die Urteile als Entscheidungen zurück. Beides auch in der Oberfläche.
+
 ## Installieren und Pakete
 
     pip install .                 Befehl `famrecon` systemweit (Python 3.11+, openpyxl)

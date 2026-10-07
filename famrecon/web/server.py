@@ -23,7 +23,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from string import Template
 
-from .. import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, urteile, verknuepfen, zuordnung
+from .. import __version__, buch, db, gedcom, katalog, kern, lesen, messen, pruefe, urteile, verknuepfen, zuordnung
 from ..i18n import _, SPRACHE
 
 HIER = Path(__file__).parent
@@ -172,7 +172,8 @@ def s_projekt(pr, meldung=""):
     schritte.append(("GEDCOM", _("liegt vor") if st["ged"] else _("fehlt"), st["ged"]))
     liste = "".join(f'<tr class="{"ok" if ok else ""}"><th>{h(t)}</th><td>{h(w)}</td></tr>' for t, w, ok in schritte)
     return seite("projekt", projekt=pr.name, titel=pr.name, schritte=liste, meldung=h(meldung),
-                 ged_link=f'<a class="knopf" href="/p/{pr.name}/projekt.ged" download>" + _("GEDCOM herunterladen") + "</a>' if st["ged"] else "")
+                 ged_link=f'<a class="knopf" href="/p/{pr.name}/projekt.ged" download>" + _("GEDCOM herunterladen") + "</a>' if st["ged"] else "",
+                 buch_link=f'<a class="knopf leise" href="/p/{pr.name}/buch/index.html">" + _("Buch ansehen") + "</a>' if (pr.ordner / "buch" / "index.html").exists() else "")
 
 
 def s_zuordnung(pr, wahl=None):
@@ -429,6 +430,12 @@ class Handler(BaseHTTPRequestHandler):
                     return self.antwort(s_gedcom(pr))
                 if was == "projekt.ged" and pr.ged.exists():
                     return self.antwort(pr.ged.read_bytes(), "text/plain; charset=utf-8")
+                if was == "buch" and len(teile) >= 4:                       # die erzeugte Site ausliefern
+                    datei = pr.ordner / "buch" / Path("/".join(teile[3:])).name
+                    if datei.exists():
+                        typ = {"css": "text/css", "ged": "text/plain; charset=utf-8", "png": "image/png"}.get(datei.suffix[1:], "text/html; charset=utf-8")
+                        return self.antwort(datei.read_bytes(), typ)
+                    return self.antwort("fehlt", code=404)
                 if was == "pruefliste.xlsx" and pr.dbpfad.exists():          # Urteilstabelle fuer Excel
                     ziel = pr.ordner / "pruefliste.xlsx"
                     urteile.tabelle_schreiben(pr.con(), ziel, bool(q.get("alle")))
@@ -502,6 +509,14 @@ class Handler(BaseHTTPRequestHandler):
                         verknuepfen.entscheiden_von_hand(con, person, "gleich", int(form["gleich"]))
                     verknuepfen.verknuepfen(con)
                     return self.weiter(f"/p/{pr.name}/pruefliste")
+                if was == "buch":                                        # Website erzeugen: daten/<projekt>/buch/
+                    if not pr.dbpfad.exists():
+                        return self.weiter(f"/p/{pr.name}?m=" + urllib.parse.quote(_("Zuerst bauen und verknüpfen.")))
+                    if not pr.ged.exists():
+                        gedcom.schreiben(pr.con(), pr.ged)
+                    konfig = pr.ordner / "buch.toml"
+                    buch.bauen(pr.con(), pr.ordner / "buch", konfig if konfig.exists() else None, pr.ged, pr.name)
+                    return self.weiter(f"/p/{pr.name}/buch/index.html")
                 if was == "urteile":                                     # Urteilstabelle zurueck: Entscheidungen, dann neu verknuepfen
                     if not dateien or not pr.dbpfad.exists():
                         return self.weiter(f"/p/{pr.name}/pruefliste")

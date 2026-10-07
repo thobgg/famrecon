@@ -206,6 +206,14 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <li><b>also show "wahrscheinlich"</b> adds the next level. Worthwhile for small sets or when you want to check a name specifically.</li>
 </ol>
 
+<h3>Judgements in Excel</h3>
+<p>If you prefer a table to clicking, download the <b>judgement table</b> at the bottom of the review list: one row per case with register, year, citation, the mention verbatim, famrecon's choice and reason, and all candidates with their number. Put the number of the right candidate into the column URTEIL, "neu" for an own person, "offen" to skip, or "zurueck" to withdraw an earlier judgement. Upload the completed table in the same place; famrecon stores the judgements as decisions, links again and reports how many it took over. The same table can be passed on, for instance to the person who transcribed the registers and knows the cases best. Command line: <code>famrecon urteile projekt.db --schreiben pruefliste.xlsx</code> and <code>--lesen</code>.</p>
+
+<h2 id="buch">The book: a website for review</h2>
+<p>The button <b>Create book (website)</b> on the project page writes a website in the style of a local family book into the folder buch inside the project folder: families A to Z as articles with husband, wife, marriage and children, registers of persons, places, occupations and sources, plus review cases, levels and statistics, and the GEDCOM for download. Everything is static, plain HTML files: the folder can be copied to any web server or opened by double-clicking index.html; nothing runs on it, nothing can break. Every new state replaces the folder.</p>
+<p>The site is built for <b>review</b>, not as a finished book, and says so: every page carries the note "Arbeitsfassung" (working version) with date, is blocked for search engines, every statement names its citation, every link between entries its level: certain without a sign, probable in italics, uncertain with ?, undecided with ??. Under every person all evidence can be unfolded, that is the register rows the person consists of. The page Prüffälle is the same list as the review list; the page Stufen shows inferred marriages and children without a father. Anyone who finds an error best names the family number (F…) or the citation.</p>
+<p>Title, subtitle, introduction, transcriber, editor, imprint and privacy text come from the file <code>buch.toml</code> in the project folder; without it, defaults from the project name apply. Command line: <code>famrecon buch projekt.db -o buch --konfig buch.toml --ged projekt.ged</code>.</p>
+
 <h2 id="gedcom">Writing and checking the GEDCOM</h2>
 <p>The page writes the GEDCOM file (version 5.5.1, UTF-8) and checks it immediately. At the top you see how many persons, families and lines were written.</p>
 <h3>What goes where</h3>

@@ -1,7 +1,7 @@
 # Alle Ziele arbeiten auf einem Projekt: make PROJEKT=name ...   (Ordner daten/<name>/ wie in der Oberflaeche)
 PROJEKT ?= kirchenbuchstil
 P = daten/$(PROJEKT)
-.PHONY: test sprachen bau gedcom gramps plausibilitaet beispiel messung start bundle
+.PHONY: test sprachen bau gedcom gramps plausibilitaet beispiel messung start bundle buch urteile
 
 test:
 	python3 -m unittest discover -s tests -t .
@@ -11,6 +11,10 @@ start:
 	python3 -m famrecon start
 bau:                     # Tabellen in $(P)/ nach $(P)/zuordnung.toml einlesen und verknuepfen
 	python3 -m famrecon bau $(P)/zuordnung.toml $$(ls $(P)/*.xlsx $(P)/*.csv 2>/dev/null) -o $(P)/projekt.db && python3 -m famrecon verknuepfen $(P)/projekt.db
+buch:                    # Website im Stil eines Ortsfamilienbuchs -> $(P)/buch (Titel aus $(P)/buch.toml, wenn vorhanden)
+	python3 -m famrecon buch $(P)/projekt.db -o $(P)/buch $$( [ -f $(P)/buch.toml ] && echo --konfig $(P)/buch.toml ) --ged $(P)/projekt.ged
+urteile:                 # Pruefliste als Tabelle -> $(P)/pruefliste.xlsx (zurueck: famrecon urteile $(P)/projekt.db --lesen ...)
+	python3 -m famrecon urteile $(P)/projekt.db --schreiben $(P)/pruefliste.xlsx
 gedcom:
 	python3 -m famrecon gedcom $(P)/projekt.db -o $(P)/projekt.ged && python3 -m famrecon pruefe $(P)/projekt.db $(P)/projekt.ged
 gramps:

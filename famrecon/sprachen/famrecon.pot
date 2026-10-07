@@ -465,3 +465,24 @@ msgstr ""
 
 msgid "Urteile aus der Tabelle als Entscheidungen speichern"
 msgstr ""
+
+msgid "Buch (Website) erzeugen"
+msgstr ""
+
+msgid "Buch ansehen"
+msgstr ""
+
+msgid "Statische Website im Stil eines Ortsfamilienbuchs nach daten/Projekt/buch; Titel und Einleitung aus buch.toml im Projektordner"
+msgstr ""
+
+msgid "Website im Stil eines Ortsfamilienbuchs schreiben (statisch)"
+msgstr ""
+
+msgid "Zielordner"
+msgstr ""
+
+msgid "GEDCOM zum Herunterladen beilegen"
+msgstr ""
+
+msgid "{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}"
+msgstr ""

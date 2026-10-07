@@ -464,3 +464,24 @@ msgstr "write review list as table"
 
 msgid "Urteile aus der Tabelle als Entscheidungen speichern"
 msgstr "store judgements from the table as decisions"
+
+msgid "Buch (Website) erzeugen"
+msgstr "Create book (website)"
+
+msgid "Buch ansehen"
+msgstr "View book"
+
+msgid "Statische Website im Stil eines Ortsfamilienbuchs nach daten/Projekt/buch; Titel und Einleitung aus buch.toml im Projektordner"
+msgstr "Static website in the style of a local family book into daten/project/buch; title and introduction from buch.toml in the project folder"
+
+msgid "Website im Stil eines Ortsfamilienbuchs schreiben (statisch)"
+msgstr "Write a website in the style of a local family book (static)"
+
+msgid "Zielordner"
+msgstr "target folder"
+
+msgid "GEDCOM zum Herunterladen beilegen"
+msgstr "include GEDCOM for download"
+
+msgid "{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}"
+msgstr "{f} families, {p} persons, {s} pages, {u} review cases -> {o}"

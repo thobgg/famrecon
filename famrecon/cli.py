@@ -2,7 +2,7 @@
 import argparse
 import sys
 
-from . import __version__, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, urteile, verknuepfen, zuordnung
+from . import __version__, buch, db, gedcom, katalog, kern, lesen, messen, pruefe, simulation, urteile, verknuepfen, zuordnung
 from .i18n import _
 
 
@@ -120,6 +120,15 @@ def cmd_urteile(args):
             print(_("Jetzt neu verknüpfen: famrecon verknuepfen {db}").format(db=args.db))
 
 
+def cmd_buch(args):
+    """Website im Stil eines Ortsfamilienbuchs aus der Projektdatei schreiben (statische HTML-Seiten)."""
+    import pathlib
+    con = db.oeffnen(args.db)
+    projekt = pathlib.Path(args.db).resolve().parent.name
+    st = buch.bauen(con, args.out, args.konfig, args.ged, projekt)
+    print(_("{f} Familien, {p} Personen, {s} Seiten, {u} Prüffälle -> {o}").format(f=st["familien"], p=st["personen"], s=st["seiten"], u=st["prueffaelle"], o=st["ordner"]))
+
+
 def cmd_start(args):
     """Oberflaeche im Browser starten."""
     from .web import server
@@ -195,6 +204,13 @@ def main(argv=None):
     s.add_argument("db")
     s.add_argument("ged")
     s.set_defaults(fn=cmd_pruefe)
+
+    s = sub.add_parser("buch", help=_("Website im Stil eines Ortsfamilienbuchs schreiben (statisch)"))
+    s.add_argument("db", nargs="?", default="daten/projekt.db")
+    s.add_argument("-o", "--out", default="daten/buch", help=_("Zielordner"))
+    s.add_argument("--konfig", help="buch.toml mit Titel, Einleitung, Impressum")
+    s.add_argument("--ged", help=_("GEDCOM zum Herunterladen beilegen"))
+    s.set_defaults(fn=cmd_buch)
 
     s = sub.add_parser("urteile", help=_("Pruefliste als Tabelle (xlsx) schreiben / Urteile daraus einlesen"))
     s.add_argument("db", nargs="?", default="daten/projekt.db")
