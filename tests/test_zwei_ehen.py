@@ -1,7 +1,7 @@
 """Ein Witwer mit zwei Frauen gleichen Vornamens; in der Taufe steht die Mutter nur als "N., Catharina".
 
-Ist der Tod der ersten Frau bekannt, entscheidet er. Sonst passen beide Ehen gleich gut:
-die juengere Ehe wird genommen und der Fall geht in die Pruefliste. Ein Urteil dazu gilt beim naechsten Lauf.
+Ist der Tod der ersten Frau bekannt, entscheidet er. Sonst passen beide Ehen gleich gut: nicht raten,
+offen lassen, dokumentiert (Mutter Stufe neu, beide Ehefrauen als Alternativen). Ein Urteil gilt beim naechsten Lauf.
 """
 import tempfile
 import unittest
@@ -60,21 +60,22 @@ class ZweiEhen(unittest.TestCase):
         self.assertEqual(f["tr_jahr"], 1767)
         self.assertNotEqual(zuordnung_mutter_1770(con)["stufe"], "unsicher")
 
-    def test_gleichstand_geht_in_die_pruefliste(self):
+    def test_gleichstand_bleibt_offen(self):
         con = projekt(EHEN, [TAUFE_1770])
         f = familie_des_kindes(con, "Johann")
-        self.assertIn(f["tr_jahr"], (1758, 1767))
-        self.assertEqual(f["trauung_eintrag"] is not None, True)           # keine dritte, erschlossene Familie
+        self.assertIsNone(f["trauung_eintrag"])                          # keiner der beiden Ehen zugeschlagen
         z = zuordnung_mutter_1770(con)
-        self.assertEqual(z["stufe"], "unsicher")
-        self.assertIn("gleich gut", z["grund"])
-        self.assertTrue(z["alternativen"] and z["alternativen"] != "[]")
-        self.assertEqual(con.execute("SELECT COUNT(*) FROM familie WHERE mann IS NOT NULL").fetchone()[0], 2)
+        self.assertEqual(z["stufe"], "neu")
+        self.assertIn("offen", z["grund"])
+        import json
+        frauen = {con.execute("SELECT name FROM identitaet WHERE id=?", (a[0],)).fetchone()["name"] for a in json.loads(z["alternativen"])}
+        self.assertEqual(frauen, {"Burckhardt", "Haas"})
+        self.assertIn("offen: zwei Familien passen gleich gut", dict((r[0], r[1]) for r in verknuepfen.ausschluesse(con)))
 
     def test_urteil_gilt_beim_naechsten_lauf(self):
         con = projekt(EHEN, [TAUFE_1770])
         z = zuordnung_mutter_1770(con)
-        andere = 1758 if familie_des_kindes(con, "Johann")["tr_jahr"] == 1767 else 1767
+        andere = 1758
         braut = con.execute("SELECT p.id FROM person p JOIN eintrag e ON e.id=p.eintrag WHERE e.register='ehe' AND e.jahr=? "
                             "AND p.pfad='braut'", (andere,)).fetchone()["id"]
         verknuepfen.entscheiden_von_hand(con, z["pid"], "gleich", braut)

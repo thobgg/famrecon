@@ -71,6 +71,11 @@ def cmd_verknuepfen(args):
     print(_("Zuordnungen:") + " " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items()))
 
 
+def cmd_ausschluesse(args):
+    """Wie oft jede Ausschlussregel im letzten Lauf gegriffen hat."""
+    verknuepfen.ausschluesse_zeigen(db.oeffnen(args.db))
+
+
 def cmd_familien(args):
     """Familien mit Kindern zeigen."""
     verknuepfen.familien_zeigen(db.oeffnen(args.db), args.limit)
@@ -182,6 +187,10 @@ def main(argv=None):
     s.add_argument("db", nargs="?", default="daten/projekt.db")
     s.add_argument("--kennungen", action="store_true", help=_("Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"))
     s.set_defaults(fn=cmd_verknuepfen)
+
+    s = sub.add_parser("ausschluesse", help=_("Wie oft jede Ausschlussregel im letzten Lauf gegriffen hat"))
+    s.add_argument("db", nargs="?", default="daten/projekt.db")
+    s.set_defaults(fn=cmd_ausschluesse)
 
     s = sub.add_parser("familien", help=_("Familien mit Kindern zeigen"))
     s.add_argument("db", nargs="?", default="daten/projekt.db")

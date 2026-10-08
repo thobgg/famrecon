@@ -33,7 +33,7 @@ SQLite-Datei je Projekt.
     famrecon bau zuordnung.toml datei.xlsx               nach Zuordnung einlesen -> daten/projekt.db
     famrecon verknuepfen                              Personen und Familien bilden
     famrecon familien                                 Familien mit Kindern zeigen
-    famrecon pruefliste                               unsichere Zuordnungen zeigen
+    famrecon pruefliste                               offene Fälle zeigen
     famrecon personen                                 Personen in Normalform zeigen
     famrecon gedcom -o ausgabe/projekt.ged            GEDCOM 5.5.1 schreiben
     famrecon pruefe daten/projekt.db ausgabe/projekt.ged   jede Tabellenzeile in der GEDCOM wiedergefunden?
@@ -77,8 +77,12 @@ sein: `braut_vater_name` ist der Nachname des Vaters der Braut.
    Rückverweise; Vetos bei „ledig" ohne passenden Vater und „verheiratet"
    ohne passenden Partner. Punkte und Vetos stammen aus einer Pipeline, die
    an 2.800 Hollerbacher Einträgen eingestellt wurde. Jede Zuordnung bekommt
-   eine Stufe (sicher, wahrscheinlich, unsicher, neu) und eine Begründung;
-   knappe Fälle landen in der Prüfliste.
+   eine Stufe (sicher, wahrscheinlich, neu) und eine Begründung. Grundsatz:
+   Ohne Eindeutigkeit wird nicht geraten. Passen zwei Personen oder zwei
+   Ehen gleich gut, oder spricht ein Veto gegen einen sonst passenden
+   Kandidaten, bleibt der Fall offen: eigene Person, Kandidaten mit Grund in
+   der Prüfliste, ein Urteil dort gilt beim nächsten Lauf.
+   `famrecon ausschluesse` zeigt, wie oft jede Ausschlussregel gegriffen hat.
 3. **GEDCOM 5.5.1** (`gedcom.py`). Geburt und Taufe aus dem Taufeintrag mit
    Paten als Notiz, Trauung mit Zeugen und Pfarrer, Tod und Begräbnis mit
    Todesursache und Alter, Berufe je Nennung mit Datum, jedes Ereignis mit

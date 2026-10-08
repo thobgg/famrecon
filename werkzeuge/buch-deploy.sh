@@ -17,8 +17,10 @@ source "$env_datei"
 [ -f "$SITE/index.html" ] || { echo "!! $SITE/index.html fehlt - erst 'famrecon buch' laufen lassen." >&2; exit 1; }
 echo "→ Site nach $NAS:$DIR/site ($(du -sh "$SITE" | cut -f1), $(ls "$SITE" | wc -l) Dateien)"
 ssh "$NAS" "mkdir -p '$DIR'"
-# Ordner als Ganzes tauschen: erst site.neu fuellen, dann umbenennen, kein halber Stand sichtbar
-tar -C "$SITE" -czf - . | ssh "$NAS" "rm -rf '$DIR/site.neu' && mkdir -p '$DIR/site.neu' && tar -C '$DIR/site.neu' -xzf - && rm -rf '$DIR/site.alt' && { [ -d '$DIR/site' ] && mv '$DIR/site' '$DIR/site.alt' || true; } && mv '$DIR/site.neu' '$DIR/site'"
+# Inhalt IM Ordner tauschen, nicht den Ordner: Docker bindet den Ordner selbst ein (nicht seinen Namen); ein
+# umbenannter Ordner bliebe im laufenden Container der alte. Darum: neuen Stand nach site.neu, alten Inhalt als
+# Kopie nach site.alt, dann site leeren und fuellen. Der Augenblick dazwischen ist bei statischen Seiten hinnehmbar.
+tar -C "$SITE" -czf - . | ssh "$NAS" "set -e; cd '$DIR'; rm -rf site.neu site.alt; mkdir -p site.neu site; tar -C site.neu -xzf -; cp -a site site.alt; find site -mindepth 1 -delete; cp -a site.neu/. site/; rm -rf site.neu"
 ssh "$NAS" "cat > '$DIR/nginx.conf'" <<'NGINX'
 server {
     listen 80;
@@ -44,4 +46,4 @@ COMPOSE
 echo "✓ Dateien liegen auf der NAS. Docker braucht dort Root, wie bei db-blank: einmal auf der NAS ausführen"
 echo "    sudo docker compose -f $DIR/docker-compose.yml up -d"
 echo "  Danach erreichbar unter http://${NAS#*@}:$PORT/ ; der Reverse Proxy zeigt auf diesen Port."
-echo "  Bei einem neuen Stand genügt dieses Skript: nginx liest den getauschten Ordner sofort, kein Neustart nötig."
+echo "  Bei einem neuen Stand genügt dieses Skript: der Inhalt wird im eingebundenen Ordner getauscht, kein Neustart nötig."
