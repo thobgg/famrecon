@@ -12,6 +12,8 @@ Stelle die Herkunft:
                 Familien ohne Traueintrag "Ehe erschlossen"
     Register    Personen A-Z, Orte, Berufe, Quellen; Pruefaelle und Stufen als eigene Seiten fuer die Durchsicht
     Statistik   ehrlich: Stufen, Nennungen je Person, Zeitraeume
+    Verfahren   wie famrecon dieses Buch gerechnet hat: Schema, Schritte mit den Zahlen dieses Bestands,
+                Ausschlussregeln, Grundsatz "offen lassen", Kontrolle, Grenzen
 
 Konfiguration (TOML, optional): titel, untertitel, einleitung, erfasser, bearbeiter, impressum, datenschutz,
 noindex (Standard: true). Alles andere kommt aus den Daten. Die Seiten sind gekennzeichnet als Arbeitsfassung
@@ -26,7 +28,7 @@ import tomllib
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from . import __version__, urteile
+from . import __version__, pruefe, urteile, verknuepfen
 from . import normalform as nf
 
 h = html.escape
@@ -148,7 +150,7 @@ def seite(konfig, titel, inhalt, stand, aktiv=""):
     nav = "".join(f'<a href="{href}"{" class=aktiv" if aktiv == href else ""}>{t}</a>' for href, t in (
         ("index.html", "Start"), ("familien.html", "Familien"), ("personen.html", "Personen"), ("orte.html", "Orte"),
         ("berufe.html", "Berufe"), ("quellen.html", "Quellen"), ("prueffaelle.html", "Prüffälle"), ("stufen.html", "Stufen"),
-        ("statistik.html", "Statistik")))
+        ("statistik.html", "Statistik"), ("verfahren.html", "Verfahren")))
     return f"""<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">{noindex}
 <title>{h(titel)} · {h(konfig["titel"])}</title><link rel="stylesheet" href="stil.css"></head>
@@ -177,6 +179,14 @@ ul.belege { margin:.3rem 0 .5rem 1rem; padding:0; font-size:.92rem; }
 table { border-collapse: collapse; width:100%; font-family: system-ui, sans-serif; font-size:.92rem; } th, td { text-align:left; padding:.3rem .5rem; border-bottom:1px solid var(--linie); vertical-align:top; }
 .abc a { display:inline-block; margin:.1rem .3rem; } .klein { color:var(--grau); font-size:.88rem; font-family: system-ui, sans-serif; }
 .legende span { display:inline-block; margin-right:1rem; }
+ol.schema { list-style:none; padding:0; margin:1rem 0 1.5rem; display:flex; flex-wrap:wrap; gap:.4rem; align-items:stretch; counter-reset: s; }
+ol.schema li { counter-increment: s; flex:1 1 9.5rem; background:#fff; border:1px solid var(--linie); border-top:4px solid var(--akzent);
+  border-radius:6px; padding:.5rem .6rem; font-family: system-ui, sans-serif; font-size:.85rem; position:relative; }
+ol.schema li::before { content: counter(s); position:absolute; top:.3rem; right:.5rem; color:var(--grau); font-size:.75rem; }
+ol.schema li b { display:block; font-size:.92rem; margin-bottom:.2rem; color:var(--akzent); }
+ol.schema li .zahl { display:block; font-size:1.15rem; font-weight:700; color:var(--tinte); }
+ol.schema li.offen { border-top-color:#b45309; } ol.schema li.mensch { border-top-color:#2b7a3d; }
+.schritt { border-left:3px solid var(--linie); padding-left:.9rem; margin:1.2rem 0; }
 @media print { header, footer, details > summary { display:none; } .artikel { break-inside: avoid; border:0; } }
 """
 
@@ -360,6 +370,9 @@ def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
     st += "<h2>Kinder je Familie</h2><table><tr><th>Kinder</th><th>Familien</th></tr>" + "".join(f"<tr><td>{k}</td><td>{v}</td></tr>" for k, v in sorted(kinderzahl.items())) + "</table>"
     schreibe("statistik.html", "Statistik", st)
 
+    # ---- Verfahren
+    schreibe("verfahren.html", "Verfahren", verfahren(con, D, faelle, ged))
+
     # ---- GEDCOM, Impressum, Datenschutz, Start
     ged_link = ""
     if ged and Path(ged).exists():
@@ -371,8 +384,160 @@ def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
     start = (f"<h1>{h(K['titel'])}</h1><p class='klein'>{h(K['untertitel'])}</p>{hinweis}{einl}{personen_}"
              f"<h2>Inhalt</h2><ul><li><a href='familien.html'>Familien A–Z</a>: {len(D.fams)} Familien</li><li><a href='personen.html'>Personen</a>: {len(D.idents)}</li>"
              f"<li><a href='orte.html'>Orte</a>, <a href='berufe.html'>Berufe</a>, <a href='quellen.html'>Quellen</a></li><li><a href='prueffaelle.html'>Prüffälle</a>: {len(faelle)} offene Fragen</li>"
-             f"<li><a href='stufen.html'>Stufen</a>, <a href='statistik.html'>Statistik</a></li></ul>{legende}{ged_link}")
+             f"<li><a href='stufen.html'>Stufen</a>, <a href='statistik.html'>Statistik</a></li>"
+             f"<li><a href='verfahren.html'>Verfahren</a>: wie dieses Buch aus den Registern gerechnet wurde</li></ul>{legende}{ged_link}")
     schreibe("index.html", "Start", start)
     schreibe("impressum.html", "Impressum", "<h1>Impressum</h1>" + ("".join(f"<p>{h(a)}</p>" for a in K["impressum"].split("\n\n")) if K["impressum"] else "<p class='klein'>Noch nicht eingetragen (buch.toml, Schlüssel impressum).</p>"))
     schreibe("datenschutz.html", "Datenschutz", "<h1>Datenschutz</h1>" + "".join(f"<p>{h(a)}</p>" for a in K["datenschutz"].split("\n\n")))
     return dict(familien=len(D.fams), personen=len(D.idents), seiten=len(list(ziel.glob("*.html"))), prueffaelle=len(faelle), ordner=str(ziel))
+
+
+ROLLE_TEXT = {"kind": "Täuflinge", "vater": "Väter", "mutter": "Mütter", "verstorbener": "Verstorbene",
+              "verstorbener_vater": "Väter von Verstorbenen", "verstorbener_mutter": "Mütter von Verstorbenen",
+              "verstorbener_ehepartner": "Ehepartner von Verstorbenen", "braeutigam": "Bräutigame", "braut": "Bräute",
+              "braeutigam_vater": "Väter von Bräutigamen", "braeutigam_mutter": "Mütter von Bräutigamen",
+              "braut_vater": "Väter von Bräuten", "braut_mutter": "Mütter von Bräuten"}
+REGEL_NAME = {"Alter ausserhalb des Fensters der Rolle": "Alter außerhalb des Fensters der Rolle",
+              "juenger als 14 in einer Erwachsenenrolle": "jünger als 14 in einer Erwachsenenrolle",
+              "Kinderspanne ueberschritten": "Kinderspanne überschritten", "aelter als 100": "älter als 100",
+              "Begraebnis: ledig, genannter Vater widerspricht": "Begräbnis: ledig, genannter Vater widerspricht",
+              "Begraebnis: verheiratet, kein Partner passt": "Begräbnis: verheiratet, kein Partner passt",
+              "Begraebnis: Kind ohne klaren Anker an eine Taufe": "Begräbnis: Kind ohne klaren Anker an eine Taufe"}
+
+# Erklaerung der Ausschlussregeln fuer Leser (Schluessel = Name in verknuepfen._aus)
+REGEL_TEXT = {
+    "Mutter widerspricht": "Die genannte Mutter passt nicht zur Ehefrau dieser Familie (anderer Name oder Vorname).",
+    "Alter ausserhalb des Fensters der Rolle": "Zu jung oder zu alt für die Rolle: Vater 16 bis 75, Mutter 15 bis 50, Brautleute 14 bis 80 Jahre.",
+    "schon tot": "Die Person war zum Zeitpunkt des Eintrags schon begraben (Ausnahme: Vater eines nachgeborenen Kindes).",
+    "Geburt weicht mehr als 5 Jahre ab": "Die aus der Altersangabe errechnete Geburt liegt mehr als fünf Jahre neben der belegten Taufe.",
+    "geboren nach erstem Auftreten als Erwachsener": "Die Person trat schon als Erwachsene auf, bevor sie geboren sein könnte.",
+    "juenger als 14 in einer Erwachsenenrolle": "Als Vater, Mutter oder Brautleute unter 14 Jahren.",
+    "Ehefrau vor der Taufe gestorben": "Die Ehefrau dieser Familie war bei der Taufe schon tot, kann also nicht die Mutter sein.",
+    "Trauung nach der Taufe": "Die Trauung dieser Familie liegt nach der Taufe.",
+    "Kinderspanne ueberschritten": "Zwischen erstem und letztem Kind lägen mehr als 22 Jahre.",
+    "anderer Vater": "Die Person hat bereits Eltern, und der genannte Vater hat einen anderen Nachnamen.",
+    "Geschlecht widerspricht": "Mann und Frau passen nicht zusammen.",
+    "mit der genannten Mutter verheiratet (ist der Vater)": "Der Kandidat ist mit der genannten Mutter verheiratet; er ist der Vater, nicht der Sohn.",
+    "Vorname widerspricht": "Kein gemeinsamer Vorname (Johann Friedrich und Friedrich gelten als passend).",
+    "Kandidat ohne Vorname": "Die Nennung hat einen Vornamen, der Kandidat keinen.",
+    "aelter als 100": "Über hundert Jahre alt.",
+    "offen: zwei Personen passen gleich gut": "Nicht geraten: eigene Person, beide Kandidaten in die Prüffälle.",
+    "offen: zwei Familien passen gleich gut": "Nicht geraten: eigene Elternfamilie, die Ehen als Kandidaten in die Prüffälle.",
+    "Begraebnis: ledig, genannter Vater widerspricht": "Begräbnis eines Ledigen, dessen genannter Vater nicht zur gefundenen Familie passt.",
+    "Begraebnis: verheiratet, kein Partner passt": "Begräbnis einer verheirateten Person, deren genannter Ehepartner zu keiner Ehe passt.",
+    "Begraebnis: Kind ohne klaren Anker an eine Taufe": "Kindsbegräbnis ohne Datum oder Eltern, die es sicher an eine Taufe binden.",
+}
+
+
+def verfahren(con, D, faelle, ged=None):
+    """Seite "Verfahren": wie famrecon diesen Bestand gerechnet hat, mit den Zahlen der Projektdatei."""
+    reg = Counter(e["register"] for e in D.eintraege.values())
+    jahre = [e["jahr"] for e in D.eintraege.values() if e["jahr"]]
+    rollen = Counter(p["pfad"] for p in D.personen.values())
+    marker = {k: sum(1 for p in D.personen.values() if p.get(k)) for k in ("unbekannt", "unsicher", "verstorben", "totgeburt")}
+    cal = sum(1 for p in D.personen.values() if p.get("geburt_praefix") == "CAL")
+    stufen = Counter(r["stufe"] for rl in D.rollen.values() for r in rl)
+    offen = sum(1 for rl in D.rollen.values() for r in rl if r["stufe"] == "neu" and r["alternativen"] not in (None, "", "[]"))
+    n_nenn = Counter(len(rl) for rl in D.rollen.values())
+    mehrfach = sum(v for k, v in n_nenn.items() if k >= 2)
+    pfade = defaultdict(set)
+    for iid, rl in D.rollen.items():
+        for r in rl:
+            pfade[iid].add(r["pfad"])
+    taufe_tod = sum(1 for s in pfade.values() if "kind" in s and "verstorbener" in s)
+    braut_eltern = sum(1 for s in pfade.values() if s & {"braeutigam", "braut"} and s & {"vater", "mutter"})
+    mit_tr = sum(1 for f in D.fams.values() if f["trauung_eintrag"])
+    erschl = sum(1 for f in D.fams.values() if not f["trauung_eintrag"] and D.kinder.get(f["id"]))
+    entsch = con.execute("SELECT COUNT(*) FROM entscheidung").fetchone()[0]
+    aus = verknuepfen.ausschluesse(con)
+    REG = {"taufe": "Taufen", "ehe": "Trauungen", "tod": "Begräbnisse"}
+    fmt = lambda n: f"{n:,}".replace(",", ".")
+
+    schema = (
+        '<ol class="schema">'
+        f'<li><b>Register</b><span class="zahl">{fmt(len(D.eintraege))}</span>Einträge in {len(D.quellen)} Tabellen</li>'
+        f'<li><b>Normalform</b><span class="zahl">{fmt(len(D.personen))}</span>Nennungen von Personen</li>'
+        f'<li><b>Verknüpfen</b><span class="zahl">{fmt(sum(a[2] for a in aus if not a[0].startswith("offen")))}</span>Kandidaten nach Regeln ausgeschlossen</li>'
+        f'<li><b>Ergebnis</b><span class="zahl">{fmt(len(D.idents))}</span>Personen, {fmt(len(D.fams))} Familien</li>'
+        f'<li class="offen"><b>Offen</b><span class="zahl">{fmt(offen)}</span>Prüffälle, nicht geraten</li>'
+        f'<li class="mensch"><b>Durchsicht</b><span class="zahl">{fmt(entsch)}</span>Entscheidungen von Hand</li>'
+        f'<li><b>Ausgabe</b><span class="zahl">GEDCOM</span>und dieses Buch</li></ol>')
+
+    t = ["<h1>Verfahren</h1>",
+         "<p>Dieses Buch ist nicht von Hand zusammengestellt, sondern aus den Registerabschriften gerechnet. "
+         "Ein Kirchenbuch kennt keine Personen, nur Einträge: eine Taufe, eine Trauung, ein Begräbnis. Dass der Vater einer "
+         "Taufe derselbe Mann ist wie der Bräutigam einer Trauung und der Verstorbene eines Begräbnisses, steht nirgends. "
+         "Diese Verbindungen herzustellen heißt <i>Familienrekonstitution</i>; das Programm famrecon tut es nach festen, "
+         "hier beschriebenen Regeln. Jede Zahl auf dieser Seite stammt aus diesem Bestand.</p>",
+         schema]
+
+    t.append('<div class="schritt"><h2>1. Register</h2><p>Grundlage: ' + ", ".join(f"{fmt(reg[r])} {REG.get(r, r)}" for r in ("taufe", "ehe", "tod") if reg[r])
+             + (f", {min(jahre)} bis {max(jahre)}" if jahre else "") + ". Jede Tabellenzeile ist ein Eintrag; Spalten wurden einmal "
+             "den Feldern des Programms zugeordnet (Vater, Mutter, Pate, Datum …). Nichts wurde vorher umgeschrieben.</p></div>")
+
+    t.append('<div class="schritt"><h2>2. Normalform</h2><p>Aus jedem Eintrag werden die genannten Personen gelesen: '
+             f"{fmt(len(D.personen))} Nennungen, darunter " + ", ".join(f"{fmt(v)} {ROLLE_TEXT.get(k, k.replace('_', ' '))}" for k, v in rollen.most_common(6)) + ". "
+             "Schreibweisen wie „Nachname, Vorname, Beruf“ werden zerlegt, Vermerke gedeutet: "
+             f"{fmt(marker['unbekannt'])} Namen unbekannt (N., NN), {fmt(marker['unsicher'])} unsicher gelesen (?), "
+             f"{fmt(marker['verstorben'])} als verstorben genannt (weyl., +), {fmt(marker['totgeburt'])} Totgeburten. "
+             f"Bei {fmt(cal)} Verstorbenen wurde das Geburtsjahr aus der Altersangabe errechnet. "
+             "Nachnamen bekommen einen Lautschlüssel (Kölner Phonetik), damit „Kiefer“ und „Kieffer“ sich finden; "
+             "Vornamen eine Einheitsform (Nicolaus = Nikolaus). Der Wortlaut der Quelle bleibt daneben erhalten.</p></div>")
+
+    t.append('<div class="schritt"><h2>3. Verknüpfen</h2><p>Alle Einträge laufen in zeitlicher Folge durch, die drei Register gemischt. '
+             "Jeder Eintrag sucht unter dem, was vorher war:</p><ul>"
+             "<li><b>Taufe:</b> eine Familie, deren Mann zum genannten Vater passt und deren Frau der genannten Mutter nicht widerspricht. "
+             "Gibt es keine, entsteht eine Familie „Ehe erschlossen“. Das Kind ist immer eine neue Person.</li>"
+             "<li><b>Trauung:</b> Bräutigam und Braut unter den bekannten Personen (Name, Vorname, Alter, genannte Eltern). "
+             "Wurden Kinder des Paares schon vorher getauft, wird deren Familie zur Ehe.</li>"
+             "<li><b>Begräbnis:</b> der Verstorbene über Name, Vorname, Geburt aus dem Alter, Eltern oder Ehepartner.</li></ul>"
+             "<p>Für jede Möglichkeit gibt es Punkte (Vorname, Geburtsjahr, Mutter, Ehepartner …). Gewählt wird nur, wer genug Punkte hat "
+             "und deutlich vor dem Nächsten liegt. Vorher scheiden Kandidaten aus, die nach festen Regeln unmöglich sind:</p>")
+    if aus:
+        t.append("<table><tr><th>Regel</th><th>Bedeutung</th><th>griff</th></tr>" + "".join(
+            f"<tr><td>{h(REGEL_NAME.get(r, r))}</td><td class='klein'>{h(REGEL_TEXT.get(r, ''))}</td><td>{fmt(tr)}</td></tr>" for r, alle, tr in aus if tr)
+            + "</table><p class='klein'>Gezählt sind Prüfungen, bei denen Nach- und Vorname gepasst hätten; ein Kandidat kann mehrfach geprüft werden.</p>")
+    t.append("</div>")
+
+    t.append('<div class="schritt"><h2>4. Ergebnis</h2>'
+             f"<p>{fmt(len(D.personen))} Nennungen ergaben {fmt(len(D.idents))} Personen und {fmt(len(D.fams))} Familien, "
+             f"davon {fmt(mit_tr)} mit Traueintrag und {fmt(erschl)} aus Taufen erschlossen. "
+             f"{fmt(mehrfach)} Personen kommen in mehr als einem Eintrag vor; {fmt(taufe_tod)} sind über Taufe und Begräbnis verbunden, "
+             f"{fmt(braut_eltern)} Brautleute treten später als Eltern auf.</p>"
+             "<table><tr><th>Stufe</th><th>Nennungen</th><th>Bedeutung</th></tr>"
+             f"<tr><td>sicher</td><td>{fmt(stufen.get('sicher', 0))}</td><td class='klein'>außer dem Namen passt ein weiterer Anker (Mutter, Ehepartner, Datum)</td></tr>"
+             f"<tr><td><i>wahrscheinlich</i></td><td>{fmt(stufen.get('wahrscheinlich', 0))}</td><td class='klein'>Name und Vorname passen, kein Gegenkandidat</td></tr>"
+             f"<tr><td>neu</td><td>{fmt(stufen.get('neu', 0))}</td><td class='klein'>erste Nennung einer Person, oder offen gelassen (siehe 5)</td></tr>"
+             + (f"<tr><td>Kennung ✓</td><td>{fmt(stufen.get('vorgabe', 0))}</td><td class='klein'>durch eine Kennung in der Tabelle vorgegeben</td></tr>" if stufen.get("vorgabe") else "")
+             + (f"<tr><td>unsicher ?</td><td>{fmt(stufen.get('unsicher', 0))}</td><td class='klein'>Kennung und Rechnung widersprechen sich</td></tr>" if stufen.get("unsicher") else "")
+             + "</table></div>")
+
+    t.append('<div class="schritt"><h2>5. Offen lassen statt raten</h2>'
+             "<p>Wo es keine Eindeutigkeit gibt, rät das Programm nicht. Passen zwei Personen oder zwei Ehen gleich gut, oder spricht eine Regel "
+             "gegen einen sonst passenden Kandidaten, wird eine eigene Person angelegt und der Fall mit allen Kandidaten und dem Grund festgehalten. "
+             f"Das sind in diesem Bestand <b>{fmt(offen)}</b> Fälle; sie stehen unter <a href='prueffaelle.html'>Prüffälle</a>. "
+             "Eine falsche Verbindung ist schwerer zu finden als eine fehlende; darum bleibt lieber eine Person doppelt, als dass zwei Menschen "
+             "zu einem werden.</p></div>")
+
+    t.append('<div class="schritt"><h2>6. Durchsicht</h2>'
+             f"<p>Bisher {fmt(entsch)} Entscheidungen von Hand. Prüffälle lassen sich als Tabelle durchgehen: je Fall die Kandidaten mit ihren "
+             "Belegen, das Urteil in eine Spalte. Ein Urteil hängt an der Tabellenzeile und gilt bei jedem neuen Lauf; es geht der Rechnung vor.</p></div>")
+
+    kontrolle = ""
+    if ged and Path(ged).exists():
+        n, fehler = pruefe.pruefen(con, ged)
+        kontrolle = (f"<p>Die GEDCOM-Datei wurde gegen die Einträge abgeglichen: von {fmt(sum(n.values()))} Einträgen sind "
+                     f"{fmt(sum(n.values()) - len(fehler))} über ihre Fundstelle wiederzufinden"
+                     + (f"; {len(fehler)} nicht (meist gestrichene Zeilen ohne Person)." if fehler else ".") + "</p>")
+    t.append('<div class="schritt"><h2>7. Kontrolle und Ausgabe</h2>' + kontrolle +
+             "<p>Jede Angabe im Buch nennt ihre Fundstelle. Unter jeder Person lassen sich die Registerzeilen aufklappen, aus denen sie "
+             "zusammengesetzt wurde. Die GEDCOM-Datei (Version 5.5.1) enthält dieselben Angaben mit Quellen und lässt sich in Gramps, "
+             "Ahnenblatt, webtrees oder ein Online-OFB einlesen.</p></div>")
+
+    t.append('<div class="schritt"><h2>Grenzen</h2><ul>'
+             "<li>Gleichnamige Personen ohne weiteren Anker (gleicher Name, gleiche Zeit, Mutter ohne Familiennamen) bleiben offen.</li>"
+             "<li>Paten und Zeugen sind als Text übernommen, nicht als Personen verknüpft.</li>"
+             "<li>Wer nur einmal genannt ist, bleibt eine einzelne Nennung; das sagt nichts über Fehler, sondern über Zu- und Wegzug.</li>"
+             "<li>Altersangaben und Schreibweisen der Vorlage werden nicht korrigiert. Fehler der Abschrift setzen sich fort.</li>"
+             "<li>Solange die Durchsicht nicht abgeschlossen ist, ist dies eine Arbeitsfassung.</li></ul></div>")
+    return "".join(t)
