@@ -14,7 +14,8 @@ DAS SCHEMA (so liest man dieses Modul)
   Ablauf    alle Eintraege CHRONOLOGISCH, die drei Register gemischt, je Eintrag ein Schritt:
 
     Taufe       1. familie_finden(vater, mutter): gibt es eine Familie, deren Mann zum genannten Vater
-                   passt und deren Frau der Mutter nicht widerspricht? Zwei gleich gute -> keine.
+                   passt und deren Frau der Mutter nicht widerspricht (und bei der Taufe noch lebte)?
+                   Zwei gleich gute -> die juengere Ehe, Vater oder Mutter unsicher, in die Pruefliste.
                 2. sonst Vater und Mutter einzeln suchen (finde) oder neu anlegen, neue Familie "eltern".
                 3. Kind: immer neue Identitaet, Geburt = Geburtsdatum, sonst Taufdatum; Sterbedatum aus
                    einem Rueckverweis der Taufzeile gleich mit. Mit Kennung: an die vorgegebene Person.
@@ -38,8 +39,9 @@ DAS SCHEMA (so liest man dieses Modul)
             unsicher        ueber der Schwelle, aber ein Zweiter liegt naeher als ABSTAND_KLAR
             neu             kein Kandidat ueber der Schwelle
             vorgabe         eine Kennung (Feld ref) hat entschieden
-  Vorsicht  Gleichstand bei Eltern und Brautleuten: NICHT raten, eigene Person, Kandidaten in die
-            Pruefliste (Stufe neu mit Alternativen). Begraebnis eines Kindes nur mit Anker an eine
+  Vorsicht  Gleichstand bei Brautleuten und einzeln gesuchten Eltern: NICHT raten, eigene Person,
+            Kandidaten in die Pruefliste (Stufe neu mit Alternativen). Gleichstand zweier Familien bei
+            einer Taufe: die juengere Ehe, Stufe unsicher (sonst entstuende still eine dritte Familie). Begraebnis eines Kindes nur mit Anker an eine
             Taufe. Mutter mit widersprechendem Vornamen: Veto fuer diese Familie. Vetos bei einem
             Kandidaten mit Anker machen ihn unsicher statt ihn zu verwerfen.
   Mensch    entscheidung: Urteile aus der Pruefliste, an der Tabellenzeile festgemacht (Datei, Blatt,
