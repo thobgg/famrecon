@@ -450,6 +450,9 @@ def verknuepfen(con, kennungen=None):
                     continue
                 punkte = r[0]
                 gruende = list(r[1])
+                if f["frau"] and jahr and best.idents[f["frau"]]["tod"] and best.idents[f["frau"]]["tod"][0] \
+                        and best.idents[f["frau"]]["tod"][0] < jahr - 1:
+                    continue                                  # die Ehefrau war bei der Taufe schon tot
                 if mutter_p:
                     mp = mutter_passt(best.idents[f["frau"]], mutter_p) if f["frau"] else 10
                     if mp < 0 or (f["frau"] and not ref_passt(best.idents[f["frau"]], mutter_p)):
@@ -469,19 +472,34 @@ def verknuepfen(con, kennungen=None):
                 if kind_name and any(nf.namen_aehnlich(best.idents[k]["name"], kind_name) for k in f["kinder"]):
                     punkte += 20; gruende.append("Geschwister")
                 kand.append((f, punkte, gruende))
-        kand.sort(key=lambda k: -k[1])
-        if len(kand) > 1 and kand[0][1] - kand[1][1] < ABSTAND_KLAR and kand[0][0]["id"] != kand[1][0]["id"]:
-            return None                                       # zwei Familien gleich gut: nicht raten, eigene Familie
+        # bei gleichen Punkten zuerst die juengere Ehe (ein Witwer lebt mit der zweiten Frau)
+        kand.sort(key=lambda k: (-k[1], -((k[0]["tr"] or (0,))[0] or 0), -k[0]["id"]))
+        gleichstand = [k for k in kand[1:] if kand[0][1] - k[1] < ABSTAND_KLAR and k[0]["id"] != kand[0][0]["id"]]
         if kand and kand[0][1] >= SCHWELLE:
             f = kand[0][0]
-            merke(vater_p, best.idents[f["mann"]], "sicher" if "Mutter" in kand[0][2] else "wahrscheinlich", kand[0][1], ", ".join(kand[0][2]),
-                  [[k[0]["mann"], k[1], ", ".join(k[2])] for k in kand[1:4]])
+            # Gleichstand: zwei Familien passen gleich gut. Die beste wird genommen, der Fall geht in die Pruefliste:
+            # derselbe Mann mit zwei Frauen (oft gleicher Vorname, Mutter ohne Familiennamen) -> die Mutter ist unsicher,
+            # verschiedene Maenner -> der Vater ist unsicher.
+            andere_maenner = [k for k in gleichstand if k[0]["mann"] != f["mann"]]
+            andere_frauen = [k for k in gleichstand if k[0]["mann"] == f["mann"] and k[0]["frau"] and k[0]["frau"] != f["frau"]]
+            grund_gs = "zwei Ehen passen gleich gut"
+            if andere_maenner:
+                merke(vater_p, best.idents[f["mann"]], "unsicher", kand[0][1], grund_gs + ": " + ", ".join(kand[0][2]),
+                      [[k[0]["mann"], k[1], ", ".join(k[2])] for k in andere_maenner[:3]])
+            else:
+                merke(vater_p, best.idents[f["mann"]], "sicher" if "Mutter" in kand[0][2] else "wahrscheinlich", kand[0][1], ", ".join(kand[0][2]),
+                      [[k[0]["mann"], k[1], ", ".join(k[2])] for k in kand[1:4] if k[0]["mann"] != f["mann"]])
             if mutter_p:
                 if f["frau"]:
                     fi = best.idents[f["frau"]]
                     if fi["unbekannt"] and mutter_p.get("name") and not mutter_p.get("unbekannt"):
                         best.name_setzen(fi, mutter_p["name"], mutter_p.get("geburtsname"))
-                    merke(mutter_p, fi, "wahrscheinlich", kand[0][1], "ueber den Mann")
+                    if andere_frauen:
+                        merke(mutter_p, fi, "unsicher", kand[0][1], grund_gs + " (gleicher Mann, andere Ehefrau)",
+                              [[k[0]["frau"], k[1], "Ehefrau aus " + (f"Trauung {k[0]['tr'][0]}" if k[0]["tr"] and k[0]["tr"][0] else "Taufen")]
+                               for k in andere_frauen[:3]])
+                    else:
+                        merke(mutter_p, fi, "wahrscheinlich", kand[0][1], "ueber den Mann")
                 else:
                     m = best.neu_ident(mutter_p)
                     best.partner_setzen(f, "frau", m["id"])
@@ -498,11 +516,16 @@ def verknuepfen(con, kennungen=None):
             if f is None:
                 v = person_oder_neu(vater_p, jahr, "M", alter=ALTER_VATER, partner=mutter_p) if vater_p else None
                 m = None
-                if mutter_p and not mutter_p.get("unbekannt"):
+                hand_m = von_hand(mutter_p) if mutter_p else None
+                if hand_m and hand_m[0]:                       # Urteil: diese Ehefrau, auch bei "N., Catharina"
+                    m = hand_m[0]; merke(mutter_p, m, hand_m[1], hand_m[2], hand_m[3])
+                elif mutter_p and not mutter_p.get("unbekannt"):
                     m = person_oder_neu(mutter_p, jahr, "F", alter=ALTER_MUTTER, partner=vater_p)
                 elif mutter_p:
                     m = best.neu_ident(mutter_p); merke(mutter_p, m)
-                f = best.neu_fam(v["id"] if v else None, m["id"] if m else None, art="eltern")
+                vorhanden = next((best.fams[x] for x in best.fams_von.get(v["id"], []) if v and m
+                                  and best.fams[x]["mann"] == v["id"] and best.fams[x]["frau"] == m["id"]), None) if v and m else None
+                f = vorhanden or best.neu_fam(v["id"] if v else None, m["id"] if m else None, art="eltern")
                 # Eltern der Mutter (Hollerbach nennt sie): als deren Elternfamilie
                 if m and (P.get("mutter_vater") or P.get("mutter_mutter")):
                     eltern_anbinden(m, P.get("mutter_vater"), P.get("mutter_mutter"), jahr)
