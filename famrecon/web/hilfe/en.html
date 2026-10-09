@@ -130,11 +130,11 @@
 <dt>Death</dt><dd>The deceased is looked up via name, given name, the birth year calculated from the age, the father named, the spouse and back references. Two <b>vetoes</b>: "single" does not fit a person with a marriage, "married" or "widowed" does not fit one without a matching partner.</dd>
 </dl>
 <h3>Points and levels</h3>
-<p>Every candidate receives points: same given name 100, partial 70; birth date exact 100, year 50, close 30; matching father 30, matching mother 50, matching spouse 50; a death date from a back reference 200; identical spelling of the surname 20. The threshold is 100 points (death 80). Plausibility windows: fathers 16 to 75 years, mothers 15 to 50, marriage 14 to 80, at most 22 years between first and last child of a family, at most 5 years between calculated and documented birth.</p>
+<p>Every candidate receives points: same given name 100, partial 40 to 90; birth date exact 100, year 50, close 30; matching father 30, matching mother 50, matching spouse 50; a death date from a back reference 200; identical spelling of the surname 20. The threshold is 100 points (death 80). Plausibility windows: fathers 16 to 75 years, mothers 15 to 50, marriage 14 to 80, at most 22 years between first and last child of a family, at most 5 years between calculated and documented birth, at most 100 years of life. Anyone already buried is no longer a candidate; only the father may be named up to one year after his death (posthumous child). A family is ruled out for a baptism if the wife died more than a year before or the marriage took place only afterwards. At marriages, an age between 18 and 32 adds 10 points. If the parents of an adult with unknown birth year are named, the father's age and the death check are skipped and the span of children grows to 37 years.</p>
 <table>
 <tr><td><b>sicher</b> (certain)</td><td>An anchor beyond the name (date, parents, partner) and no close runner-up.</td></tr>
 <tr><td><b>wahrscheinlich</b> (probable)</td><td>Points above the threshold, no runner-up nearby.</td></tr>
-<tr><td><b>unsicher</b> (uncertain)</td><td>Points above the threshold, but a second candidate is less than 30 points behind. Goes to the review list.</td></tr>
+<tr><td><b>unsicher</b> (uncertain)</td><td>Points above the threshold, but a second candidate is less than 30 points behind. famrecon does not guess: its own person, the candidates are shown in the review list.</td></tr>
 <tr><td><b>neu</b> (new)</td><td>No candidate above the threshold: a new person.</td></tr>
 <tr><td><b>vorgabe</b> (given)</td><td>The identifier from the table decided (expert switch under Mapping → Advanced).</td></tr>
 </table>
@@ -164,15 +164,19 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
    Punkte je Kandidat ──► über der Schwelle? ──► Vorsprung vor dem Zweiten?
                                                   ≥ 50 und Anker ──► sicher
                                                   ≥ 30            ──► wahrscheinlich
-                                                  &lt; 30            ──► Gleichstand: Eltern/Brautleute → eigene Person + Prüfliste
-                                                                               Verstorbene → bester Kandidat, unsicher
+                                                  &lt; 30            ──► Gleichstand: nie raten → eigene Person,
+                                                                               Kandidaten in die Prüfliste
    Ausschluss vorab: Geschlecht widerspricht · Alter außerhalb des Fensters der Rolle ·
+                     jünger als 14 in einer Erwachsenenrolle · älter als 100 ·
                      geboren nach dem ersten Auftreten als Erwachsener · Vorname widerspricht ·
-                     errechnete und belegte Geburt mehr als 5 Jahre auseinander
+                     errechnete und belegte Geburt mehr als 5 Jahre auseinander ·
+                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr)
+   Familie für eine Taufe aus: Mutter widerspricht · Ehefrau mehr als 1 Jahr vor der Taufe
+                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre
 </pre>
 <table>
 <tr><th>Stellschraube</th><th>Wert</th><th>Bedeutung</th></tr>
-<tr><td>Vorname gleich / teils</td><td>100 / 70</td><td>Rufname vorn 90, Rufname hinten 80, nur Johann/Anna/Maria gemeinsam 60 bzw. 40</td></tr>
+<tr><td>Vorname gleich / teils</td><td>100 / 40–90</td><td>Rufname vorn 90, Rufname hinten 80, zwei gemeinsame Namen 70, nur Johann/Anna/Maria gemeinsam 60 bzw. 40</td></tr>
 <tr><td>Geburt exakt / Jahr / nah</td><td>100 / 50 / 30</td><td>Geburtsdatum der Nennung gegen die bekannte Geburt der Person</td></tr>
 <tr><td>Vater / Mutter / Ehepartner passt</td><td>30 / 50 / 50</td><td>genannte Angehörige gegen die Familie der Person</td></tr>
 <tr><td>Sterbedatum aus Rückverweis</td><td>200</td><td>die Taufzeile nennt das Sterbedatum des Begräbnisses</td></tr>
@@ -181,9 +185,15 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <tr><td>Vorsprung sicher / klar</td><td>50 / 30</td><td>Abstand zum zweitbesten Kandidaten</td></tr>
 <tr><td>Altersfenster Vater / Mutter / Ehe</td><td>16–75 / 15–50 / 14–80</td><td>Alter in der Rolle beim Ereignis</td></tr>
 <tr><td>Kinderspanne, Geburtsabstand</td><td>22 / 5 Jahre</td><td>erstes bis letztes Kind; errechnete gegen belegte Geburt</td></tr>
+<tr><td>Heiratsalter</td><td>18–32: +10</td><td>bei Namensvettern liegt der 23-Jährige vor dem 39-Jährigen</td></tr>
+<tr><td>Lebensdauer</td><td>0–100</td><td>kein Ereignis vor der Geburt oder nach dem hundertsten Jahr</td></tr>
+<tr><td>nach dem Tod genannt</td><td>Vater bis 1 Jahr</td><td>nachgeborenes Kind; sonst scheidet aus, wer schon begraben ist</td></tr>
+<tr><td>Ehefrau vor der Taufe gestorben</td><td>über 1 Jahr</td><td>diese Familie kommt als Elternfamilie nicht in Frage</td></tr>
+<tr><td>Kindsbegräbnis</td><td>unter 15</td><td>nur mit Anker an eine Taufe (Geburtsjahr, Vater, Rückverweis)</td></tr>
+<tr><td>Eltern eines Erwachsenen</td><td>Spanne 37</td><td>Geburtsjahr unbekannt: Vateralter und Sterbeprüfung entfallen, Kinderspanne 22 + 15 Jahre</td></tr>
 </table>
-<p>Entscheidungen aus der Prüfliste und Kennungen aus der Tabelle gehen der Rechnung vor. Am Ende werden Familien mit demselben Paar zusammengelegt. Jede Zuordnung behält ihre Begründung im Klartext, damit die Prüfliste zeigen kann, woran sie hing.</p>
-<p>Wer Regeln ändern will, misst: <code>make messung</code> prüft am mitgelieferten Stammbaum, und wer ein eigenes geprüftes Familienbuch hat, kann famrecons Ergebnis dagegen halten (siehe Kommandozeile). Die Erfahrung aus zwei echten Ortsfamilienbüchern: Jede Regel für einen Sonderfall macht an anderer Stelle etwas kaputt, deshalb bleiben die Stellschrauben wenige, und was sich mit ihnen nicht ausdrücken lässt, gehört in die Prüfliste.</p>
+<p>Decisions from the review list and identifiers from the table take precedence over the computation. At the end, families with the same couple are merged. Every assignment keeps its reason in plain text, so the review list can show what it depended on.</p>
+<p>Anyone who wants to change rules measures: <code>make messung</code> checks against the bundled family tree, and anyone with their own verified family book can hold famrecon's result against it (see command line). The experience from two real village family books: every rule for a special case breaks something elsewhere, so the tuning constants stay few, and whatever cannot be expressed with them belongs in the review list.</p>
 
 <h2 id="pruefliste">Review list: decisions by hand</h2>
 <p>The review list shows three kinds of cases, ordered by year, decided ones at the end: <b>uncertain assignments</b>, where famrecon chose a person but a second one fits about as well; <b>ties</b>, where it did not choose because two namesakes without a further anchor were possible (the mention is then its own person for now, the candidates are shown next to it); and <b>vetoes</b>, where a contradiction in marital status speaks against an otherwise well-documented assignment.</p>

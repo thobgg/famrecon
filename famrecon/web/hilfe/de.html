@@ -130,11 +130,11 @@
 <dt>Tod</dt><dd>Der Verstorbene wird gesucht über Name, Vorname, das aus dem Alter errechnete Geburtsjahr, den genannten Vater, den Ehepartner und Rückverweise. Zwei <b>Vetos</b>: „ledig“ passt nicht zu einer Person mit Ehe, „verheiratet“ oder „verwitwet“ nicht zu einer ohne passenden Partner.</dd>
 </dl>
 <h3>Punkte und Stufen</h3>
-<p>Jeder Kandidat bekommt Punkte: gleicher Vorname 100, teilweise 70; Geburtsdatum exakt 100, Jahr 50, nah 30; passender Vater 30, passende Mutter 50, passender Ehepartner 50; ein Sterbedatum aus einem Rückverweis 200; exakt gleiche Schreibung des Nachnamens 20. Die Schwelle liegt bei 100 Punkten (Tod 80). Plausibilitätsfenster: Väter 16 bis 75 Jahre, Mütter 15 bis 50, Eheschließung 14 bis 80, höchstens 22 Jahre zwischen erstem und letztem Kind einer Familie, höchstens 5 Jahre zwischen errechneter und belegter Geburt.</p>
+<p>Jeder Kandidat bekommt Punkte: gleicher Vorname 100, teilweise 40 bis 90; Geburtsdatum exakt 100, Jahr 50, nah 30; passender Vater 30, passende Mutter 50, passender Ehepartner 50; ein Sterbedatum aus einem Rückverweis 200; exakt gleiche Schreibung des Nachnamens 20. Die Schwelle liegt bei 100 Punkten (Tod 80). Plausibilitätsfenster: Väter 16 bis 75 Jahre, Mütter 15 bis 50, Eheschließung 14 bis 80, höchstens 22 Jahre zwischen erstem und letztem Kind einer Familie, höchstens 5 Jahre zwischen errechneter und belegter Geburt, höchstens 100 Lebensjahre. Wer schon begraben ist, kommt nicht mehr in Frage; nur der Vater darf bis ein Jahr nach seinem Tod genannt sein (nachgeborenes Kind). Eine Familie scheidet für eine Taufe aus, wenn die Ehefrau mehr als ein Jahr vorher starb oder die Trauung erst danach war. Bei Trauungen gibt es zwischen 18 und 32 Jahren 10 Punkte für das Heiratsalter. Werden die Eltern eines Erwachsenen ohne bekanntes Geburtsjahr genannt, entfallen Vateralter und Sterbeprüfung, und die Kinderspanne wächst auf 37 Jahre.</p>
 <table>
 <tr><td><b>sicher</b></td><td>Ein Anker über den Namen hinaus (Datum, Eltern, Partner) und kein naher Zweiter.</td></tr>
 <tr><td><b>wahrscheinlich</b></td><td>Punkte über der Schwelle, kein Zweiter in der Nähe.</td></tr>
-<tr><td><b>unsicher</b></td><td>Punkte über der Schwelle, aber ein zweiter Kandidat liegt weniger als 30 Punkte dahinter. Geht in die Prüfliste.</td></tr>
+<tr><td><b>unsicher</b></td><td>Punkte über der Schwelle, aber ein zweiter Kandidat liegt weniger als 30 Punkte dahinter. famrecon rät dann nicht: eigene Person, die Kandidaten stehen in der Prüfliste.</td></tr>
 <tr><td><b>neu</b></td><td>Kein Kandidat über der Schwelle: eine neue Person.</td></tr>
 <tr><td><b>vorgabe</b></td><td>Die Kennung aus der Tabelle hat entschieden (Experten-Schalter unter Zuordnung → Erweitert).</td></tr>
 </table>
@@ -164,15 +164,19 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
    Punkte je Kandidat ──► über der Schwelle? ──► Vorsprung vor dem Zweiten?
                                                   ≥ 50 und Anker ──► sicher
                                                   ≥ 30            ──► wahrscheinlich
-                                                  &lt; 30            ──► Gleichstand: Eltern/Brautleute → eigene Person + Prüfliste
-                                                                               Verstorbene → bester Kandidat, unsicher
+                                                  &lt; 30            ──► Gleichstand: nie raten → eigene Person,
+                                                                               Kandidaten in die Prüfliste
    Ausschluss vorab: Geschlecht widerspricht · Alter außerhalb des Fensters der Rolle ·
+                     jünger als 14 in einer Erwachsenenrolle · älter als 100 ·
                      geboren nach dem ersten Auftreten als Erwachsener · Vorname widerspricht ·
-                     errechnete und belegte Geburt mehr als 5 Jahre auseinander
+                     errechnete und belegte Geburt mehr als 5 Jahre auseinander ·
+                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr)
+   Familie für eine Taufe aus: Mutter widerspricht · Ehefrau mehr als 1 Jahr vor der Taufe
+                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre
 </pre>
 <table>
 <tr><th>Stellschraube</th><th>Wert</th><th>Bedeutung</th></tr>
-<tr><td>Vorname gleich / teils</td><td>100 / 70</td><td>Rufname vorn 90, Rufname hinten 80, nur Johann/Anna/Maria gemeinsam 60 bzw. 40</td></tr>
+<tr><td>Vorname gleich / teils</td><td>100 / 40–90</td><td>Rufname vorn 90, Rufname hinten 80, zwei gemeinsame Namen 70, nur Johann/Anna/Maria gemeinsam 60 bzw. 40</td></tr>
 <tr><td>Geburt exakt / Jahr / nah</td><td>100 / 50 / 30</td><td>Geburtsdatum der Nennung gegen die bekannte Geburt der Person</td></tr>
 <tr><td>Vater / Mutter / Ehepartner passt</td><td>30 / 50 / 50</td><td>genannte Angehörige gegen die Familie der Person</td></tr>
 <tr><td>Sterbedatum aus Rückverweis</td><td>200</td><td>die Taufzeile nennt das Sterbedatum des Begräbnisses</td></tr>
@@ -181,6 +185,12 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <tr><td>Vorsprung sicher / klar</td><td>50 / 30</td><td>Abstand zum zweitbesten Kandidaten</td></tr>
 <tr><td>Altersfenster Vater / Mutter / Ehe</td><td>16–75 / 15–50 / 14–80</td><td>Alter in der Rolle beim Ereignis</td></tr>
 <tr><td>Kinderspanne, Geburtsabstand</td><td>22 / 5 Jahre</td><td>erstes bis letztes Kind; errechnete gegen belegte Geburt</td></tr>
+<tr><td>Heiratsalter</td><td>18–32: +10</td><td>bei Namensvettern liegt der 23-Jährige vor dem 39-Jährigen</td></tr>
+<tr><td>Lebensdauer</td><td>0–100</td><td>kein Ereignis vor der Geburt oder nach dem hundertsten Jahr</td></tr>
+<tr><td>nach dem Tod genannt</td><td>Vater bis 1 Jahr</td><td>nachgeborenes Kind; sonst scheidet aus, wer schon begraben ist</td></tr>
+<tr><td>Ehefrau vor der Taufe gestorben</td><td>über 1 Jahr</td><td>diese Familie kommt als Elternfamilie nicht in Frage</td></tr>
+<tr><td>Kindsbegräbnis</td><td>unter 15</td><td>nur mit Anker an eine Taufe (Geburtsjahr, Vater, Rückverweis)</td></tr>
+<tr><td>Eltern eines Erwachsenen</td><td>Spanne 37</td><td>Geburtsjahr unbekannt: Vateralter und Sterbeprüfung entfallen, Kinderspanne 22 + 15 Jahre</td></tr>
 </table>
 <p>Entscheidungen aus der Prüfliste und Kennungen aus der Tabelle gehen der Rechnung vor. Am Ende werden Familien mit demselben Paar zusammengelegt. Jede Zuordnung behält ihre Begründung im Klartext, damit die Prüfliste zeigen kann, woran sie hing.</p>
 <p>Wer Regeln ändern will, misst: <code>make messung</code> prüft am mitgelieferten Stammbaum, und wer ein eigenes geprüftes Familienbuch hat, kann famrecons Ergebnis dagegen halten (siehe Kommandozeile). Die Erfahrung aus zwei echten Ortsfamilienbüchern: Jede Regel für einen Sonderfall macht an anderer Stelle etwas kaputt, deshalb bleiben die Stellschrauben wenige, und was sich mit ihnen nicht ausdrücken lässt, gehört in die Prüfliste.</p>
