@@ -26,6 +26,12 @@ SQLite-Datei je Projekt.
 > steht, ist an einer simulierten Wahrheit gemessen und hat eine Oberfläche.
 > Was die 35 Beispielzeilen nicht zeigen, zeigen erst große echte Register.
 
+**Ein ganzes Dorf in anderthalb Minuten:** Die Kirchenbücher von Cleebronn,
+13.658 Einträge aus 250 Jahren mit 37.375 Personennennungen, sind in **6 Sekunden**
+eingelesen und normalisiert und in **93 Sekunden** zu 19.048 Personen und 8.915
+Familien verknüpft – auf einem gewöhnlichen Desktop-Rechner, mit Fundstelle und
+Begründung an jeder Verbindung ([Messung](#großes-echtes-register-cleebronn)).
+
 ## Durchlauf
 
     famrecon spalten datei.xlsx                      Blätter und Überschriften zeigen
@@ -104,6 +110,35 @@ die von Hand erkannten: Eberle mit drei Taufen und dem Kindstod, Haag/Hag mit
 Taufe, Kindstod, Rückverweis und der Hochzeit des Sohnes unter anderer
 Schreibweise, Ohringer mit der Sohneshochzeit 27 Jahre nach der Trauung.
 
+## Wie entschieden wird
+
+Ein einzelnes Merkmal entscheidet nie. Jede Verknüpfungsart hat ihre eigene
+Zusammensetzung aus Belegen (Punkte), Ausschlüssen (Vetos) und Zeitfenstern,
+weil eine Taufe anderes belegt als ein Begräbnis:
+
+| Verknüpfung | Belege (Punkte) | Vetos | Zeitfenster |
+|---|---|---|---|
+| Taufe → Elternfamilie | Vorname des Vaters (gleich 100, Ruf- gegen Vollname 90/80, nur Johann/Anna/Maria gemeinsam 60/40), Mutter passt 50, Geschwister gleichen Namens 20 | Mutter mit anderem Vornamen; Ehefrau vor der Taufe gestorben; Trauung nach der Taufe; Geschwister weniger als 210 Tage auseinander (außer Zwillingen) | Vater 16–75 Jahre, Kinder einer Familie höchstens 22 Jahre auseinander |
+| Trauung → Brautleute | Vorname, Geburt aus dem Alter (Datum 100, Jahr 50, nah 30), genannter Vater 30, genannte Mutter 50, Heiratsalter 18–32 als Zünglein | anderer Vater; mit der genannten Mutter verheiratet (ist der Vater, nicht das Kind); Elter, Kind oder Geschwister als Ehepartner | 14–80 Jahre |
+| Begräbnis → Person | Sterbedatum aus einem Rückverweis 200, Ehepartner 50, Vater 30, Geburt aus dem Alter | ledig, aber der genannte Vater widerspricht; verheiratet, aber kein Partner passt; Säugling, dessen Taufe über ein Jahr neben der Geburt aus dem Alter liegt (gleichnamiges Geschwister) | Geburt höchstens 5 Jahre daneben; niedrigere Schwelle (80 statt 100) |
+
+Über allem steht die Entscheidung. Es zählt nicht nur, ob ein Kandidat die
+Schwelle erreicht, sondern wie weit er vor dem Zweitbesten liegt:
+
+- **sicher**: ein Beleg über den Namen hinaus und mindestens 50 Punkte Vorsprung
+- **wahrscheinlich**: über der Schwelle, Vorsprung mindestens 30
+- **unsicher / offen**: ein Zweiter liegt näher als 30 Punkte – nicht raten,
+  eigene Person oder Familie, beide Kandidaten mit Grund in die Prüfliste
+- Ein Veto gegen einen Kandidaten mit starkem Beleg verwirft ihn nicht,
+  sondern macht ihn unsicher; der Mensch entscheidet, sein Urteil gilt in
+  jedem weiteren Lauf.
+
+Die Zusammensetzung ist fein austariert. Ein einzelnes zu weich gefasstes Veto
+kostet messbar Präzision: Wer „Maria Christina“ und „Anna Maria“ als
+verträglich gelten lässt, weil beide „Maria“ heißen, legt die Kinder zweier
+Ehen desselben Mannes zusammen. Deshalb wird jede Änderung an Punkten oder
+Vetos gemessen, bevor sie bleibt (nächster Abschnitt).
+
 ## Messen statt schauen
 
     famrecon simuliere beispiel/falkenrath.ged -o daten/f/register.xlsx [--rauschen 0.3]
@@ -127,6 +162,50 @@ Altersfenster), nicht die Normalform; eine GEDCOM ist sauberer als ein
 Kirchenbuch. `--rauschen` streut Vornamenvarianten, Rufnamen, Endungen und
 Lücken ein. Prüfdatei ist der erfundene Falkenrath-Stammbaum (CC0, 492
 Personen); `tests/test_messung.py` hält die Untergrenzen fest.
+
+## Großes echtes Register: Cleebronn
+
+Die Transkriptionen von Dr. Otfried Kies (Kies'sches Familienarchiv,
+[kies.bgg-home.de](https://kies.bgg-home.de)) liegen als Tabellen im technischen
+Format vor. famrecon hat sie ohne Anpassung am Programm gelesen: Die Zuordnung
+schlug es selbst vor, von Hand herausgenommen wurden nur die interne Eintragsnummer
+und die Pfarrei-Nummer, die famrecon für Kennungen hielt.
+
+| Cleebronn (Zabergäu) | |
+|---|---|
+| Register | 6.523 Taufen, 2.086 Trauungen, 5.049 Begräbnisse (1560–1808) |
+| Nennungen in Normalform | 37.375 |
+| Ergebnis | 19.048 Personen, 8.915 Familien (6.253 mit Kindern) |
+| Laufzeit auf einem Desktop-Rechner | Einlesen 6 s, Verknüpfen 93 s, Abgleich 8 s |
+
+**Zweite Meinung zu einem bestehenden Familienbuch.** Für Cleebronn gibt es eine
+unabhängige, automatisch gebaute Rekonstitution, das Familienbuch des Kies-Archivs.
+`famrecon vergleiche` gegen dessen GEDCOM hat 651 Personenpaare gezeigt, die
+famrecon verbindet und das Archiv nicht:
+
+- 443 Begräbnisse, deren Taufe unter anderer Schreibung steht – Anna Hannaman,
+  begraben 1614, ist die 1583 getaufte Anna Hanneman; ebenso Gesman/Geßman,
+  Kranch/Kranckh, Teitsch/Teutsch. famrecon findet sie über den Lautschlüssel.
+- 181 Begräbnisse gleichen Namens, die famrecon über den genannten Vater der
+  richtigen Taufe zuordnet (Johann Philipp Wölfflin, getauft 1749, begraben 1759).
+- 27 Personen mit zwei Begräbniseinträgen.
+
+Umgekehrt ließ famrecon 149 Fälle offen, in denen zwei bis vier Kandidaten gleich
+gut passten – nach seinem Grundsatz, nicht zu raten.
+
+Die Befunde gingen in das Archiv-Familienbuch zurück: Lautschlüssel und Taufvater
+als Entscheidung in dessen Sterbe-Zuordnung brachten über alle 32 Pfarreien
+**2.318 Verstorbene mehr an ihre Taufe** und senkten die Widersprüche zwischen
+Sterbealter und Taufe von 47 auf 17. So arbeitet famrecon als Messlatte für eine
+andere Rekonstitution: Jede Abweichung ist eine Frage an beide Seiten, und die
+Antworten lassen sich zählen.
+
+**Gegen ein von Hand geprüftes Familienbuch** (das Kalibrierregister, rund 2.700
+Einträge, Kopplung über die Fundstellen, Personenpaare): famrecon Präzision 0,921,
+Vollständigkeit 0,890; das Archiv-Familienbuch nach den Änderungen 0,931 und
+0,904. Beide finden Paare, die dem Hand-Familienbuch fehlen und sich im Kirchenbuch
+bestätigen lassen (ein Kind, getauft am 4. September 1719, begraben am
+11. November 1719 „8wöchig“) – auch ein geprüftes Familienbuch ist eine Lesart.
 
 ## Oberfläche
 
