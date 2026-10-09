@@ -142,6 +142,7 @@
 <h3>Vorsicht bei Kindern und Namensvettern</h3>
 <p>Drei Regeln halten die Verknüpfung bewusst zurück. <b>Gleichstand:</b> Kommen für einen Vater, eine Mutter oder ein Brautpaar zwei Personen gleichen Namens ohne weiteren Anker in Frage, rät famrecon nicht, sondern legt eine eigene Person an und zeigt die Kandidaten in der Prüfliste; so bleiben alle Kinder der Familie beisammen, und eine Entscheidung dort genügt. <b>Kindsbegräbnis:</b> Das Begräbnis eines Kindes unter 15 Jahren wird nur mit Anker an eine Taufe gehängt, also passendem Geburtsjahr aus dem Alter, passendem Vater oder Sterbedatum als Rückverweis; bei zwei gleich guten Taufen, etwa Zwillingen oder einem nach dem Kindstod erneut vergebenen Namen, nie von selbst. <b>Mutter:</b> Widerspricht der Vorname der Mutter der Frau einer Familie, kommt das Kind nicht in diese Familie, auch wenn der Vater passt. Ein Widerspruch heißt dabei: kein gemeinsamer Namensteil; „Anna Maria“ und „Maria“ widersprechen sich nicht.</p>
 <p>Ein <b>Lebenslauf</b> wird mitgeführt: Wer schon als Vater, Mutter oder Ehepartner auftrat, kann nicht danach geboren sein, ein errechnetes Geburtsjahr nach dem ersten Auftreten wird verworfen. Fehlt in einer Taufzeile das Geburtsdatum, gilt das Taufdatum als Geburt.</p>
+<p><b>Fallen großer Register.</b> Fünf Muster kommen in echten Kirchenbüchern und ihren Abschriften so oft vor, dass famrecon sie eigens behandelt. <b>Ehename:</b> Trägt eine Frau den Familiennamen ihres Mannes und keinen eigenen Geburtsnamen („Anna, Kaspar Brenners Hausfrau“), gilt der Name als Ehename, ihr Geburtsname als unbekannt; eine Verstorbene wird dann über ihren Mann gesucht und findet so ihre Trauung. <b>Vater gleich Ehemann:</b> Nennt ein Begräbnis denselben Mann als Vater und als Ehemann, gilt bei Kindern und Ledigen der Vater, bei Verheirateten und Verwitweten der Ehemann, sonst keiner von beiden. <b>Einmal begraben:</b> Wer schon einen Begräbniseintrag hat, wird nicht mehr als 10 Tage daneben ein zweites Mal begraben, und wer als verheiratet oder verwitwet begraben wird, war mindestens 14 Jahre alt. <b>Namensweitergabe:</b> Bei Säuglingen mit Alter in Tagen, Wochen oder Monaten zählt eine dazu passende Taufe wie ein Geburtsdatum, eine Taufe mehr als ein Jahr daneben gehört zu einem gleichnamigen Geschwister. <b>Geschwisterabstand:</b> Zwei Geburten einer Mutter liegen mindestens sieben Monate auseinander (Zwillinge ausgenommen); sonst ist es ein anderes Paar gleichen Namens. Ein Rückverweis in der Taufzeile, der den Tod vor die Geburt legt, wird nicht übernommen.</p>
 <p>Die Mechanik ist gemessen: Aus einem bekannten Stammbaum werden die drei Register erzeugt, verknüpft und mit dem Original verglichen. Am mitgelieferten Beispiel liegen Präzision und Vollständigkeit über 0,99; die Fehler sind Geschwister mit demselben Vornamen. Echte Register mit Schreibvarianten und Lücken sind schwerer, deshalb gibt es die Prüfliste.</p>
 
 <h3>Das Schema im Ganzen</h3>
@@ -170,9 +171,12 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
                      jünger als 14 in einer Erwachsenenrolle · älter als 100 ·
                      geboren nach dem ersten Auftreten als Erwachsener · Vorname widerspricht ·
                      errechnete und belegte Geburt mehr als 5 Jahre auseinander ·
-                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr)
+                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr) ·
+                     zweites Begräbnis mehr als 10 Tage daneben · verheiratet begraben, aber unter 14 ·
+                     Säugling: Taufe mehr als 1 Jahr neben der Geburt aus dem Alter
    Familie für eine Taufe aus: Mutter widerspricht · Ehefrau mehr als 1 Jahr vor der Taufe
-                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre
+                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre ·
+                     ein Geschwister weniger als 7 Monate daneben (kein Zwilling)
 </pre>
 <table>
 <tr><th>Stellschraube</th><th>Wert</th><th>Bedeutung</th></tr>
@@ -190,6 +194,9 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <tr><td>nach dem Tod genannt</td><td>Vater bis 1 Jahr</td><td>nachgeborenes Kind; sonst scheidet aus, wer schon begraben ist</td></tr>
 <tr><td>Ehefrau vor der Taufe gestorben</td><td>über 1 Jahr</td><td>diese Familie kommt als Elternfamilie nicht in Frage</td></tr>
 <tr><td>Kindsbegräbnis</td><td>unter 15</td><td>nur mit Anker an eine Taufe (Geburtsjahr, Vater, Rückverweis)</td></tr>
+<tr><td>zweites Begräbnis</td><td>über 10 Tage</td><td>wer schon begraben ist, wird nicht noch einmal begraben</td></tr>
+<tr><td>Geschwisterabstand</td><td>7 Monate</td><td>zwei Geburten einer Mutter, Zwillinge (bis 2 Tage) ausgenommen</td></tr>
+<tr><td>Säugling mit Alter in Tagen</td><td>1 Monat / 1 Jahr</td><td>passende Taufe zählt wie ein Geburtsdatum; über ein Jahr daneben: anderes Kind</td></tr>
 <tr><td>Eltern eines Erwachsenen</td><td>Spanne 37</td><td>Geburtsjahr unbekannt: Vateralter und Sterbeprüfung entfallen, Kinderspanne 22 + 15 Jahre</td></tr>
 </table>
 <p>Entscheidungen aus der Prüfliste und Kennungen aus der Tabelle gehen der Rechnung vor. Am Ende werden Familien mit demselben Paar zusammengelegt. Jede Zuordnung behält ihre Begründung im Klartext, damit die Prüfliste zeigen kann, woran sie hing.</p>

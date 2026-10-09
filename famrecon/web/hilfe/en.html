@@ -142,6 +142,7 @@
 <h3>Caution with children and namesakes</h3>
 <p>Three rules deliberately hold linking back. <b>Ties:</b> if two persons of the same name without a further anchor are possible for a father, a mother or a couple, famrecon does not guess but creates its own person and shows the candidates in the review list; all children of the family stay together, and one decision there suffices. <b>Child burials:</b> the burial of a child under 15 is attached to a baptism only with an anchor, that is a matching birth year from the age, a matching father or a death date as back reference; with two equally good baptisms, such as twins or a name given again after an infant death, never by itself. <b>Mother:</b> if the mother's given name contradicts the wife of a family, the child does not go into that family even if the father fits. A contradiction means no common name part; "Anna Maria" and "Maria" do not contradict each other.</p>
 <p>A <b>life course</b> is kept: whoever already appeared as father, mother or spouse cannot be born afterwards; a calculated birth year after the first appearance is discarded. If a baptism row lacks the birth date, the baptism date counts as birth.</p>
+<p><b>Traps of large registers.</b> Five patterns occur so often in real parish registers and their transcriptions that famrecon handles them explicitly. <b>Married name:</b> if a woman carries her husband's surname and no maiden name of her own ("Anna, Kaspar Brenner's wife"), the name counts as her married name and her maiden name as unknown; a deceased woman is then looked up through her husband and so finds her marriage. <b>Father equals husband:</b> if a burial names the same man as father and as husband, the father counts for children and unmarried people, the husband for married and widowed ones, otherwise neither. <b>Buried once:</b> whoever already has a burial entry is not buried a second time more than 10 days apart, and whoever is buried as married or widowed was at least 14 years old. <b>Name reuse:</b> for infants with an age in days, weeks or months, a matching baptism counts like a birth date; a baptism more than a year off belongs to a sibling of the same name. <b>Sibling spacing:</b> two births of one mother are at least seven months apart (twins excepted); otherwise it is another couple of the same name. A back reference in the baptism row that puts the death before the birth is not taken over.</p>
 <p>The mechanics are measured: from a known family tree the three registers are generated, linked, and compared with the original. On the bundled example, precision and recall are above 0.99; the errors are siblings with the same given name. Real registers with spelling variants and gaps are harder, which is what the review list is for.</p>
 
 <h3>The whole scheme</h3>
@@ -170,9 +171,12 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
                      jünger als 14 in einer Erwachsenenrolle · älter als 100 ·
                      geboren nach dem ersten Auftreten als Erwachsener · Vorname widerspricht ·
                      errechnete und belegte Geburt mehr als 5 Jahre auseinander ·
-                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr)
+                     schon begraben (Vater eines nachgeborenen Kindes: bis 1 Jahr) ·
+                     zweites Begräbnis mehr als 10 Tage daneben · verheiratet begraben, aber unter 14 ·
+                     Säugling: Taufe mehr als 1 Jahr neben der Geburt aus dem Alter
    Familie für eine Taufe aus: Mutter widerspricht · Ehefrau mehr als 1 Jahr vor der Taufe
-                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre
+                     gestorben · Trauung erst nach der Taufe · Kinderspanne über 22 Jahre ·
+                     ein Geschwister weniger als 7 Monate daneben (kein Zwilling)
 </pre>
 <table>
 <tr><th>Stellschraube</th><th>Wert</th><th>Bedeutung</th></tr>
@@ -190,6 +194,9 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <tr><td>nach dem Tod genannt</td><td>Vater bis 1 Jahr</td><td>nachgeborenes Kind; sonst scheidet aus, wer schon begraben ist</td></tr>
 <tr><td>Ehefrau vor der Taufe gestorben</td><td>über 1 Jahr</td><td>diese Familie kommt als Elternfamilie nicht in Frage</td></tr>
 <tr><td>Kindsbegräbnis</td><td>unter 15</td><td>nur mit Anker an eine Taufe (Geburtsjahr, Vater, Rückverweis)</td></tr>
+<tr><td>zweites Begräbnis</td><td>über 10 Tage</td><td>wer schon begraben ist, wird nicht noch einmal begraben</td></tr>
+<tr><td>Geschwisterabstand</td><td>7 Monate</td><td>zwei Geburten einer Mutter, Zwillinge (bis 2 Tage) ausgenommen</td></tr>
+<tr><td>Säugling mit Alter in Tagen</td><td>1 Monat / 1 Jahr</td><td>passende Taufe zählt wie ein Geburtsdatum; über ein Jahr daneben: anderes Kind</td></tr>
 <tr><td>Eltern eines Erwachsenen</td><td>Spanne 37</td><td>Geburtsjahr unbekannt: Vateralter und Sterbeprüfung entfallen, Kinderspanne 22 + 15 Jahre</td></tr>
 </table>
 <p>Decisions from the review list and identifiers from the table take precedence over the computation. At the end, families with the same couple are merged. Every assignment keeps its reason in plain text, so the review list can show what it depended on.</p>

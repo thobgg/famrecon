@@ -234,7 +234,7 @@ def koelner(name):
         elif c == "p":
             k = "3" if nxt == "h" else "1"
         elif c in "dt":
-            k = "8" if nxt in "csz" else "2"
+            k = "8" if nxt and nxt in "csz" else "2"          # '' in "csz" ist wahr: am Wortende sonst 8 (Schmid/Schmidt)
         elif c in "fvw":
             k = "3"
         elif c in "gkq":
@@ -249,7 +249,7 @@ def koelner(name):
             else:
                 k = "8"
         elif c == "x":
-            k = "8" if prev in "ckq" else "48"
+            k = "8" if prev and prev in "ckq" else "48"
         elif c == "l":
             k = "5"
         elif c in "mn":
@@ -269,13 +269,14 @@ def koelner(name):
     return out[0] + out[1:].replace("0", "") if out else ""
 
 
-VORNAME_REGELN = [(r"(?<!s)c(?=[aou])", "k"), (r"ck", "k"), (r"th", "t"), (r"ph", "f"), (r"y", "i"), (r"ie", "i"), (r"ia$", "ia"),
+VORNAME_REGELN = [(r"(?<=...)(?:ius|ii)$|(?<=..[^aeiouäöü])us$", ""),   # lateinisch: Georgius/Georgii -> Georg, Jacobus -> Jacob, Paulus -> Paul
+                  (r"(?<!s)c(?=[aou])", "k"), (r"ck", "k"), (r"th", "t"), (r"ph", "f"), (r"y", "i"), (r"ie", "i"), (r"ia$", "ia"),
                   (r"(.)\1", r"\1"), (r"dt$", "t"), (r"ae", "ä"), (r"oe", "ö"), (r"ue", "ü"), (r"ß", "ss"),
                   (r"(?<=[^aeiou])a$", "e")]        # weibliche Endung a/e wechselt (Friderica/Friderike, Catharina/Catharine)
 VORNAME_TABELLE = {"johannes": "johann", "joannes": "johann", "johan": "johann", "georgius": "georg", "jacobus": "jacob",
                    "jakobus": "jacob", "jakob": "jacob", "nicolaus": "nikolaus", "conrad": "konrad", "carl": "karl", "caspar": "kaspar",
                    "catharina": "katharina", "christoph": "kristof", "christof": "kristof", "christina": "kristina", "christine": "kristina", "christian": "kristian",
-                   "hans": "johann", "hanß": "johann", "hanss": "johann", "hanns": "johann", "jerg": "georg", "jörg": "georg", "görg": "georg",
+                   "hans": "johann", "hanß": "johann", "hanss": "johann", "hanns": "johann", "jerg": "georg", "jörg": "georg", "görg": "georg", "jeorg": "georg", "jeorgius": "georg", "petrus": "peter", "petri": "peter",
                    "fridrich": "friedrich", "friderich": "friedrich", "friederich": "friedrich",
                    "friderica": "friederike", "friederika": "friederike", "friedrika": "friederike", "friederica": "friederike",
                    "luisa": "luise", "louise": "luise", "luise": "luise", "elisabetha": "elisabeth", "katarina": "katharina",
@@ -310,6 +311,20 @@ friederike friederika friderica friedrika johanna justina lucia sara sarah salom
 cordula felicitas gertrud hedwig kunigunde kunigunda ottilia sibylla sibilla veronica veronika agatha agathe
 brigitte brigitta clara klara eleonora eleonore luisa luise louise eberhardina francisca franziska wilhelmina
 wilhelmine augusta auguste karoline caroline charlotte amalia amalie philippina ernestina""".split())
+
+
+def stand_art(stand):
+    """Familienstand grob: 'ehe' (verheiratet, Witwe, Hausfrau ...), 'ledig', 'kind' (Saeugling, Knabe ...) oder None."""
+    s = (stand or "").lower()
+    if not s:
+        return None
+    if re.search(r"witw|verh|ehe|hausfrau|weib|uxor|vidu", s):
+        return "ehe"
+    if re.search(r"ledig|jungfr|jungges|gesell|virgo", s):
+        return "ledig"
+    if re.search(r"s[äa]ugl|kind|knab|m[äa]dchen|s[öo]hn|t[öo]chter|infans|puer", s):
+        return "kind"
+    return None
 
 
 def geschlecht_aus_vorname(vorname):

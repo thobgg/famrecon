@@ -1,7 +1,8 @@
 # Alle Ziele arbeiten auf einem Projekt: make PROJEKT=name ...   (Ordner daten/<name>/ wie in der Oberflaeche)
 PROJEKT ?= kirchenbuchstil
 P = daten/$(PROJEKT)
-.PHONY: test sprachen bau gedcom gramps plausibilitaet beispiel messung start bundle buch urteile
+LISTE ?= daten/regression/projekte.txt
+.PHONY: test sprachen bau gedcom gramps plausibilitaet beispiel messung start bundle buch urteile regression
 
 test:
 	python3 -m unittest discover -s tests -t .
@@ -23,6 +24,8 @@ plausibilitaet:
 	python3 pruefungen/plausibilitaet.py $(P)/projekt.ged --zeigen 3
 beispiel:                # das Kirchenbuchstil- Beispiel als Projekt anlegen
 	mkdir -p daten/kirchenbuchstil && cp beispiel/kirchenbuchstil.xlsx daten/kirchenbuchstil/ && cp beispiel/kirchenbuchstil.toml daten/kirchenbuchstil/zuordnung.toml && $(MAKE) PROJEKT=kirchenbuchstil bau
+regression:              # alle Projekte aus $(LISTE) neu rechnen, Fehler je 1.000 Personen gegen den ersten Lauf (NAME="...")
+	python3 werkzeuge/regression.py $(LISTE) $(if $(NAME),--name "$(NAME)")
 messung:                 # Rundlauf an der Falkenrath-GEDCOM, optional RAUSCHEN=0.3
 	bash werkzeuge/falkenrath-lauf.sh $(RAUSCHEN) 8
 bundle:                  # Git-Bundle in werkzeuge/windows/ legen; den ganzen Ordner auf den Laptop kopieren
