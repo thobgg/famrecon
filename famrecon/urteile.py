@@ -84,8 +84,12 @@ def tabelle_schreiben(con, pfad, alle=False):
 
 def tabelle_lesen(con, pfad):
     """Urteile aus der Tabelle als Entscheidungen speichern. -> dict(gleich=, neu=, zurueck=, uebergangen=, fehler=[])"""
-    ws = openpyxl.load_workbook(pfad, read_only=True, data_only=True).active
-    zeilen = ws.iter_rows(values_only=True)
+    wb = openpyxl.load_workbook(pfad, read_only=True, data_only=True)
+    try:                                           # read_only haelt die Datei offen; unter Windows bliebe sie gesperrt
+        zeilen = list(wb.active.iter_rows(values_only=True))
+    finally:
+        wb.close()
+    zeilen = iter(zeilen)
     kopf = [str(c).strip().upper() if c else "" for c in next(zeilen)]
     try:
         i_key, i_urteil, i_kand = kopf.index("SCHLUESSEL"), kopf.index("URTEIL"), kopf.index("KANDIDATEN")

@@ -108,8 +108,8 @@ class Daten:
 
     def buchstabe(self, i):
         n = (i["name"] or "") if i else ""
-        b = n[:1].upper() if n else "?"
-        return b if b.isalpha() else "?"
+        b = n[:1].upper() if n else "_"
+        return b if b.isalpha() else "_"          # "_" statt "?": Fragezeichen ist unter Windows im Dateinamen verboten
 
     def familien_buchstabe(self, f):
         i = self.idents.get(f["mann"]) or self.idents.get(f["frau"])
@@ -265,6 +265,11 @@ def artikel(D, f):
             + (f'<ol class="kinder">{"".join(kinder)}</ol>' if kinder else '<p class="klein">keine Kinder in den Registern</p>') + "</article>")
 
 
+def zeig(b):
+    """Buchstabe fuer die Anzeige: Namen ohne Anfangsbuchstaben stehen unter "?" (Datei: _)."""
+    return "?" if b == "_" else b
+
+
 def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
     """Die ganze Site in den Ordner `ziel` schreiben. -> dict mit Zahlen."""
     ziel = Path(ziel); ziel.mkdir(parents=True, exist_ok=True)
@@ -287,18 +292,18 @@ def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
     for f in D.fams.values():
         nach_b[D.familien_buchstabe(f)].append(f)
     buchstaben = sorted(nach_b)
-    abc = '<p class="abc">' + " ".join(f'<a href="familien-{b}.html">{b}</a>' for b in buchstaben) + "</p>"
+    abc = '<p class="abc">' + " ".join(f'<a href="familien-{b}.html">{zeig(b)}</a>' for b in buchstaben) + "</p>"
     for b, fl in nach_b.items():
         fl.sort(key=lambda f: (D.name(D.idents.get(f["mann"]) or D.idents.get(f["frau"])).lower(), f["tr_jahr"] or 0, f["id"]))
-        inhalt = f"<h1>Familien {b}</h1>{abc}{legende}" + "".join(artikel(D, f) for f in fl) + abc
-        schreibe(f"familien-{b}.html", f"Familien {b}", inhalt, "familien.html")
+        inhalt = f"<h1>Familien {zeig(b)}</h1>{abc}{legende}" + "".join(artikel(D, f) for f in fl) + abc
+        schreibe(f"familien-{b}.html", f"Familien {zeig(b)}", inhalt, "familien.html")
     schreibe("familien.html", "Familien", f"<h1>Familien</h1>{hinweis}{abc}<p>{len(D.fams)} Familien, nach dem Nachnamen des Mannes geordnet. {legende}</p>")
 
     # ---- Personen A-Z
     nach_bp = defaultdict(list)
     for i in D.idents.values():
         nach_bp[D.buchstabe(i)].append(i)
-    abcp = '<p class="abc">' + " ".join(f'<a href="personen-{b}.html">{b}</a>' for b in sorted(nach_bp)) + "</p>"
+    abcp = '<p class="abc">' + " ".join(f'<a href="personen-{b}.html">{zeig(b)}</a>' for b in sorted(nach_bp)) + "</p>"
     for b, il in nach_bp.items():
         il.sort(key=lambda i: (D.name(i).lower(), i["geb_jahr"] or 0))
         zeilen = []
@@ -309,7 +314,7 @@ def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
             for fid in D.fams_von.get(i["id"], []):
                 links.append(f'<a href="familien-{D.familien_buchstabe(D.fams[fid])}.html#F{fid}">F{fid}</a>')
             zeilen.append(f"<tr><td>{h(D.name(i))}</td><td>{h(D.lebensdaten(i))}</td><td>{h('; '.join(D.berufe(i['id'])))}</td><td>{len(D.rollen.get(i['id'], []))}</td><td>{' · '.join(links)}</td></tr>")
-        schreibe(f"personen-{b}.html", f"Personen {b}", f"<h1>Personen {b}</h1>{abcp}<table><tr><th>Name</th><th>Lebensdaten</th><th>Berufe</th><th>Nennungen</th><th>Familien</th></tr>{''.join(zeilen)}</table>{abcp}", "personen.html")
+        schreibe(f"personen-{b}.html", f"Personen {zeig(b)}", f"<h1>Personen {zeig(b)}</h1>{abcp}<table><tr><th>Name</th><th>Lebensdaten</th><th>Berufe</th><th>Nennungen</th><th>Familien</th></tr>{''.join(zeilen)}</table>{abcp}", "personen.html")
     schreibe("personen.html", "Personen", f"<h1>Personen</h1>{abcp}<p>{len(D.idents)} Personen, wie die Rekonstitution sie aus {len(D.personen)} Nennungen gebildet hat.</p>")
 
     # ---- Orte, Berufe, Quellen
