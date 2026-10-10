@@ -5,7 +5,7 @@
 Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform. Eingabe sind
 Tabellen, eine Zeile je Kirchenbucheintrag, so wie Ortsfamilienbuch-Autoren sie
 führen, jeder nach eigenem Muster. Ausgabe ist eine GEDCOM-Datei für Gramps,
-Ahnenblatt, webtrees oder das Online-OFB bei CompGen. Dazwischen liegt die
+webtrees oder das Online-OFB bei CompGen. Dazwischen liegt die
 Familienrekonstitution: Das Programm verknüpft, was eindeutig belegt ist, und
 legt den Rest als Prüfliste vor.
 
@@ -17,9 +17,7 @@ technischen Überschriften, und die aus dem Falkenrath-Stammbaum erzeugten
 Register als Mappe und als drei CSV-Dateien (`beispiel/falkenrath-*`). Die
 Oberfläche und die Kommandozeile sprechen Deutsch und Englisch.
 
-Gedacht als zeitgemäßer, freier Ersatz für den Excel-nach-GEDCOM-Weg über
-Tabellenkalkulations-Makros: ohne Excel-Lizenz, ohne Makros, in Minuten statt Tagen, auf Windows,
-Mac und Linux. Python 3.11 oder neuer, eine Abhängigkeit (openpyxl), eine
+Frei und quelloffen, ohne Excel-Lizenz, auf Windows, Mac und Linux. Python 3.11 oder neuer, eine Abhängigkeit (openpyxl), eine
 SQLite-Datei je Projekt.
 
 > **In Arbeit.** Die Kette Einlesen → Normalform → Verknüpfung → GEDCOM

@@ -2,7 +2,7 @@
 <p class="hilfe">This help describes every page of the interface, explains how famrecon computes its results, and answers frequent questions. The <b>? Help</b> button at the top right of every page leads to the matching section.</p>
 
 <h2 id="ueberblick">What famrecon does</h2>
-<p>famrecon builds families from <b>baptism, marriage and burial registers in table form</b> and writes them as a <b>GEDCOM file</b>. The input is a table as local family book authors keep it: one row per parish register entry, columns in the author's own layout. The output is read by every genealogy program (Gramps, Ahnenblatt, webtrees, online family books).</p>
+<p>famrecon builds families from <b>baptism, marriage and burial registers in table form</b> and writes them as a <b>GEDCOM file</b>. The input is a table as local family book authors keep it: one row per parish register entry, columns in the author's own layout. The output is read by every genealogy program (Gramps, webtrees, online family books).</p>
 <p>In between lies <b>family reconstitution</b>: the program recognises which mentions in different entries refer to the same person (the child baptised in 1770, the groom of 1795, the deceased of 1831) and forms persons and families from them. What is clearly documented it links itself; close calls go to the <a href="#pruefliste">review list</a>. Nothing is discarded: every table row ends up in the GEDCOM, and a check verifies that.</p>
 <p>The path in five steps: <b>load tables → review the mapping → build → review list → GEDCOM</b>.</p>
 <p>What famrecon does <b>not</b> do: it does not read scans or handwriting, it does not add data from the internet, and it never changes your tables. Everything runs on your computer; no data leaves it (see <a href="#daten">Data and safety</a>).</p>
@@ -250,7 +250,7 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <h3>The check</h3>
 <p>For every table row, famrecon looks for the record in the GEDCOM that must document it: for a baptism a person with birth or baptism and this citation, for a marriage a family with marriage, for a death a person with death or burial. It also verifies that the names of the main persons appear in the record and that all references between persons and families point to existing records. <b>0 errors</b> means every row arrived. Errors are listed individually; the typical cause is a mandatory field missing from the mapping.</p>
 <h3>Afterwards</h3>
-<p><b>Download GEDCOM</b> saves the file. Import it into Gramps, Ahnenblatt, webtrees, or upload it to an online family book. Gramps offers a database check under Tools that verifies age windows and references once more. Command line users find a rule catalogue with further plausibility checks under <a href="#kommandozeile">Command line</a>.</p>
+<p><b>Download GEDCOM</b> saves the file. Import it into Gramps, webtrees, or upload it to an online family book. Gramps offers a database check under Tools that verifies age windows and references once more. Command line users find a rule catalogue with further plausibility checks under <a href="#kommandozeile">Command line</a>.</p>
 
 <h2 id="kommandozeile">Command line</h2>
 <p>The interface calls the same modules as the command line and decides nothing itself. If you prefer the terminal or want to automate runs, use the command <code>famrecon</code> (after <code>pip install .</code>) or <code>python3 -m famrecon</code>:</p>

@@ -383,7 +383,7 @@ def bauen(con, ziel, konfig=None, ged=None, projekt="projekt"):
     if ged and Path(ged).exists():
         name = f"{projekt}-{dt.date.today().isoformat()}.ged"
         shutil.copy(ged, ziel / name)
-        ged_link = f'<p><a href="{name}">GEDCOM herunterladen</a> <span class="klein">({name}, zum Einlesen in Gramps, Ahnenblatt, webtrees oder für das Online-OFB)</span></p>'
+        ged_link = f'<p><a href="{name}">GEDCOM herunterladen</a> <span class="klein">({name}, zum Einlesen in Gramps, webtrees oder für das Online-OFB)</span></p>'
     einl = "".join(f"<p>{h(a)}</p>" for a in K["einleitung"].split("\n\n") if a.strip())
     personen_ = ("".join(f"<p class='klein'>{t}: {h(v)}</p>" for t, v in (("Erfassung der Register", K["erfasser"]), ("Bearbeitung", K["bearbeiter"])) if v))
     start = (f"<h1>{h(K['titel'])}</h1><p class='klein'>{h(K['untertitel'])}</p>{hinweis}{einl}{personen_}"
@@ -537,7 +537,7 @@ def verfahren(con, D, faelle, ged=None):
     t.append('<div class="schritt"><h2>7. Kontrolle und Ausgabe</h2>' + kontrolle +
              "<p>Jede Angabe im Buch nennt ihre Fundstelle. Unter jeder Person lassen sich die Registerzeilen aufklappen, aus denen sie "
              "zusammengesetzt wurde. Die GEDCOM-Datei (Version 5.5.1) enthält dieselben Angaben mit Quellen und lässt sich in Gramps, "
-             "Ahnenblatt, webtrees oder ein Online-OFB einlesen.</p></div>")
+             "webtrees oder ein Online-OFB einlesen.</p></div>")
 
     t.append('<div class="schritt"><h2>Grenzen</h2><ul>'
              "<li>Gleichnamige Personen ohne weiteren Anker (gleicher Name, gleiche Zeit, Mutter ohne Familiennamen) bleiben offen.</li>"

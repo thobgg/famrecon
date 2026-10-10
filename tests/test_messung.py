@@ -38,7 +38,7 @@ class Falkenrath(unittest.TestCase):
         self.assertEqual(m["refs"], 492)
         self.assertGreaterEqual(m["praezision"], 0.995, m)
         self.assertGreaterEqual(m["vollstaendigkeit"], 0.98, m)
-        self.assertEqual(m["doppelte_paare"], 0)                # ein Paar, eine Familie (Ahnenblatt: "doppelter Eheeintrag")
+        self.assertEqual(m["doppelte_paare"], 0)                # ein Paar, eine Familie (Meldung "doppelter Eheeintrag" in Desktop-Programmen)
 
     def test_mit_rauschen(self):
         m = lauf(0.3)

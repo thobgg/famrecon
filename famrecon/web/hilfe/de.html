@@ -2,7 +2,7 @@
 <p class="hilfe">Diese Hilfe beschreibt jede Seite der Oberfläche, erklärt, wie famrecon rechnet, und beantwortet häufige Fragen. Der Knopf <b>? Hilfe</b> oben rechts führt von jeder Seite zum passenden Abschnitt.</p>
 
 <h2 id="ueberblick">Was famrecon macht</h2>
-<p>famrecon baut aus <b>Tauf-, Ehe- und Sterberegistern in Tabellenform</b> Familien und schreibt sie als <b>GEDCOM-Datei</b>. Die Eingabe ist eine Tabelle, wie Ortsfamilienbuch-Autoren sie führen: eine Zeile je Kirchenbucheintrag, Spalten nach eigenem Muster. Die Ausgabe liest jedes Genealogieprogramm (Gramps, Ahnenblatt, webtrees, Online-OFB).</p>
+<p>famrecon baut aus <b>Tauf-, Ehe- und Sterberegistern in Tabellenform</b> Familien und schreibt sie als <b>GEDCOM-Datei</b>. Die Eingabe ist eine Tabelle, wie Ortsfamilienbuch-Autoren sie führen: eine Zeile je Kirchenbucheintrag, Spalten nach eigenem Muster. Die Ausgabe liest jedes Genealogieprogramm (Gramps, webtrees, Online-OFB).</p>
 <p>Dazwischen liegt die <b>Familienrekonstitution</b>: Das Programm erkennt, welche Nennungen in verschiedenen Einträgen dieselbe Person meinen (der Täufling von 1770, der Bräutigam von 1795, der Verstorbene von 1831), und bildet daraus Personen und Familien. Was eindeutig belegt ist, verknüpft es selbst; was knapp ist, legt es in der <a href="#pruefliste">Prüfliste</a> vor. Nichts wird verworfen: Jede Tabellenzeile landet in der GEDCOM, und ein Abgleich prüft das.</p>
 <p>Der Weg in fünf Schritten: <b>Tabellen laden → Zuordnung durchsehen → bauen → Prüfliste → GEDCOM</b>.</p>
 <p>Was famrecon <b>nicht</b> macht: Es liest keine Scans oder Handschriften, es ergänzt keine Daten aus dem Internet, und es verändert Ihre Tabellen nicht. Alles läuft auf Ihrem Rechner; keine Daten verlassen ihn (siehe <a href="#daten">Daten und Sicherheit</a>).</p>
@@ -250,7 +250,7 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <h3>Der Abgleich</h3>
 <p>Für jede Tabellenzeile sucht famrecon den Datensatz in der GEDCOM, der sie belegen muss: zur Taufe eine Person mit Geburt oder Taufe und dieser Fundstelle, zur Trauung eine Familie mit Trauung, zum Tod eine Person mit Tod oder Begräbnis. Dazu prüft es, dass die Namen der Hauptpersonen im Datensatz stehen und alle Verweise zwischen Personen und Familien auf vorhandene Datensätze zeigen. <b>0 Fehler</b> heißt: Jede Zeile ist angekommen. Fehler werden einzeln aufgelistet; typische Ursache ist ein Pflichtfeld, das in der Zuordnung fehlt.</p>
 <h3>Danach</h3>
-<p><b>GEDCOM herunterladen</b> speichert die Datei. Importieren Sie sie in Gramps, Ahnenblatt, webtrees oder laden Sie sie zum Online-OFB hoch. Gramps bietet unter Werkzeuge eine Datenbankprüfung, die Altersfenster und Verweise noch einmal prüft. Wer die Kommandozeile nutzt, findet unter <a href="#kommandozeile">Kommandozeile</a> den Regelkatalog mit weiteren Plausibilitätsprüfungen.</p>
+<p><b>GEDCOM herunterladen</b> speichert die Datei. Importieren Sie sie in Gramps, webtrees oder laden Sie sie zum Online-OFB hoch. Gramps bietet unter Werkzeuge eine Datenbankprüfung, die Altersfenster und Verweise noch einmal prüft. Wer die Kommandozeile nutzt, findet unter <a href="#kommandozeile">Kommandozeile</a> den Regelkatalog mit weiteren Plausibilitätsprüfungen.</p>
 
 <h2 id="kommandozeile">Kommandozeile</h2>
 <p>Die Oberfläche ruft dieselben Module wie die Kommandozeile und entscheidet nichts selbst. Wer lieber im Terminal arbeitet oder Läufe automatisieren will, nutzt den Befehl <code>famrecon</code> (nach <code>pip install .</code>) oder <code>python3 -m famrecon</code>:</p>
