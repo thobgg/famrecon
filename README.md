@@ -323,7 +323,8 @@ Kommandozeile: Doppelklick startet die Oberfläche.
 
 ## Lizenz
 
-MIT, siehe [LICENSE](LICENSE). Verwandte Werkzeuge desselben Autors:
+GPL-3.0, siehe [LICENSE](LICENSE). Wer famrecon oder Teile davon weitergibt, muss den eigenen Code
+unter derselben Lizenz offenlegen. Stände bis Commit e101211 waren MIT-lizenziert. Verwandte Werkzeuge desselben Autors:
 [ofb-werkstatt](https://github.com/thobgg/ofb-werkstatt) liest Kirchenbuchseiten
 per Sprachmodell und gleicht gegen einen Bestand ab; famrecon ist der kleine
 Bruder für bereits transkribierte Tabellen.

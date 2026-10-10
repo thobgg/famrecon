@@ -7,7 +7,7 @@ name = "famrecon"
 version = "0.1.7"
 description = "Familien aus Tauf-, Ehe- und Sterberegistern in Tabellenform, Ausgabe GEDCOM"
 readme = "README.md"
-license = "MIT"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.11"
 dependencies = ["openpyxl>=3.1"]
 
