@@ -127,7 +127,13 @@ msgid "GEDCOM herunterladen"
 msgstr "Download GEDCOM"
 
 msgid "nicht übernehmen"
-msgstr "do not take over"
+msgstr "leave out"
+
+msgid "ohne Feld mitnehmen"
+msgstr "keep without field"
+
+msgid "wenn angekreuzt"
+msgstr "if ticked"
 
 msgid "Kirchenbuchform"
 msgstr "spelling in the register"

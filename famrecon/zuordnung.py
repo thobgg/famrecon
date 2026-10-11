@@ -238,7 +238,8 @@ def blatt_zuordnen(blattname, kopf, zeilen, register):
 def toml_text(datei, blaetter, mit_datei=False):
     """blaetter: [(blattname, register, zuordnung, leerwoerter[, datei])] -> TOML-Text."""
     z = [f"# Spaltenzuordnung, vorgeschlagen von famrecon fuer {datei}",
-         "# Bitte durchsehen: 'unsicher' pruefen, '???' ersetzen oder loeschen.",
+         "# Bitte durchsehen: 'unsicher' pruefen, '???' ersetzen. Spalten ohne Zuordnung kommen als Text",
+         '# (Ueberschrift: Wert); ganz weglassen mit X = "". Kreuzspalten: P = "kind_geschlecht=m".',
          "", "[allgemein]"]
     leer = sorted({w for _, _, _, lw, *_ in blaetter for w in lw})
     z.append("leer = [" + ", ".join(f'"{w}"' for w in leer) + "]")

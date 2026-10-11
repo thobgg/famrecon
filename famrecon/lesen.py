@@ -7,6 +7,15 @@ Die Zuordnung (TOML) nennt je Register das Blatt und je Spalte den Feldnamen.
 Mehrere Spalten koennen ein Feld bilden ("S-AN" = "paten"); die Werte werden
 mit " | " verbunden. Was in `leer` steht ("k.A.", "—"), gilt als nicht
 angegeben: `wert` bleibt leer, `roh` behaelt den Zellinhalt.
+
+Eine Spalte kann einen festen Wert tragen: `P = "kind_geschlecht=m"`,
+`Q = "kind_geschlecht=w"`. Ist die Zelle angekreuzt (nicht leer, nicht 0),
+bekommt das Feld den Wert hinter dem Gleichheitszeichen.
+
+Nichts wird verworfen: Jede Zelle wird zusaetzlich gespeichert (Tabelle
+zelle, Ueberschriften in kopf), auch in Spalten, die die Zuordnung nicht
+nennt; diese kommen in der GEDCOM in den Text der Fundstelle. Wer eine
+Spalte wirklich nicht will, schreibt `X = ""`.
 """
 import datetime as dt
 import re
@@ -20,6 +29,7 @@ from . import normalform
 from .i18n import _
 
 TRENNER = " | "
+NICHT_ANGEKREUZT = {"0", "-", "nein", "no", "false", "falsch"}
 
 
 def zuordnung_laden(pfad):
@@ -34,7 +44,7 @@ def zuordnung_laden(pfad):
 
 
 def _spalten_aufloesen(spalten):
-    """{"A": "x", "S-AN": "paten"} -> [(feldname, [spaltenindex, ...]), ...]"""
+    """{"A": "x", "S-AN": "paten", "P": "kind_geschlecht=m"} -> [(feldname, [spaltenindex, ...], fester_wert), ...]"""
     out = []
     for schluessel, feld in spalten.items():
         if "-" in schluessel:
@@ -43,7 +53,8 @@ def _spalten_aufloesen(spalten):
                              column_index_from_string(bis.strip()) + 1))
         else:
             idx = [column_index_from_string(schluessel.strip())]
-        out.append((feld, idx))
+        feld, _gl, fest = feld.partition("=")
+        out.append((feld.strip(), idx, fest.strip() if _gl else None))
     return out
 
 
@@ -135,11 +146,15 @@ def zeilen_lesen(pfad, blatt):
 def zeile_zu_feldern(reihe, spalten, leerwoerter):
     """Eine Tabellenzeile -> {feldname: (wert, roh)} nach der Zuordnung."""
     felder = {}
-    for feld, idx in spalten:
+    for feld, idx, fest in spalten:
+        if not feld:                                   # X = "": bewusst weggelassen
+            continue
         werte, rohs = [], []
         for i in idx:
             zelle = reihe[i - 1] if i - 1 < len(reihe) else None
             w, r = bereinigen(zelle, leerwoerter)
+            if fest is not None and w:                 # angekreuzt -> fester Wert
+                w = fest if w.lower() not in NICHT_ANGEKREUZT else None
             if w:
                 werte.append(w)
             if r is not None:
@@ -154,13 +169,22 @@ def zeile_zu_feldern(reihe, spalten, leerwoerter):
     return felder
 
 
+def kopf_und_weglassen(kopf, spalten):
+    """-> ({spalte: ueberschrift}, {zugeordnete spalten}, {spalten mit X = ""})."""
+    weg = {i for f, idx, _w in spalten if not f for i in idx}
+    zu = {i for f, idx, _w in spalten if f for i in idx}
+    titel = {i: (re.sub(r"\s+", " ", str(k)).strip() if k is not None else "") or get_column_letter(i)
+             for i, k in enumerate(kopf, start=1)}
+    return titel, zu, weg
+
+
 def unbekannte_felder(zuordnung):
     """Feldnamen der Zuordnung, die der Katalog nicht kennt: [(register, feld)]."""
     from . import katalog
     out = []
     for register, reg in zuordnung.get("register", {}).items():
-        out += [(register, f) for f, _ in reg["_spalten"]
-                if register not in katalog.REGISTER or not katalog.bekannt(register, f)]
+        out += [(register, f) for f, _i, _w in reg["_spalten"]
+                if f and (register not in katalog.REGISTER or not katalog.bekannt(register, f))]
     return out
 
 
@@ -187,6 +211,10 @@ def einlesen(con, zuordnung, dateien):
                 "VALUES (?,?,?,0,?)", (datei.name, reg["blatt"], register, jetzt))
             qid = cur.lastrowid
             n = 0
+            kopf = (_tabellen(datei)[reg["blatt"]] or [()])[0]
+            titel, zu, weg = kopf_und_weglassen(kopf, reg["_spalten"])
+            con.executemany("INSERT INTO kopf(quelle, spalte, titel, zugeordnet) VALUES (?,?,?,?)",
+                            [(qid, i, t, int(i in zu)) for i, t in titel.items() if i not in weg])
             for zeilennr, reihe in zeilen_lesen(datei, reg["blatt"]):
                 felder = zeile_zu_feldern(reihe, reg["_spalten"], leer)
                 jmt = None
@@ -203,6 +231,9 @@ def einlesen(con, zuordnung, dateien):
                 con.executemany(
                     "INSERT INTO feld(eintrag, name, wert, roh) VALUES (?,?,?,?)",
                     [(eid, name, w, r) for name, (w, r) in felder.items()])
+                con.executemany("INSERT INTO zelle(eintrag, spalte, roh) VALUES (?,?,?)",
+                                [(eid, i, r) for i, c in enumerate(reihe, start=1)
+                                 if i not in weg and (r := bereinigen(c, ())[1]) and r.strip()])
                 n += 1
             con.execute("UPDATE quelle SET zeilen=? WHERE id=?", (n, qid))
             zaehler[register] = zaehler.get(register, 0) + n

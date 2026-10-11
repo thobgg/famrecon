@@ -2,9 +2,19 @@
 
     famrecon gedcom daten/projekt.db -o ausgabe/projekt.ged
 
+Drei Dinge, jedes mit festem Ort:
+    Akt          was im Kirchenbuch steht: die Umschrift des Eintrags (Feld wortlaut), wo die Tabelle eine hat,
+                 als Text der Fundstelle des Hauptereignisses (CHR, ersatzweise BIRT, DEAT, MARR): SOUR/DATA/TEXT
+    Tabelle      die Zeile des Forschers: in der Projektdatei vollstaendig (feld, zelle); in der GEDCOM nur ueber
+                 die Fundstelle (PAGE) und die Spalten ohne Feld, die als "Ueberschrift: Zellinhalt" unter die
+                 Umschrift in denselben TEXT kommen. So wird nichts verworfen, und nichts steht doppelt.
+    Deutung      nur in Standard-Tags, jeder mit Fundstelle; die Verknuepfung in der Struktur (INDI, FAM, FAMC/FAMS).
+                 NOTE nur fuer famrecons eigene Vermerke (und vorerst Paten, Zeugen, Herkunft, Bemerkung, s. u.)
+
 Was wo landet:
     NAME        Vorname /Nachname/; Geburtsname als erster Name, Ehename als zweiter (TYPE married)
                 abweichende Schreibungen der Eintraege als weitere NAME mit TYPE aka
+    SEX         aus dem Feld geschlecht (auch angekreuzte Spalten), sonst Rolle, sonst Vorname
     BIRT, CHR   aus dem Taufeintrag des Kindes (Datum, Ort), Taufpaten als NOTE unter CHR
     MARR        aus dem Traueintrag (Datum, Ort), Trauzeugen und Pfarrer als NOTE
     DEAT, BURI  aus dem Sterbeeintrag; Todesursache als CAUS; Alter als AGE
@@ -12,7 +22,12 @@ Was wo landet:
     SOUR/PAGE   je Ereignis: Quelle (Datei, Blatt) und Fundstelle (Buch, Seite, Nummer oder Zitat)
     NOTE        Bemerkungen der Eintraege; bei unsicherer Zuordnung ein Vermerk mit den Alternativen
 
-Nichts wird verworfen: Was kein GEDCOM-Feld hat, geht als NOTE an die Person oder das Ereignis.
+Geplant (in dieser Reihenfolge):
+    1. Fundstelle mit Rolle: SOUR/EVEN (BIRT, CHR, MARR, DEAT) und EVEN/ROLE (CHIL, FATH, MOTH, HUSB, WIFE)
+    2. Uebernommene Werte (Geburtsname der Mutter aus der Trauung u. a.): Fundstelle des Eintrags, aus dem
+       der Wert stammt, mit QUAY 2 und Vermerk "uebernommen durch Verknuepfung, Stufe ..."
+    3. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
+    4. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
 """
 import datetime as dt
 import json
@@ -56,6 +71,11 @@ def schreiben(con, ziel):
     felder = {}
     for f in con.execute("SELECT eintrag, name, wert FROM feld WHERE wert IS NOT NULL"):
         felder.setdefault(f["eintrag"], {})[f["name"]] = f["wert"]
+    ohne_feld = {}                                 # Zellen in Spalten ohne Feld, je Eintrag in Spaltenfolge
+    for c in con.execute("SELECT z.eintrag, k.titel, z.roh FROM zelle z JOIN eintrag e ON e.id=z.eintrag "
+                         "JOIN kopf k ON k.quelle=e.quelle AND k.spalte=z.spalte WHERE NOT k.zugeordnet ORDER BY z.eintrag, z.spalte"):
+        ohne_feld.setdefault(c["eintrag"], []).append(f"{c['titel']}: {c['roh'].removesuffix('T00:00:00')}")
+    umschrift = {f["eintrag"]: f["roh"].strip() for f in con.execute("SELECT eintrag, roh FROM feld WHERE name='wortlaut' AND wert IS NOT NULL")}
     personen = {p["id"]: dict(p) for p in con.execute("SELECT * FROM person")}
     rollen = {}                                    # ident -> [(person, zuordnung)]
     for r in con.execute("SELECT z.*, p.eintrag, p.pfad FROM zuordnung z JOIN person p ON p.id=z.person"):
@@ -71,12 +91,17 @@ def schreiben(con, ziel):
             if p:
                 fams_von.setdefault(p, []).append(f["id"])
 
-    def quelle(e):
-        """SOUR/PAGE-Zeilen fuer einen Eintrag."""
+    def quelle(e, haupt=False):
+        """SOUR/PAGE-Zeilen fuer einen Eintrag; beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld
+        wortlaut), danach Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
         fl = felder.get(e["id"], {})
         fund = fl.get("zitat") or " ".join(x for x in (fl.get("kb"), f"S. {fl['seite']}" if fl.get("seite") else None,
                                                         f"Nr. {fl['lfd_nr']}" if fl.get("lfd_nr") else None) if x) or f"Zeile {e['zeile']}"
-        return [f"2 SOUR @S{e['quelle']}@", *z(3, "PAGE", fund)]
+        out = [f"2 SOUR @S{e['quelle']}@", *z(3, "PAGE", fund)]
+        text = ([umschrift[e["id"]]] if haupt and e["id"] in umschrift else []) + (ohne_feld.get(e["id"], []) if haupt else [])
+        if text:
+            out += ["3 DATA", *z(4, "TEXT", "\n".join(text))]
+        return out
 
     out = ["0 HEAD", "1 SOUR famrecon", f"2 VERS {__version__}", "2 NAME famrecon", f"1 DATE {datum(dt.date.today().year, dt.date.today().month, dt.date.today().day)}",
            "1 GEDC", "2 VERS 5.5.1", "1 CHAR UTF-8", "1 LANG German"]
@@ -118,7 +143,7 @@ def schreiben(con, ziel):
                         out += z(2, "PLAC", fl["geburt_ort"])
                     if p["totgeburt"]:
                         out += z(2, "NOTE", "Totgeburt")
-                    out += quelle(e)
+                    out += quelle(e, haupt=bool(p["totgeburt"] and not fl.get("tauf_datum")))   # keine CHR: Text an der Geburt
                     geb_geschrieben = True
                 if fl.get("tauf_datum") or not p["totgeburt"]:
                     out.append("1 CHR")
@@ -130,7 +155,7 @@ def schreiben(con, ziel):
                         out += z(2, "NOTE", "Taufpaten: " + fl["paten"].replace(" | ", "; "))
                     if fl.get("pfarrer"):
                         out += z(2, "NOTE", "Taufender: " + fl["pfarrer"])
-                    out += quelle(e)
+                    out += quelle(e, haupt=True)
                 if fl.get("unehelich") and str(fl["unehelich"]).lower() in ("u", "unehelich", "ja", "x"):
                     notizen.append("unehelich geboren")
                 if p.get("verzogen"):
@@ -147,7 +172,7 @@ def schreiben(con, ziel):
                 alter = fl.get("verstorbener_alter") or fl.get("verstorbener_alter_kb")
                 if alter:
                     out += z(2, "AGE", alter)
-                out += quelle(e)
+                out += quelle(e, haupt=True)
                 if fl.get("begraebnis_datum"):
                     out.append("1 BURI")
                     out.append(f"2 DATE {datum(*_jmt(fl['begraebnis_datum']))}")
@@ -223,7 +248,7 @@ def schreiben(con, ziel):
                 out += z(2, "NOTE", "Proklamation: " + fl["proklamation"])
             if fl.get("bemerkung"):
                 out += z(2, "NOTE", fl["bemerkung"])
-            out += quelle(e)
+            out += quelle(e, haupt=True)
         elif f["art"] == "eltern":
             out += z(1, "NOTE", "Ehe aus Taufen/Sterbefaellen erschlossen, Traueintrag nicht gefunden")
         for _, _, _, kid in sorted(kinder.get(f["id"], [])):

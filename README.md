@@ -51,7 +51,10 @@ schlägt sie aus Überschriften und Beispielwerten vor, mit Sicherheitsgrad je
 Spalte; der Mensch sieht die TOML durch und korrigiert, was „unsicher" oder
 „???" ist. Mehrere Spalten können ein Feld bilden (vierzig Patenspalten werden
 zu `paten`), und was in der Tabelle „k.A." oder „—" heißt, gilt als nicht
-angegeben, der Zellinhalt bleibt aber erhalten. Fertige Zuordnungen werden im
+angegeben, der Zellinhalt bleibt aber erhalten. Kreuzspalten tragen einen
+festen Wert (`P = "kind_geschlecht=m"`, `Q = "kind_geschlecht=w"`). Nichts wird
+verworfen: Eine Spalte ohne Zuordnung steht in der GEDCOM als Text der
+Fundstelle; nur `X = ""` lässt sie weg. Fertige Zuordnungen werden im
 Repository gesammelt; wer ein bekanntes Format benutzt, muss nichts tun.
 Zwei Formate liegen als Beispiel bei, beide vom Werkzeug selbst zugeordnet:
 eine Tabelle im Kirchenbuchstil mit sprechenden Überschriften und vierzig Patenspalten
@@ -87,13 +90,24 @@ sein: `braut_vater_name` ist der Nachname des Vaters der Braut.
    Kandidaten, bleibt der Fall offen: eigene Person, Kandidaten mit Grund in
    der Prüfliste, ein Urteil dort gilt beim nächsten Lauf.
    `famrecon ausschluesse` zeigt, wie oft jede Ausschlussregel gegriffen hat.
-3. **GEDCOM 5.5.1** (`gedcom.py`). Geburt und Taufe aus dem Taufeintrag mit
-   Paten als Notiz, Trauung mit Zeugen und Pfarrer, Tod und Begräbnis mit
-   Todesursache und Alter, Berufe je Nennung mit Datum, jedes Ereignis mit
-   Quelle und Fundstelle (Buch, Seite, Nummer). Geburtsname als erster Name,
-   Ehename als zweiter, abweichende Schreibungen der Einträge als weitere
-   Namen (aka). Was kein Feld hat, wird Notiz; unsichere Zuordnungen tragen
-   einen Vermerk mit den Alternativen.
+3. **GEDCOM 5.5.1** (`gedcom.py`). Drei Dinge werden auseinandergehalten.
+   Der **Akt**, also was im Kirchenbuch steht: Hat die Tabelle eine Umschrift
+   des Eintrags (Feld `wortlaut`), steht sie als Text der Fundstelle beim
+   Hauptereignis (`SOUR`/`DATA`/`TEXT` bei Taufe, Tod oder Trauung). Die
+   **Tabelle** des Forschers: Sie liegt vollständig in der Projektdatei; in
+   der GEDCOM verweist die Fundstelle auf sie, und nur Spalten ohne Feld
+   kommen als „Überschrift: Zellinhalt“ in denselben Text. So geht nichts
+   verloren, und nichts steht doppelt. Die **Deutung** steht in
+   Standard-Tags, jeder mit Quelle und Fundstelle (Buch, Seite, Nummer):
+   Geburt und Taufe, Trauung, Tod und Begräbnis mit Todesursache und Alter,
+   Berufe je Nennung mit Datum, Geburtsname als erster Name, Ehename als
+   zweiter, abweichende Schreibungen als weitere Namen (aka); die
+   Verknüpfung steckt in der Struktur (Personen, Familien). Unsichere
+   Zuordnungen tragen einen Vermerk mit den Alternativen; Paten, Zeugen,
+   Pfarrer, Herkunft und Bemerkungen stehen als Notiz.
+   Geplant: Fundstelle mit Ereignis und Rolle (`EVEN`/`ROLE`), aus anderen
+   Einträgen übernommene Werte mit der Fundstelle ihrer Herkunft und `QUAY 2`,
+   erkannte Paten und Zeugen als `ASSO`/`RELA`.
 4. **Prüfkette.** `famrecon pruefe` sucht jede Tabellenzeile über ihre
    Fundstelle in der GEDCOM wieder und prüft alle Verweise (Exit 1, wenn
    etwas fehlt). `make gramps` lässt Gramps die Datei einlesen und seine

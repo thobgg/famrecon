@@ -57,8 +57,8 @@
 <tr><td>Col.</td><td>The column letter of your table. A range such as <code>S-BF</code> means these columns together form one field, for example forty godparent columns as <code>paten</code>.</td></tr>
 <tr><td>Header</td><td>Your header from the first row.</td></tr>
 <tr><td>Examples</td><td>A few cell values from this column. This is the quickest way to see whether the proposal is right.</td></tr>
-<tr><td>Field</td><td>The field in famrecon. The list shows every field name with a short explanation. "– do not import –" drops the column.</td></tr>
-<tr><td>Proposal</td><td>How certain the program is: <b>sicher</b> (header and values fit), <b>wahrscheinlich</b> (the header fits), <b>unsicher</b> (yellow; only a weak similarity, or the values look different from what is expected, such as text in a date column). Empty means not recognised; the column would be dropped.</td></tr>
+<tr><td>Field</td><td>The field in famrecon. The list shows every field name with a short explanation. "– keep without field –" keeps the column without interpretation: it appears in the GEDCOM as "header: value" in the text of the citation. If your table has a transcription of the whole entry, map it to <code>wortlaut</code>; it then appears there as well, first. "– leave out –" drops the column entirely. For tick columns such as "m" and "w" there is <code>kind_geschlecht = m</code> and <code>= w</code>: if the cell is ticked, the value applies.</td></tr>
+<tr><td>Proposal</td><td>How certain the program is: <b>sicher</b> (header and values fit), <b>wahrscheinlich</b> (the header fits), <b>unsicher</b> (yellow; only a weak similarity, or the values look different from what is expected, such as text in a date column). Empty means not recognised; the column is kept without a field.</td></tr>
 </table>
 <p>The <b>balance</b> line at the top counts the levels per sheet. Goal: no "unsicher" and no "not recognised" columns that you actually need.</p>
 <h3>Reading field names</h3>
@@ -82,7 +82,7 @@
 <div class="achtung">With the tick set, the measurement via <code>messen</code> is worthless, because the identifiers would be both input and yardstick.</div>
 <h3>Confirming</h3>
 <p><b>Confirm mapping and build</b> saves and reads in immediately. <b>save only</b> saves without reading. The mapping then lies in the project folder as a readable text file <code>zuordnung.toml</code>; it can be copied and reused for another project with the same table layout (see <a href="#faq">FAQ</a>).</p>
-<div class="achtung">Whatever is set to "do not import" or was not recognised will be missing from the GEDCOM later. Check above all the columns with names, dates and parents.</div>
+<div class="achtung">Whatever is set to "leave out" will be missing from the GEDCOM later. Columns that were not recognised only come along as text and do not help linking. Check above all the columns with names, dates and parents.</div>
 
 <h2 id="bauen">Building: reading and normal form</h2>
 <p>When building, famrecon reads every row according to the mapping and brings the values into a <b>normal form</b> it can compute with. The raw value of every cell is kept alongside and appears in the person list and in the review list.</p>
@@ -289,7 +289,7 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 </dl>
 
 <h2 id="faq">Frequently asked questions</h2>
-<details><summary>My column is not recognised or proposed wrongly.</summary><p>Choose the right field from the list on the mapping page; the proposal is only a proposal. If it helps to make the header in the table more telling ("Given name groom" instead of "GN2"), it will be recognised in the next project. If a field is missing from the catalogue entirely, map the column to <code>bemerkung</code>; its content then goes into the GEDCOM as a note.</p></details>
+<details><summary>My column is not recognised or proposed wrongly.</summary><p>Choose the right field from the list on the mapping page; the proposal is only a proposal. If it helps to make the header in the table more telling ("Given name groom" instead of "GN2"), it will be recognised in the next project. If a field is missing from the catalogue entirely, leave the column on "keep without field"; its content then goes into the text of the citation with its header.</p></details>
 <details><summary>Two sheets are both baptisms (two volumes, two parishes).</summary><p>Assign both to the register baptism. Several sheets or files of the same register are allowed; the citation distinguishes them, and the fields <code>kb</code> or <code>ort</code> can carry the volume or parish.</p></details>
 <details><summary>My dates have only the year.</summary><p>That is enough. With the year alone, linking becomes a little coarser (birth year instead of date) but remains possible. The GEDCOM then receives only the year.</p></details>
 <details><summary>Special characters are broken (CSV).</summary><p>famrecon tries UTF-8, Windows-1252 and Latin-1. If the mapping still shows wrong characters in the examples, save the CSV in your spreadsheet program as "CSV UTF-8" or upload the table as xlsx.</p></details>

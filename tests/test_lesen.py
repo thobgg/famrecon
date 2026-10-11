@@ -106,3 +106,58 @@ class ZweiBlaetterEinRegister(unittest.TestCase):
             n = lesen.einlesen(con, z, [ziel])
             self.assertEqual(n["taufe"], 14)                               # 7 Taufen je Blatt, beide gelesen
             self.assertEqual(con.execute("SELECT COUNT(*) FROM quelle WHERE register='taufe'").fetchone()[0], 2)
+
+
+class ZusatzUndKreuz(unittest.TestCase):
+    """Erfundene Taufliste: Umschrift und Spalte ohne Feld stehen im Text der Fundstelle, X = "" bleibt weg, m/w-Kreuze ergeben das Geschlecht."""
+    CSV = ("Taufdatum;Vorname;Name;m;w;Vater Vorname;Vater Name;Mutter Vorname;Mutter Name;Hausnummer;Notiz;Umschrift\n"
+           "1781-03-04;Anna;Kessler;;x;Jakob;Kessler;Maria;Bühler;12;nur intern;Den 4. Mart. ist getaufft worden Anna\n"
+           "1782-05-06;Kim;Kessler;x;;Jakob;Kessler;Maria;Bühler;;;\n"
+           "1783-07-08;Kim;Kessler;x;x;Jakob;Kessler;Maria;Bühler;;;\n")
+    TOML = ('[allgemein]\nleer = []\n\n[register.taufe]\nblatt = "taufen"\nleitdatum = ["tauf_datum"]\n\n'
+            '[register.taufe.spalten]\nA = "tauf_datum"\nB = "kind_vorname"\nC = "kind_name"\n'
+            'D = "kind_geschlecht=m"\nE = "kind_geschlecht=w"\nF = "vater_vorname"\nG = "vater_name"\n'
+            'H = "mutter_vorname"\nI = "mutter_name"\nK = ""\nL = "wortlaut"\n')
+
+    @classmethod
+    def setUpClass(cls):
+        import tempfile
+        from famrecon import gedcom, kern, verknuepfen
+        cls.tmp = tempfile.TemporaryDirectory()
+        d = Path(cls.tmp.name)
+        (d / "taufen.csv").write_text(cls.CSV, encoding="utf-8")
+        (d / "z.toml").write_text(cls.TOML, encoding="utf-8")
+        cls.con = db.oeffnen(":memory:")
+        lesen.einlesen(cls.con, lesen.zuordnung_laden(d / "z.toml"), [d / "taufen.csv"])
+        kern.personen_bauen(cls.con)
+        verknuepfen.verknuepfen(cls.con)
+        gedcom.schreiben(cls.con, d / "t.ged")
+        cls.ged = (d / "t.ged").read_text(encoding="utf-8")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.con.close()
+        cls.tmp.cleanup()
+
+    def felder(self, zeile):
+        return {r["name"]: r["wert"] for r in self.con.execute(
+            "SELECT f.name, f.wert FROM feld f JOIN eintrag e ON e.id=f.eintrag WHERE e.zeile=?", (zeile,))}
+
+    def test_zusatz_und_weglassen(self):
+        self.assertNotIn("nur intern", self.ged)                                               # K = "": weggelassen
+        self.assertIn("3 DATA\n4 TEXT Den 4. Mart. ist getaufft worden Anna\n5 CONT Hausnummer: 12\n", self.ged)
+        self.assertNotIn("TEXT Taufdatum", self.ged)                       # zugeordnete Spalten stehen nicht doppelt
+        self.assertEqual(self.ged.count("3 DATA"), 1)                      # die anderen Taufen haben nichts ohne Feld
+        zellen = self.con.execute("SELECT COUNT(*) FROM zelle z JOIN eintrag e ON e.id=z.eintrag WHERE e.zeile=2").fetchone()[0]
+        self.assertEqual(zellen, 10)                                       # alle nicht leeren Zellen der Zeile, ohne K
+
+    def test_kreuzspalten(self):
+        self.assertEqual(self.felder(2)["kind_geschlecht"], "w")
+        self.assertEqual(self.felder(3)["kind_geschlecht"], "m")
+        self.assertEqual(self.felder(4)["kind_geschlecht"], "m | w")      # beides angekreuzt: kein eindeutiger Wert
+        g = {r["zeile"]: r["geschlecht"] for r in self.con.execute(
+            "SELECT e.zeile, p.geschlecht FROM person p JOIN eintrag e ON e.id=p.eintrag WHERE p.pfad='kind'")}
+        self.assertEqual((g[2], g[3]), ("F", "M"))
+
+    def test_keine_warnung_fuer_feste_werte(self):
+        self.assertEqual(lesen.unbekannte_felder(lesen.zuordnung_laden(Path(self.tmp.name) / "z.toml")), [])

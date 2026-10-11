@@ -130,6 +130,12 @@ msgstr ""
 msgid "nicht übernehmen"
 msgstr ""
 
+msgid "ohne Feld mitnehmen"
+msgstr ""
+
+msgid "wenn angekreuzt"
+msgstr ""
+
 msgid "Kirchenbuchform"
 msgstr ""
 

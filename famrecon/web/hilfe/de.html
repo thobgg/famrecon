@@ -57,8 +57,8 @@
 <tr><td>Sp.</td><td>Der Spaltenbuchstabe Ihrer Tabelle. Ein Bereich wie <code>S-BF</code> bedeutet: Diese Spalten bilden zusammen ein Feld, zum Beispiel vierzig Patenspalten als <code>paten</code>.</td></tr>
 <tr><td>Überschrift</td><td>Ihre Überschrift aus der ersten Zeile.</td></tr>
 <tr><td>Beispiele</td><td>Einige Zellwerte aus dieser Spalte. Daran erkennen Sie am schnellsten, ob der Vorschlag stimmt.</td></tr>
-<tr><td>Feld</td><td>Das Feld in famrecon. Die Liste zeigt jeden Feldnamen mit einer kurzen Erklärung. „– nicht übernehmen –“ lässt die Spalte weg.</td></tr>
-<tr><td>Vorschlag</td><td>Wie sicher das Programm ist: <b>sicher</b> (Überschrift und Werte passen), <b>wahrscheinlich</b> (die Überschrift passt), <b>unsicher</b> (gelb; nur eine schwache Ähnlichkeit, oder die Werte sehen anders aus als erwartet, etwa Text in einer Datumsspalte). Leer heißt: nicht erkannt, die Spalte würde wegfallen.</td></tr>
+<tr><td>Feld</td><td>Das Feld in famrecon. Die Liste zeigt jeden Feldnamen mit einer kurzen Erklärung. „– ohne Feld mitnehmen –“ übernimmt die Spalte ohne Deutung: Sie steht in der GEDCOM als „Überschrift: Wert“ im Text der Fundstelle. Hat Ihre Tabelle eine Umschrift des ganzen Eintrags, ordnen Sie sie <code>wortlaut</code> zu; sie steht dann ebenfalls dort, an erster Stelle. „– nicht übernehmen –“ lässt die Spalte ganz weg. Für Kreuzspalten wie „m“ und „w“ gibt es <code>kind_geschlecht = m</code> und <code>= w</code>: Ist die Zelle angekreuzt, gilt der Wert.</td></tr>
+<tr><td>Vorschlag</td><td>Wie sicher das Programm ist: <b>sicher</b> (Überschrift und Werte passen), <b>wahrscheinlich</b> (die Überschrift passt), <b>unsicher</b> (gelb; nur eine schwache Ähnlichkeit, oder die Werte sehen anders aus als erwartet, etwa Text in einer Datumsspalte). Leer heißt: nicht erkannt, die Spalte kommt ohne Feld mit.</td></tr>
 </table>
 <p>Die Zeile <b>Bilanz</b> oben zählt die Stufen je Blatt. Ziel: keine „unsicher“ und keine „nicht erkannt“, die Sie eigentlich brauchen.</p>
 <h3>Feldnamen lesen</h3>
@@ -82,7 +82,7 @@
 <div class="achtung">Mit gesetztem Haken ist die Messung über <code>messen</code> wertlos, weil die Kennungen zugleich Vorgabe und Maßstab wären.</div>
 <h3>Bestätigen</h3>
 <p><b>Zuordnung bestätigen und bauen</b> speichert und liest sofort ein. <b>nur speichern</b> speichert ohne Einlesen. Die Zuordnung liegt danach als lesbare Textdatei <code>zuordnung.toml</code> im Projektordner; sie lässt sich kopieren und für ein weiteres Projekt mit gleichem Tabellenaufbau wiederverwenden (siehe <a href="#faq">FAQ</a>).</p>
-<div class="achtung">Was auf „nicht übernehmen“ steht oder nicht erkannt wurde, fehlt später in der GEDCOM. Prüfen Sie vor allem Spalten mit Namen, Daten und Eltern.</div>
+<div class="achtung">Was auf „nicht übernehmen“ steht, fehlt später in der GEDCOM. Was nicht erkannt wurde, kommt nur als Text mit und hilft nicht beim Verknüpfen. Prüfen Sie vor allem Spalten mit Namen, Daten und Eltern.</div>
 
 <h2 id="bauen">Bauen: Einlesen und Normalform</h2>
 <p>Beim Bauen liest famrecon jede Zeile nach der Zuordnung ein und bringt die Werte in eine <b>Normalform</b>, mit der sich rechnen lässt. Der Rohwert jeder Zelle bleibt daneben erhalten und erscheint in der Personenliste und in der Prüfliste.</p>
@@ -289,7 +289,7 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 </dl>
 
 <h2 id="faq">Häufige Fragen</h2>
-<details><summary>Meine Spalte wird nicht erkannt oder falsch vorgeschlagen.</summary><p>In der Zuordnung das richtige Feld aus der Liste wählen; der Vorschlag ist nur ein Vorschlag. Hilft es, die Überschrift in der Tabelle sprechender zu machen („Vorname Bräutigam“ statt „VN2“), wird sie beim nächsten Projekt erkannt. Fehlt ein Feld im Katalog ganz, ordnen Sie die Spalte <code>bemerkung</code> zu; der Inhalt geht dann als Notiz in die GEDCOM.</p></details>
+<details><summary>Meine Spalte wird nicht erkannt oder falsch vorgeschlagen.</summary><p>In der Zuordnung das richtige Feld aus der Liste wählen; der Vorschlag ist nur ein Vorschlag. Hilft es, die Überschrift in der Tabelle sprechender zu machen („Vorname Bräutigam“ statt „VN2“), wird sie beim nächsten Projekt erkannt. Fehlt ein Feld im Katalog ganz, lassen Sie die Spalte auf „ohne Feld mitnehmen“; der Inhalt geht dann mit ihrer Überschrift in den Text der Fundstelle.</p></details>
 <details><summary>Zwei Blätter sind beide Taufen (zwei Bände, zwei Pfarreien).</summary><p>Beide dem Register Taufe zuweisen. Mehrere Blätter oder Dateien desselben Registers sind erlaubt; die Fundstelle unterscheidet sie, und das Blatt <code>kb</code> oder <code>ort</code> kann den Band oder die Pfarrei tragen.</p></details>
 <details><summary>Meine Daten haben nur das Jahr.</summary><p>Das genügt. Mit Jahr allein wird die Verknüpfung etwas gröber (Geburtsjahr statt Datum), bleibt aber möglich. Die GEDCOM erhält dann nur das Jahr.</p></details>
 <details><summary>Umlaute sind kaputt (CSV).</summary><p>famrecon probiert UTF-8, Windows-1252 und Latin-1. Zeigt die Zuordnung dennoch falsche Zeichen in den Beispielen, speichern Sie die CSV in Ihrer Tabellenkalkulation als „CSV UTF-8“ oder laden Sie die Tabelle als xlsx hoch.</p></details>

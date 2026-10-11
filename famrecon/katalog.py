@@ -91,6 +91,8 @@ ALLGEMEIN = [
     ("jahr",       ERG, "zahl",  "Jahr (hilft, wenn das Datum unvollstaendig ist)", ["jahr", "year"]),
     ("pfarrer",    ERG, "text",  "Amtshandelnder", ["pfarrer", "taufender", "trauender", "geistlicher", "minister", "priest"]),
     ("bemerkung",  ERG, "text",  "Bemerkungen, Randvermerke zum Eintrag", ["bemerkung", "bemerkungen", "bem", "anmerkung", "notiz", "randvermerk", "note", "notes", "remarks"]),
+    ("wortlaut",   ERG, "text",  "Umschrift des Eintrags, wortgetreu (GEDCOM: Text der Fundstelle)",
+     ["wortlaut", "umschrift", "transkription", "abschrift", "volltext", "eintragstext", "transcription", "transcript"]),
 ]
 REGISTER = {
     "taufe": [

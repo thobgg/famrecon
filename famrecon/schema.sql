@@ -34,6 +34,24 @@ CREATE TABLE IF NOT EXISTS feld (
 );
 CREATE INDEX IF NOT EXISTS feld_name ON feld(name, wert);
 
+-- Die Tabellenzeile, wie sie ist: jede nicht leere Zelle, unabhaengig von der
+-- Zuordnung (ausser Spalten mit X = ""), dazu die Ueberschriften je Quelle und
+-- ob die Spalte einem Feld zugeordnet ist. Spalten ohne Feld gehen von hier
+-- als "Ueberschrift: Zellinhalt" in den Text der Fundstelle.
+CREATE TABLE IF NOT EXISTS zelle (
+  eintrag  INTEGER NOT NULL REFERENCES eintrag(id) ON DELETE CASCADE,
+  spalte   INTEGER NOT NULL,         -- 1 = A
+  roh      TEXT NOT NULL,
+  PRIMARY KEY (eintrag, spalte)
+);
+CREATE TABLE IF NOT EXISTS kopf (
+  quelle   INTEGER NOT NULL REFERENCES quelle(id) ON DELETE CASCADE,
+  spalte   INTEGER NOT NULL,
+  titel    TEXT NOT NULL,            -- Ueberschrift, ohne Ueberschrift der Spaltenbuchstabe
+  zugeordnet INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (quelle, spalte)
+);
+
 -- Normalform: je Eintrag und Rolle eine Person mit den Kernmerkmalen.
 -- Gefuellt von kern.py aus eintrag/feld; reproduzierbar, nie von Hand.
 CREATE TABLE IF NOT EXISTS person (

@@ -203,12 +203,16 @@ def s_zuordnung(pr, wahl=None):
         felder = katalog.felder(reg)
         zeilen = []
         for b, s in zu:
-            gewaehlt = (alt[1].get(b) if alt else None) or s["feld"] or ""
-            opts = ['<option value="">– ' + _("nicht übernehmen") + ' –</option>']
+            gewaehlt = "-" if alt and alt[1].get(b) == "" else (alt[1].get(b) if alt else None) or s["feld"] or ""
+            opts = ['<option value="">– ' + _("ohne Feld mitnehmen") + ' –</option>',
+                    f'<option value="-" {"selected" if gewaehlt == "-" else ""}>– ' + _("nicht übernehmen") + ' –</option>']
             for name, (rang, art, hilfe, _syn) in felder.items():
                 opts.append(f'<option value="{name}" {"selected" if name == gewaehlt else ""}>{name} · {h(hilfe)}</option>')
                 if name + "_kb" == gewaehlt:
                     opts.append(f'<option value="{name}_kb" selected>{name}_kb · {_("Kirchenbuchform")}</option>')
+                if name.endswith("geschlecht"):                    # Kreuzspalten m / w
+                    for g in ("m", "w"):
+                        opts.append(f'<option value="{name}={g}" {"selected" if f"{name}={g}" == gewaehlt else ""}>{name} = {g} · {_("wenn angekreuzt")}</option>')
             bsp = "".join(f"<div>{h(x)}</div>" for x in s["werte"]) or "<i>" + _("leer") + "</i>"
             zeilen.append(f'<tr><td class="sp">{h(b)}</td><td>{h(s["titel"].strip())}</td><td class="bsp">{bsp}</td>'
                           f'<td><select name="f{n}:{h(b)}">{"".join(opts)}</select></td><td class="{s["stufe"] or ""}">{s["stufe"] or ""}</td></tr>')
@@ -240,9 +244,9 @@ def zuordnung_speichern(pr, form):
         z += ["", f"[register.{abschnitt}]", f'register = "{reg}"', f'blatt = "{blatt}"', f'datei = "{datei}"',
               "leitdatum = [" + ", ".join(f'"{f}"' for f in katalog.LEITDATUM[reg]) + "]", "", f"[register.{abschnitt}.spalten]"]
         for k, v in form.items():
-            if k.startswith(f"f{n}:") and v:
+            if k.startswith(f"f{n}:") and v:                    # leer: ohne Feld mitnehmen (Text der Fundstelle); "-": weglassen
                 sp = k.split(":", 1)[1]
-                z.append(f'{sp if "-" not in sp else chr(34) + sp + chr(34)} = "{v}"')
+                z.append(f'{sp if "-" not in sp else chr(34) + sp + chr(34)} = "{"" if v == "-" else v}"')
         n += 1
     pr.toml.write_text("\n".join(z) + "\n", encoding="utf-8")
 
