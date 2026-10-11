@@ -33,6 +33,14 @@ class Kirchenbuchstil(unittest.TestCase):
         self.assertEqual((self.st["indi"], self.st["fam"], self.st["sour"]), (len(self.indis), len(self.fams), 3))
         self.assertEqual(self.st["indi"], 76)
 
+    def test_fundstelle_mit_art_und_rolle(self):
+        r = self.indi("Haag", "Christoph Georg")
+        self.assertEqual((simulation.wert(r, "CHR", "SOUR", "EVEN"), simulation.wert(r, "CHR", "SOUR", "EVEN", "ROLE")), ("CHR", "CHIL"))
+        text = self.ged.read_text(encoding="utf-8")
+        for rolle in ("FATH", "HUSB", "SPOU", "(Verstorbener)", "(Braut: Vater)"):
+            self.assertIn(f"4 ROLE {rolle}\n", text)
+        self.assertEqual(gedcom.rolle("mutter_mutter"), "(Mutter: Mutter)")
+
     def test_kind_mit_taufe_paten_und_rueckverweis(self):
         r = self.indi("Haag", "Christoph Georg")
         self.assertEqual(simulation.wert(r, "BIRT", "DATE"), "31 AUG 1778")

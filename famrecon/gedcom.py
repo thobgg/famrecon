@@ -20,14 +20,16 @@ Was wo landet:
     DEAT, BURI  aus dem Sterbeeintrag; Todesursache als CAUS; Alter als AGE
     OCCU        je Nennung mit Datum des Eintrags; Herkunft als NOTE
     SOUR/PAGE   je Ereignis: Quelle (Datei, Blatt) und Fundstelle (Buch, Seite, Nummer oder Zitat)
+    SOUR/EVEN   Art des Eintrags (CHR, MARR, DEAT, BURI) und mit ROLE die Rolle der Person darin
+                (CHIL, FATH, MOTH, HUSB, WIFE, SPOU; sonst beschrieben, etwa "(Braut: Vater)")
     NOTE        Bemerkungen der Eintraege; bei unsicherer Zuordnung ein Vermerk mit den Alternativen
 
 Geplant (in dieser Reihenfolge):
-    1. Fundstelle mit Rolle: SOUR/EVEN (BIRT, CHR, MARR, DEAT) und EVEN/ROLE (CHIL, FATH, MOTH, HUSB, WIFE)
-    2. Uebernommene Werte (Geburtsname der Mutter aus der Trauung u. a.): Fundstelle des Eintrags, aus dem
-       der Wert stammt, mit QUAY 2 und Vermerk "uebernommen durch Verknuepfung, Stufe ..."
-    3. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
-    4. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
+    1. Uebernommene Werte (Geburtsname der Mutter aus der Trauung u. a.): Fundstelle des Eintrags, aus dem
+       der Wert stammt, mit Vermerk "uebernommen durch Verknuepfung, Stufe ..."; kein QUAY (Gramps liest
+       QUAY 2 als "hoch", also verlaesslicher als ein direkter Beleg)
+    2. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
+    3. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
 """
 import datetime as dt
 import json
@@ -35,6 +37,18 @@ import json
 from . import __version__
 
 MON = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+EVEN = {"taufe": "CHR", "ehe": "MARR", "tod": "DEAT"}      # Art des Eintrags in der Fundstelle (SOUR/EVEN)
+ROLLE = {"kind": "CHIL", "vater": "FATH", "mutter": "MOTH", "braeutigam": "HUSB", "braut": "WIFE",
+         "verstorbener_ehepartner": "SPOU"}              # GEDCOM-Rollen; alle anderen als (Beschreibung)
+ROLLENWORT = {"kind": "Kind", "vater": "Vater", "mutter": "Mutter", "braeutigam": "Bräutigam", "braut": "Braut",
+              "verstorbener": "Verstorbener", "ehepartner": "Ehepartner", "vorehe": "voriger Ehepartner"}
+
+
+def rolle(pfad):
+    """'mutter' -> 'MOTH'; 'braut_vater' -> '(Braut: Vater)'; 'verstorbener' -> '(Verstorbener)'."""
+    if pfad in ROLLE:
+        return ROLLE[pfad]
+    return "(" + ": ".join(ROLLENWORT.get(t, t) for t in pfad.split("_")) + ")"
 
 
 def datum(j, m=None, t=None, praefix=None):
@@ -91,13 +105,19 @@ def schreiben(con, ziel):
             if p:
                 fams_von.setdefault(p, []).append(f["id"])
 
-    def quelle(e, haupt=False):
-        """SOUR/PAGE-Zeilen fuer einen Eintrag; beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld
-        wortlaut), danach Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
+    def quelle(e, haupt=False, pfad=None):
+        """SOUR-Zeilen fuer einen Eintrag: PAGE (Fundstelle), EVEN (Art des Eintrags) mit ROLE (Rolle der Person
+        darin, aus dem Pfad), beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld wortlaut), danach
+        Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
         fl = felder.get(e["id"], {})
         fund = fl.get("zitat") or " ".join(x for x in (fl.get("kb"), f"S. {fl['seite']}" if fl.get("seite") else None,
                                                         f"Nr. {fl['lfd_nr']}" if fl.get("lfd_nr") else None) if x) or f"Zeile {e['zeile']}"
         out = [f"2 SOUR @S{e['quelle']}@", *z(3, "PAGE", fund)]
+        art = "BURI" if e["register"] == "tod" and not fl.get("sterbe_datum") and fl.get("begraebnis_datum") else EVEN.get(e["register"])
+        if art:
+            out.append(f"3 EVEN {art}")
+            if pfad:
+                out += z(4, "ROLE", rolle(pfad))
         text = ([umschrift[e["id"]]] if haupt and e["id"] in umschrift else []) + (ohne_feld.get(e["id"], []) if haupt else [])
         if text:
             out += ["3 DATA", *z(4, "TEXT", "\n".join(text))]
@@ -143,7 +163,7 @@ def schreiben(con, ziel):
                         out += z(2, "PLAC", fl["geburt_ort"])
                     if p["totgeburt"]:
                         out += z(2, "NOTE", "Totgeburt")
-                    out += quelle(e, haupt=bool(p["totgeburt"] and not fl.get("tauf_datum")))   # keine CHR: Text an der Geburt
+                    out += quelle(e, haupt=bool(p["totgeburt"] and not fl.get("tauf_datum")), pfad=pfad)   # keine CHR: Text an der Geburt
                     geb_geschrieben = True
                 if fl.get("tauf_datum") or not p["totgeburt"]:
                     out.append("1 CHR")
@@ -155,7 +175,7 @@ def schreiben(con, ziel):
                         out += z(2, "NOTE", "Taufpaten: " + fl["paten"].replace(" | ", "; "))
                     if fl.get("pfarrer"):
                         out += z(2, "NOTE", "Taufender: " + fl["pfarrer"])
-                    out += quelle(e, haupt=True)
+                    out += quelle(e, haupt=True, pfad=pfad)
                 if fl.get("unehelich") and str(fl["unehelich"]).lower() in ("u", "unehelich", "ja", "x"):
                     notizen.append("unehelich geboren")
                 if p.get("verzogen"):
@@ -172,7 +192,7 @@ def schreiben(con, ziel):
                 alter = fl.get("verstorbener_alter") or fl.get("verstorbener_alter_kb")
                 if alter:
                     out += z(2, "AGE", alter)
-                out += quelle(e, haupt=True)
+                out += quelle(e, haupt=True, pfad=pfad)
                 if fl.get("begraebnis_datum"):
                     out.append("1 BURI")
                     out.append(f"2 DATE {datum(*_jmt(fl['begraebnis_datum']))}")
@@ -180,11 +200,11 @@ def schreiben(con, ziel):
                         out += z(2, "PLAC", fl["begraebnis_ort"])
                     if fl.get("zeugen"):
                         out += z(2, "NOTE", "Zeugen: " + fl["zeugen"].replace(" | ", "; "))
-                    out += quelle(e)
+                    out += quelle(e, pfad=pfad)
                 if p["stand"]:
                     notizen.append(f"{p['stand']} ({e['jahr']})")
             if p["beruf"]:
-                berufe.append((e, p["beruf"], fl, p["verstorben"]))
+                berufe.append((e, p["beruf"], fl, p["verstorben"], pfad))
             if p["herkunft"]:
                 notizen.append(f"Herkunft ({e['register']} {e['jahr']}): {p['herkunft']}")
             if p["bemerkung"]:
@@ -202,14 +222,14 @@ def schreiben(con, ziel):
             out.append(f"2 DATE {datum(i['tod_jahr'], i['tod_monat'], i['tod_tag'])}")
             out += z(2, "NOTE", "aus Rueckverweis im Taufeintrag")
         gesehen = set()
-        for e, beruf, fl, verstorben in berufe:
+        for e, beruf, fl, verstorben, pfad in berufe:
             if beruf in gesehen:
                 continue
             gesehen.add(beruf)
             out += z(1, "OCCU", beruf)
             if e["jahr"] and not verstorben:              # "weyl. Wagenmeister" 1763: Nennung nach dem Tod, kein Datum
                 out.append(f"2 DATE {datum(e['jahr'], e['monat'], e['tag'])}")
-            out += quelle(e)
+            out += quelle(e, pfad=pfad)
         # Ereignisbloecke in die Reihenfolge BIRT, CHR, OCCU, DEAT, BURI bringen
         rang = {"BIRT": 0, "CHR": 1, "OCCU": 2, "DEAT": 3, "BURI": 4}
         for zeile in out:

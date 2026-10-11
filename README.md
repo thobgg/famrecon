@@ -105,9 +105,10 @@ sein: `braut_vater_name` ist der Nachname des Vaters der Braut.
    Verknüpfung steckt in der Struktur (Personen, Familien). Unsichere
    Zuordnungen tragen einen Vermerk mit den Alternativen; Paten, Zeugen,
    Pfarrer, Herkunft und Bemerkungen stehen als Notiz.
-   Geplant: Fundstelle mit Ereignis und Rolle (`EVEN`/`ROLE`), aus anderen
-   Einträgen übernommene Werte mit der Fundstelle ihrer Herkunft und `QUAY 2`,
-   erkannte Paten und Zeugen als `ASSO`/`RELA`.
+   Jede Fundstelle nennt die Art des Eintrags und die Rolle der Person darin
+   (`EVEN`/`ROLE`: Kind, Vater, Mutter, Bräutigam, Braut …).
+   Geplant: aus anderen Einträgen übernommene Werte mit der Fundstelle ihrer
+   Herkunft und einem Vermerk, erkannte Paten und Zeugen als `ASSO`/`RELA`.
 4. **Prüfkette.** `famrecon pruefe` sucht jede Tabellenzeile über ihre
    Fundstelle in der GEDCOM wieder und prüft alle Verweise (Exit 1, wenn
    etwas fehlt). `make gramps` lässt Gramps die Datei einlesen und seine
