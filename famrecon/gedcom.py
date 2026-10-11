@@ -24,12 +24,19 @@ Was wo landet:
                 (CHIL, FATH, MOTH, HUSB, WIFE, SPOU; sonst beschrieben, etwa "(Braut: Vater)")
     NOTE        Bemerkungen der Eintraege; bei unsicherer Zuordnung ein Vermerk mit den Alternativen
 
+Belege und uebernommene Werte:
+    Name            unter NAME (Geburts- und Ehename) die Fundstelle, die ihn nennt: je Register die frueheste.
+                    So ist der Geburtsname einer Mutter, die in der Taufe NN heisst, mit der Trauung belegt.
+Was famrecon aus einem anderen Eintrag als Ereignis an die Person haengt, traegt die Fundstelle dieses
+Eintrags (mit Rolle) und dort den Vermerk "... aus diesem Eintrag uebernommen (Verknuepfung: Stufe)":
+    Geburt          ohne eigene Taufe aus Alter oder Geburtsdatum eines anderen Eintrags; ohne Beleg keine BIRT.
+                    Das Taufdatum, das die Verknuepfung ersatzweise als Geburt rechnet, wird nie BIRT.
+    Tod             aus dem Rueckverweis im Taufeintrag
+    Kein QUAY: Gramps liest QUAY 2 als "hoch", also verlaesslicher als ein direkter Beleg.
+
 Geplant (in dieser Reihenfolge):
-    1. Uebernommene Werte (Geburtsname der Mutter aus der Trauung u. a.): Fundstelle des Eintrags, aus dem
-       der Wert stammt, mit Vermerk "uebernommen durch Verknuepfung, Stufe ..."; kein QUAY (Gramps liest
-       QUAY 2 als "hoch", also verlaesslicher als ein direkter Beleg)
-    2. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
-    3. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
+    1. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
+    2. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
 """
 import datetime as dt
 import json
@@ -105,7 +112,30 @@ def schreiben(con, ziel):
             if p:
                 fams_von.setdefault(p, []).append(f["id"])
 
-    def quelle(e, haupt=False, pfad=None):
+    def uebernommen(r, was):
+        """Vermerk fuer einen Wert, den famrecon aus einem anderen Eintrag an die Person gehaengt hat."""
+        return f"{was} aus diesem Eintrag übernommen" + (f" (Verknüpfung: {r['stufe']})" if r["stufe"] != "neu" else "")
+
+    def herkunft(i, passt):
+        """Die Nennungen einer Identitaet, deren Person den Wert traegt, je Eintrag einmal, nach Jahr."""
+        out, gesehen = [], set()
+        for r in sorted(rollen.get(i["id"], []), key=lambda r: (eintraege[r["eintrag"]]["jahr"] or 0, r["eintrag"])):
+            if r["eintrag"] not in gesehen and passt(personen[r["person"]], r):
+                gesehen.add(r["eintrag"])
+                out.append(r)
+        return out
+
+    def namensbelege(i, passt):
+        """SOUR-Zeilen unter einem NAME: je Register die frueheste Nennung, deren Person diesen Namen traegt."""
+        out, register = [], set()
+        for r in herkunft(i, lambda p, r: passt(p)):
+            e = eintraege[r["eintrag"]]
+            if e["register"] not in register:
+                register.add(e["register"])
+                out += quelle(e, pfad=r["pfad"])
+        return out
+
+    def quelle(e, haupt=False, pfad=None, vermerk=None):
         """SOUR-Zeilen fuer einen Eintrag: PAGE (Fundstelle), EVEN (Art des Eintrags) mit ROLE (Rolle der Person
         darin, aus dem Pfad), beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld wortlaut), danach
         Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
@@ -118,6 +148,8 @@ def schreiben(con, ziel):
             out.append(f"3 EVEN {art}")
             if pfad:
                 out += z(4, "ROLE", rolle(pfad))
+        if vermerk:
+            out += z(3, "NOTE", vermerk)
         text = ([umschrift[e["id"]]] if haupt and e["id"] in umschrift else []) + (ohne_feld.get(e["id"], []) if haupt else [])
         if text:
             out += ["3 DATA", *z(4, "TEXT", "\n".join(text))]
@@ -134,6 +166,8 @@ def schreiben(con, ziel):
             out += z(2, "GIVN", i["vorname"])
         if nachname:
             out += z(2, "SURN", nachname)
+        if i["name"]:                               # Name belegt, wo er genannt ist: je Register der frueheste Eintrag
+            out += namensbelege(i, lambda p: p["geburtsname"] == i["name"] or (p["name"] == i["name"] and not p["geburtsname"]))
         # jede abweichende Schreibung aus den Eintraegen (Kirchenbuchform oder Zelle) als _KB_NAME
         kb_formen = set()
         for r in rollen.get(i["id"], []):
@@ -143,6 +177,7 @@ def schreiben(con, ziel):
                 kb_formen.add((n or "", vn or ""))
         if i["ehename"]:
             out += z(1, "NAME", f"{i['vorname'] or ''} /{i['ehename']}/".strip()) + ["2 TYPE married"]
+            out += namensbelege(i, lambda p: p["name"] == i["ehename"] and p["geburtsname"])
         for n, vn in sorted(kb_formen, key=str):        # Schreibweise des Kirchenbuchs als weiterer Name
             out += z(1, "NAME", f"{vn} /{n}/".strip()) + ["2 TYPE aka", "2 NOTE Schreibweise im Kirchenbuch"]
         if i["geschlecht"]:
@@ -154,11 +189,12 @@ def schreiben(con, ziel):
             e, fl, p = eintraege[r["eintrag"]], felder.get(r["eintrag"], {}), personen[r["person"]]
             pfad = r["pfad"]
             if e["register"] == "taufe" and pfad == "kind":
-                if fl.get("geburt_datum") or i["geb_jahr"]:
+                # Geburt nur, wenn der Eintrag sie nennt; das Taufdatum, das die Verknuepfung ersatzweise als Geburt
+                # rechnet, steht bei CHR und wird hier nicht als Geburtsdatum ausgegeben
+                if fl.get("geburt_datum") or (p["totgeburt"] and not fl.get("tauf_datum")):
                     out.append("1 BIRT")
-                    d = datum(i["geb_jahr"], i["geb_monat"], i["geb_tag"], i["geb_praefix"]) if not fl.get("geburt_datum") else datum(*_jmt(fl["geburt_datum"]))
-                    if d:
-                        out.append(f"2 DATE {d}")
+                    if fl.get("geburt_datum"):
+                        out.append(f"2 DATE {datum(*_jmt(fl['geburt_datum']))}")
                     if fl.get("geburt_ort"):
                         out += z(2, "PLAC", fl["geburt_ort"])
                     if p["totgeburt"]:
@@ -214,13 +250,18 @@ def schreiben(con, ziel):
             if r["stufe"] == "unsicher":
                 alt = ", ".join(f"@I{a[0]}@ ({a[1]} P.)" for a in json.loads(r["alternativen"] or "[]"))
                 notizen.append(f"famrecon: Zuordnung aus {e['register']} {e['jahr']} unsicher ({r['grund']}); Alternativen: {alt}")
-        if not geb_geschrieben and i["geb_jahr"]:
+        beleg = herkunft(i, lambda p, r: p["geburt_jahr"] == i["geb_jahr"] and r["pfad"] != "kind") if i["geb_jahr"] else []
+        if not geb_geschrieben and beleg:           # Geburt aus einem anderen Eintrag (Alter, Geburtsdatum beim Tod)
             out.append("1 BIRT")
             out.append(f"2 DATE {datum(i['geb_jahr'], i['geb_monat'], i['geb_tag'], i['geb_praefix'])}")
+            for r in beleg[:1]:
+                was = "Geburt errechnet aus dem Alter," if personen[r["person"]]["geburt_praefix"] == "CAL" else "Geburt"
+                out += quelle(eintraege[r["eintrag"]], pfad=r["pfad"], vermerk=uebernommen(r, was))
         if i["tod_jahr"] and not any(l == "1 DEAT" for l in out):
             out.append("1 DEAT")
             out.append(f"2 DATE {datum(i['tod_jahr'], i['tod_monat'], i['tod_tag'])}")
-            out += z(2, "NOTE", "aus Rueckverweis im Taufeintrag")
+            for r in herkunft(i, lambda p, r: r["pfad"] == "kind" and felder.get(r["eintrag"], {}).get("sterbe_datum_rv"))[:1]:
+                out += quelle(eintraege[r["eintrag"]], pfad="kind", vermerk=uebernommen(r, "Tod (Rückverweis im Taufeintrag)"))
         gesehen = set()
         for e, beruf, fl, verstorben, pfad in berufe:
             if beruf in gesehen:

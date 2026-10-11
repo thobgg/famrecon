@@ -107,8 +107,14 @@ sein: `braut_vater_name` ist der Nachname des Vaters der Braut.
    Pfarrer, Herkunft und Bemerkungen stehen als Notiz.
    Jede Fundstelle nennt die Art des Eintrags und die Rolle der Person darin
    (`EVEN`/`ROLE`: Kind, Vater, Mutter, Bräutigam, Braut …).
-   Geplant: aus anderen Einträgen übernommene Werte mit der Fundstelle ihrer
-   Herkunft und einem Vermerk, erkannte Paten und Zeugen als `ASSO`/`RELA`.
+   Auch der Name hat eine Fundstelle (je Register die früheste Nennung), so
+   ist etwa der Geburtsname einer Mutter, die in der Taufe „NN“ heißt, mit der
+   Trauung belegt. Was famrecon aus einem anderen Eintrag als Ereignis an die
+   Person hängt (Geburt aus dem Alter beim Tod, Tod aus dem Rückverweis in der
+   Taufe), trägt die Fundstelle dieses Eintrags und den Vermerk „aus diesem
+   Eintrag übernommen“ mit der Stufe der Verknüpfung. Das Taufdatum, das die
+   Verknüpfung ersatzweise als Geburt rechnet, wird nicht als Geburt
+   ausgegeben. Geplant: erkannte Paten und Zeugen als `ASSO`/`RELA`.
 4. **Prüfkette.** `famrecon pruefe` sucht jede Tabellenzeile über ihre
    Fundstelle in der GEDCOM wieder und prüft alle Verweise (Exit 1, wenn
    etwas fehlt). `make gramps` lässt Gramps die Datei einlesen und seine
