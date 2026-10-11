@@ -114,7 +114,10 @@ sein: `braut_vater_name` ist der Nachname des Vaters der Braut.
    Taufe), trägt die Fundstelle dieses Eintrags und den Vermerk „aus diesem
    Eintrag übernommen“ mit der Stufe der Verknüpfung. Das Taufdatum, das die
    Verknüpfung ersatzweise als Geburt rechnet, wird nicht als Geburt
-   ausgegeben. Geplant: erkannte Paten und Zeugen als `ASSO`/`RELA`.
+   ausgegeben. Paten und Zeugen, die genau einer Person im Bestand
+   entsprechen (`beteiligte.py`: gleicher Name und Vorname, alt genug, am
+   Leben, sonst niemand), werden mit ihr verbunden (`ASSO`/`RELA` Pate,
+   Trauzeuge, Zeuge); alle anderen bleiben Text.
 4. **Prüfkette.** `famrecon pruefe` sucht jede Tabellenzeile über ihre
    Fundstelle in der GEDCOM wieder und prüft alle Verweise (Exit 1, wenn
    etwas fehlt). `make gramps` lässt Gramps die Datei einlesen und seine
@@ -322,6 +325,7 @@ sind ausgenommen.
       normalform.py        Zellen in Werte: Namen zerlegen, Marker, Alter, Daten, Lautschlüssel
       kern.py              je Eintrag und Rolle eine Person in Normalform
       verknuepfen.py       Personen und Familien bilden: Punkte, Vetos, Stufen, Entscheidungen
+      beteiligte.py        Paten und Zeugen den Personen zuordnen, nur eindeutige
       gedcom.py            GEDCOM 5.5.1 schreiben
       pruefe.py            Abgleich GEDCOM gegen die Einträge
       simulation.py        aus einer GEDCOM die drei Register erzeugen (Messung)

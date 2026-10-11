@@ -68,7 +68,7 @@ bevor sie bleibt (tests/test_messung.py haelt die Untergrenzen).
 import json
 from collections import Counter
 
-from . import normalform as nf
+from . import beteiligte, normalform as nf
 
 # Ausschluesse je Regel, je Lauf neu gezaehlt: alle Faelle, und die, bei denen der Vorname gepasst haette
 # (dort entscheidet die Regel wirklich). Ergebnis in einstellung 'ausschluesse', Anzeige: famrecon ausschluesse.
@@ -765,6 +765,7 @@ def verknuepfen(con, kennungen=None):
     con.execute("INSERT OR REPLACE INTO einstellung(name, wert) VALUES ('ausschluesse', ?)",
                 (json.dumps({r: [AUSSCHLUSS[r], AUSSCHLUSS_TREFFER[r]] for r in AUSSCHLUSS}, ensure_ascii=False),))
     schreiben(con, best, zuordnungen)
+    beteiligte.zuordnen(con)                      # Paten und Zeugen, nur eindeutige; aendert keine Familie
     return best, zuordnungen
 
 

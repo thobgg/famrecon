@@ -34,9 +34,14 @@ Eintrags (mit Rolle) und dort den Vermerk "... aus diesem Eintrag uebernommen (V
     Tod             aus dem Rueckverweis im Taufeintrag
     Kein QUAY: Gramps liest QUAY 2 als "hoch", also verlaesslicher als ein direkter Beleg.
 
-Geplant (in dieser Reihenfolge):
-    1. Paten, Zeugen, Vormund, wenn als Person erkannt: ASSO + RELA; die NOTE bleibt fuer die nicht erkannten
-    2. Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
+Beteiligte:
+    ASSO        Paten, Trauzeugen, Begraebniszeugen, die beteiligte.py eindeutig einer Person zugeordnet hat:
+                beim Taeufling, den Brautleuten, dem Verstorbenen ASSO @Pate@ + RELA Pate|Trauzeuge|Zeuge mit
+                Fundstelle; bei der Person selbst die Fundstelle mit ROLE (Pate). Die NOTE "Taufpaten: ..."
+                bleibt, sie nennt alle, auch die nicht erkannten.
+
+Geplant:
+    Herkunft als RESI nur, wenn die Spalte ausdruecklich Wohnort heisst; sonst bleibt die NOTE
 """
 import datetime as dt
 import json
@@ -44,6 +49,7 @@ import json
 from . import __version__
 
 MON = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+HAUPTPFAD = {"taufe": ("kind",), "ehe": ("braeutigam", "braut"), "tod": ("verstorbener",)}   # wer das ASSO traegt
 EVEN = {"taufe": "CHR", "ehe": "MARR", "tod": "DEAT"}      # Art des Eintrags in der Fundstelle (SOUR/EVEN)
 ROLLE = {"kind": "CHIL", "vater": "FATH", "mutter": "MOTH", "braeutigam": "HUSB", "braut": "WIFE",
          "verstorbener_ehepartner": "SPOU"}              # GEDCOM-Rollen; alle anderen als (Beschreibung)
@@ -112,6 +118,21 @@ def schreiben(con, ziel):
             if p:
                 fams_von.setdefault(p, []).append(f["id"])
 
+    # Paten und Zeugen, die beteiligte.py eindeutig einer Person zugeordnet hat: ASSO bei der Hauptperson des
+    # Eintrags (Taeufling, Brautleute, Verstorbener), die Fundstelle mit ihrer Rolle bei der Person selbst
+    hauptpersonen = {}
+    for liste in rollen.values():
+        for r in liste:
+            if r["pfad"] in HAUPTPFAD.get(eintraege[r["eintrag"]]["register"], ()):
+                hauptpersonen.setdefault(r["eintrag"], []).append(r["ident"])
+    asso_von, beteiligt_als = {}, {}
+    for b in con.execute("SELECT eintrag, art, ident, grund FROM beteiligt WHERE ident IS NOT NULL ORDER BY eintrag, art, nr"):
+        e = eintraege[b["eintrag"]]
+        for h in hauptpersonen.get(b["eintrag"], []):
+            if h != b["ident"]:
+                asso_von.setdefault(h, []).append((b["ident"], b["art"], e, b["grund"]))
+        beteiligt_als.setdefault(b["ident"], []).append((e, b["art"]))
+
     def uebernommen(r, was):
         """Vermerk fuer einen Wert, den famrecon aus einem anderen Eintrag an die Person gehaengt hat."""
         return f"{was} aus diesem Eintrag übernommen" + (f" (Verknüpfung: {r['stufe']})" if r["stufe"] != "neu" else "")
@@ -135,24 +156,24 @@ def schreiben(con, ziel):
                 out += quelle(e, pfad=r["pfad"])
         return out
 
-    def quelle(e, haupt=False, pfad=None, vermerk=None):
-        """SOUR-Zeilen fuer einen Eintrag: PAGE (Fundstelle), EVEN (Art des Eintrags) mit ROLE (Rolle der Person
-        darin, aus dem Pfad), beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld wortlaut), danach
-        Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
+    def quelle(e, haupt=False, pfad=None, vermerk=None, n=2, rolle_text=None):
+        """SOUR-Zeilen (Stufe n) fuer einen Eintrag: PAGE (Fundstelle), EVEN (Art des Eintrags) mit ROLE (Rolle der
+        Person darin, aus dem Pfad oder als Text), beim Hauptereignis dazu DATA/TEXT: Umschrift des Eintrags (Feld
+        wortlaut), danach Spalten ohne Feld als "Ueberschrift: Zellinhalt"."""
         fl = felder.get(e["id"], {})
         fund = fl.get("zitat") or " ".join(x for x in (fl.get("kb"), f"S. {fl['seite']}" if fl.get("seite") else None,
                                                         f"Nr. {fl['lfd_nr']}" if fl.get("lfd_nr") else None) if x) or f"Zeile {e['zeile']}"
-        out = [f"2 SOUR @S{e['quelle']}@", *z(3, "PAGE", fund)]
+        out = [f"{n} SOUR @S{e['quelle']}@", *z(n + 1, "PAGE", fund)]
         art = "BURI" if e["register"] == "tod" and not fl.get("sterbe_datum") and fl.get("begraebnis_datum") else EVEN.get(e["register"])
         if art:
-            out.append(f"3 EVEN {art}")
-            if pfad:
-                out += z(4, "ROLE", rolle(pfad))
+            out.append(f"{n + 1} EVEN {art}")
+            if pfad or rolle_text:
+                out += z(n + 2, "ROLE", rolle_text or rolle(pfad))
         if vermerk:
-            out += z(3, "NOTE", vermerk)
+            out += z(n + 1, "NOTE", vermerk)
         text = ([umschrift[e["id"]]] if haupt and e["id"] in umschrift else []) + (ohne_feld.get(e["id"], []) if haupt else [])
         if text:
-            out += ["3 DATA", *z(4, "TEXT", "\n".join(text))]
+            out += [f"{n + 1} DATA", *z(n + 2, "TEXT", "\n".join(text))]
         return out
 
     out = ["0 HEAD", "1 SOUR famrecon", f"2 VERS {__version__}", "2 NAME famrecon", f"1 DATE {datum(dt.date.today().year, dt.date.today().month, dt.date.today().day)}",
@@ -283,6 +304,10 @@ def schreiben(con, ziel):
             out += zeilen
         for n in dict.fromkeys(notizen):
             out += z(1, "NOTE", n)
+        for pate, art, e, grund in asso_von.get(i["id"], []):
+            out += [f"1 ASSO @I{pate}@", f"2 RELA {art}"] + quelle(e, rolle_text=f"({art})", vermerk=grund)
+        for e, art in sorted(beteiligt_als.get(i["id"], []), key=lambda ea: (ea[0]["jahr"] or 0, ea[0]["id"])):
+            out += quelle(e, n=1, rolle_text=f"({art})")
         if i["famc"]:
             out.append(f"1 FAMC @F{i['famc']}@")
         for fid in fams_von.get(i["id"], []):

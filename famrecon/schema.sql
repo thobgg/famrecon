@@ -123,6 +123,17 @@ CREATE TABLE IF NOT EXISTS zuordnung (
   alternativen TEXT                   -- JSON [[ident, punkte, grund], ...] fuer die Pruefliste
 );
 
+-- Paten und Zeugen je Eintrag (beteiligte.py): ident nur, wenn genau eine Person passt.
+CREATE TABLE IF NOT EXISTS beteiligt (
+  eintrag  INTEGER NOT NULL REFERENCES eintrag(id) ON DELETE CASCADE,
+  art      TEXT NOT NULL,             -- Pate | Trauzeuge | Zeuge (wird RELA in der GEDCOM)
+  nr       INTEGER NOT NULL,          -- Reihenfolge im Feld
+  text     TEXT NOT NULL,             -- die Angabe, wie sie dasteht
+  ident    INTEGER REFERENCES identitaet(id) ON DELETE SET NULL,
+  grund    TEXT,
+  PRIMARY KEY (eintrag, art, nr)
+);
+
 -- Einstellungen des Projekts, die das Verknuepfen braucht (aus [allgemein] der Zuordnung).
 CREATE TABLE IF NOT EXISTS einstellung (
   name TEXT PRIMARY KEY,

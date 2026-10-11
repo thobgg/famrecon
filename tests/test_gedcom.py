@@ -84,8 +84,10 @@ if __name__ == "__main__":
 class Belege(unittest.TestCase):
     """Erfunden: Trauung 1780, Taufe 1781 mit Mutter NN und ohne Geburtsdatum, Tod des Vaters 1801 mit Alter."""
     DATEIEN = {
-        "ehen.csv": "Datum;Br Vorname;Br Name;Braut Vorname;Braut Name\n1780-05-02;Jakob;Kessler;Maria;Bühler\n",
-        "taufen.csv": "Taufdatum;Vorname;Name;Vater Vorname;Vater Name;Mutter Vorname;Mutter Name\n1781-03-04;Anna;Kessler;Jakob;Kessler;Maria;NN\n",
+        "ehen.csv": ("Datum;Br Vorname;Br Name;Braut Vorname;Braut Name\n1780-05-02;Jakob;Kessler;Maria;Bühler\n"
+                     "1779-01-12;Hans;Bühler;Eva;Roth\n"),
+        "taufen.csv": ("Taufdatum;Vorname;Name;Vater Vorname;Vater Name;Mutter Vorname;Mutter Name;Pate 1;Pate 2;Pate 3\n"
+                       "1781-03-04;Anna;Kessler;Jakob;Kessler;Maria;NN;Bühler, Hans, Bauer;Roth, Eva;Weiß, Peter\n"),
         "tote.csv": "Sterbedatum;Vorname;Name;Alter;Ehefrau\n1801-11-20;Jakob;Kessler;50 Jahre;Bühler, Maria\n"}
     TOML = """[allgemein]
 leer = ["NN"]
@@ -111,6 +113,7 @@ D = "vater_vorname"
 E = "vater_name"
 F = "mutter_vorname"
 G = "mutter_name"
+"H-J" = "paten"
 [register.tod]
 blatt = "tote"
 datei = "tote.csv"
@@ -146,6 +149,15 @@ E = "verstorbener_ehepartner"
         t = [r for r in self.indis.values() if simulation.wert(r, "NAME") == name]
         self.assertEqual(len(t), 1, name)
         return t[0]
+
+    def test_paten_als_asso_nur_eindeutig(self):
+        r = self.indi("Anna /Kessler/")
+        asso = {self.indis[simulation.sub(r, "ASSO")[n]["wert"]]["kinder"][0]["wert"]: simulation.wert(a, "RELA")
+                for n, a in enumerate(simulation.sub(r, "ASSO"))}
+        self.assertEqual(asso, {"Hans /Bühler/": "Pate", "Eva /Roth/": "Pate"})          # Weiß, Peter: niemand passt
+        hans = self.indi("Hans /Bühler/")
+        self.assertIn("(Pate)", [simulation.wert(q, "EVEN", "ROLE") for q in simulation.sub(hans, "SOUR")])
+        self.assertEqual(self.con.execute("SELECT grund FROM beteiligt WHERE text LIKE 'Weiß%'").fetchone()[0], "keine Person passt")
 
     def test_name_der_mutter_aus_der_trauung_belegt(self):
         r = self.indi("Maria /Bühler/")

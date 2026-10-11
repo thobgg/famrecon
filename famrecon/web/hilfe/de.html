@@ -238,15 +238,16 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <p>Die Seite schreibt die GEDCOM-Datei (Version 5.5.1, UTF-8) und gleicht sie sofort ab. Oben steht, wie viele Personen, Familien und Zeilen geschrieben wurden.</p>
 <h3>Was wo landet</h3>
 <table>
-<tr><td>Name</td><td>Vorname und Nachname; Geburtsname als erster Name, Ehename als zweiter (TYPE married); abweichende Schreibungen aus den Einträgen und Kirchenbuchformen als weitere Namen (TYPE aka).</td></tr>
-<tr><td>Geburt, Taufe</td><td>Aus dem Taufeintrag mit Datum und Ort; Paten als Notiz unter der Taufe.</td></tr>
+<tr><td>Name</td><td>Vorname und Nachname; Geburtsname als erster Name, Ehename als zweiter (TYPE married); abweichende Schreibungen aus den Einträgen und Kirchenbuchformen als weitere Namen (TYPE aka). Der Name trägt eine Fundstelle: je Register die früheste Nennung. So ist der Geburtsname einer Mutter, die in der Taufe „NN“ heißt, mit der Trauung belegt.</td></tr>
+<tr><td>Geburt, Taufe</td><td>Aus dem Taufeintrag mit Datum und Ort; Paten als Notiz unter der Taufe. Eine Geburt steht nur da, wenn ein Eintrag sie nennt: Fehlt das Geburtsdatum, bleibt es bei der Taufe. Eine Geburt aus einem anderen Eintrag (etwa aus dem Alter beim Tod, CAL) trägt dessen Fundstelle und den Vermerk „aus diesem Eintrag übernommen“ mit der Stufe der Verknüpfung; ebenso ein Tod aus dem Rückverweis in der Taufe.</td></tr>
+<tr><td>Paten, Zeugen</td><td>Wer genau einer Person im Bestand entspricht (gleicher Name, gleicher Vorname, alt genug, am Leben, sonst niemand passt), wird mit ihr verbunden: ASSO mit RELA Pate, Trauzeuge oder Zeuge beim Täufling, den Brautleuten oder dem Verstorbenen; bei der Person selbst steht die Fundstelle mit der Rolle „(Pate)“. Alle anderen bleiben Text.</td></tr>
 <tr><td>Trauung</td><td>Aus dem Traueintrag mit Datum und Ort; Zeugen und Pfarrer als Notiz.</td></tr>
 <tr><td>Tod, Begräbnis</td><td>Aus dem Sterbeeintrag; Todesursache (CAUS) und Alter (AGE) am Tod.</td></tr>
 <tr><td>Beruf</td><td>Je Nennung ein Beruf mit dem Datum des Eintrags; Herkunft als Notiz.</td></tr>
-<tr><td>Quelle</td><td>Jedes Ereignis mit Quelle (Datei, Blatt) und Fundstelle (Kirchenbuch, Seite, Nummer oder Zitat), damit Sie jede Angabe zur Tabellenzeile zurückverfolgen können.</td></tr>
+<tr><td>Quelle</td><td>Jedes Ereignis mit Quelle (Datei, Blatt) und Fundstelle (Kirchenbuch, Seite, Nummer oder Zitat), damit Sie jede Angabe zur Tabellenzeile zurückverfolgen können. Die Fundstelle nennt die Art des Eintrags und die Rolle der Person darin (EVEN/ROLE: Kind, Vater, Mutter, Bräutigam, Braut …). Beim Hauptereignis steht als Text der Fundstelle die Umschrift des Eintrags (Feld <code>wortlaut</code>) und jede Spalte ohne Feld als „Überschrift: Wert“.</td></tr>
 <tr><td>Notizen</td><td>Bemerkungen der Einträge; bei unsicherer Zuordnung ein Vermerk „famrecon: Zuordnung … unsicher“ mit den Alternativen und ihren Punkten.</td></tr>
 </table>
-<p>Nichts wird verworfen: Was kein GEDCOM-Feld hat, wird zur Notiz an der Person oder am Ereignis.</p>
+<p>Nichts wird verworfen: Was kein GEDCOM-Feld hat, wird zur Notiz an der Person oder am Ereignis oder steht im Text der Fundstelle.</p>
 <h3>Der Abgleich</h3>
 <p>Für jede Tabellenzeile sucht famrecon den Datensatz in der GEDCOM, der sie belegen muss: zur Taufe eine Person mit Geburt oder Taufe und dieser Fundstelle, zur Trauung eine Familie mit Trauung, zum Tod eine Person mit Tod oder Begräbnis. Dazu prüft es, dass die Namen der Hauptpersonen im Datensatz stehen und alle Verweise zwischen Personen und Familien auf vorhandene Datensätze zeigen. <b>0 Fehler</b> heißt: Jede Zeile ist angekommen. Fehler werden einzeln aufgelistet; typische Ursache ist ein Pflichtfeld, das in der Zuordnung fehlt.</p>
 <h3>Danach</h3>

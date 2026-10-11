@@ -238,15 +238,16 @@ Für jede Suche: Kandidaten = alle Personen mit lautgleichem Nachnamen
 <p>The page writes the GEDCOM file (version 5.5.1, UTF-8) and checks it immediately. At the top you see how many persons, families and lines were written.</p>
 <h3>What goes where</h3>
 <table>
-<tr><td>Name</td><td>Given name and surname; birth name as first name, married name as second (TYPE married); different spellings from the entries and register forms as additional names (TYPE aka).</td></tr>
-<tr><td>Birth, baptism</td><td>From the baptism entry with date and place; godparents as a note under the baptism.</td></tr>
+<tr><td>Name</td><td>Given name and surname; birth name as first name, married name as second (TYPE married); different spellings from the entries and register forms as additional names (TYPE aka). The name carries a citation: the earliest mention per register. So the birth name of a mother called "NN" in the baptism is backed by the marriage.</td></tr>
+<tr><td>Birth, baptism</td><td>From the baptism entry with date and place; godparents as a note under the baptism. A birth is only written when an entry states it: without a birth date, the baptism stands alone. A birth taken from another entry (such as from the age at death, CAL) carries that entry's citation and the note "aus diesem Eintrag übernommen" (taken from this entry) with the linking level; likewise a death from the back-reference in the baptism.</td></tr>
+<tr><td>Godparents, witnesses</td><td>Whoever matches exactly one person in the data (same surname, same given name, old enough, alive, nobody else fits) is linked to that person: ASSO with RELA Pate, Trauzeuge or Zeuge at the child, the couple or the deceased; the person's own record carries the citation with the role "(Pate)". All others remain text.</td></tr>
 <tr><td>Marriage</td><td>From the marriage entry with date and place; witnesses and minister as a note.</td></tr>
 <tr><td>Death, burial</td><td>From the death entry; cause of death (CAUS) and age (AGE) at death.</td></tr>
 <tr><td>Occupation</td><td>One occupation per mention with the date of the entry; origin as a note.</td></tr>
-<tr><td>Source</td><td>Every event with source (file, sheet) and citation (register book, page, number or quote), so you can trace every statement back to its table row.</td></tr>
+<tr><td>Source</td><td>Every event with source (file, sheet) and citation (register book, page, number or quote), so you can trace every statement back to its table row. The citation names the kind of entry and the person's role in it (EVEN/ROLE: child, father, mother, groom, bride …). At the main event, the text of the citation holds the transcription of the entry (field <code>wortlaut</code>) and every column without a field as "header: value".</td></tr>
 <tr><td>Notes</td><td>Remarks of the entries; for an uncertain assignment a note "famrecon: Zuordnung … unsicher" with the alternatives and their points.</td></tr>
 </table>
-<p>Nothing is discarded: whatever has no GEDCOM field becomes a note on the person or the event.</p>
+<p>Nothing is discarded: whatever has no GEDCOM field becomes a note on the person or the event, or is part of the text of the citation.</p>
 <h3>The check</h3>
 <p>For every table row, famrecon looks for the record in the GEDCOM that must document it: for a baptism a person with birth or baptism and this citation, for a marriage a family with marriage, for a death a person with death or burial. It also verifies that the names of the main persons appear in the record and that all references between persons and families point to existing records. <b>0 errors</b> means every row arrived. Errors are listed individually; the typical cause is a mandatory field missing from the mapping.</p>
 <h3>Afterwards</h3>
