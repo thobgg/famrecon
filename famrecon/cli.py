@@ -75,13 +75,23 @@ def cmd_stichprobe(args):
     """Stichprobe in Kopien der Registertabellen: Zeilen je Familie farbig, Spalten fuer das Urteil."""
     from . import stichprobe
     st = stichprobe.bauen(db.oeffnen(args.db), args.quelle, args.out, args.zufall, args.schwer, args.saat)
-    print(f"{st['familien']} Familien ({', '.join(f'{k} {v}' for k, v in st['arten'].items())}), {st['zeilen']} Zeilen in {st['dateien']} Tabellen, gezogen aus {st['grundgesamtheit']} Familien mit mindestens zwei Zeilen -> {st['ziel']}")
+    print(f"{st['familien']} Familien ({', '.join(f'{k} {v}' for k, v in st['arten'].items())}), {st['zeilen']} Zeilen und {st['kandidaten']} Kandidaten zum Prüfen in {st['dateien']} Tabellen, gezogen aus {st['grundgesamtheit']} Familien mit mindestens zwei Zeilen -> {st['ziel']}")
 
 
 def cmd_stichprobe_auswerten(args):
     """Ausgefuellte Stichprobe auswerten: Fehlerquote der Zuordnung."""
     from . import stichprobe
     stichprobe.bericht(args.ordner)
+    if args.uebernehmen:
+        if not args.db:
+            sys.exit("--uebernehmen braucht --db")
+        con = db.oeffnen(args.db)
+        gesp, rest = stichprobe.uebernehmen(con, args.ordner)
+        print(f"\n{len(gesp)} Entscheidungen gespeichert; sie gelten beim nächsten famrecon verknuepfen.")
+        if rest:
+            print("Falsch zugeordnet, Ursache offen (in der Prüfliste klären):")
+            for f, o in rest:
+                print(f"  {f}: {o[0]} · {o[1]}: Zeile {o[2]}")
 
 
 def cmd_ausschluesse(args):
@@ -212,6 +222,8 @@ def main(argv=None):
 
     s = sub.add_parser("stichprobe-auswerten", help=_("Ausgefuellte Stichprobe auswerten"))
     s.add_argument("ordner")
+    s.add_argument("--db", help="Projektdatei, fuer --uebernehmen")
+    s.add_argument("--uebernehmen", action="store_true", help="eindeutige Antworten als Entscheidungen speichern")
     s.set_defaults(fn=cmd_stichprobe_auswerten)
 
     s = sub.add_parser("ausschluesse", help=_("Wie oft jede Ausschlussregel im letzten Lauf gegriffen hat"))

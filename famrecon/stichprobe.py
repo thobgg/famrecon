@@ -12,7 +12,17 @@ Zeilen und fragt, ob eine Zeile fehlt.
 Eine Zeile gehoert zu einer Familie: die Trauung des Paares, die Taufen ihrer Kinder, die Begraebnisse von Mann,
 Frau und Kindern. Gezogen wird nur unter Familien mit mindestens zwei Zeilen: nur dort wurde etwas verbunden,
 eine Familie aus einer einzigen Zeile kann keine falsche Verbindung enthalten. Keine Zeile gehoert zu zwei
-gezogenen Familien, damit jede Zeile genau eine Farbe hat. Gezogen werden Familien zufaellig (die Grundlage der Fehlerquote) und bewusst schwierige Faelle
+gezogenen Familien, damit jede Zeile genau eine Farbe hat. Dazu je Familie die naheliegenden Zeilen, die das Programm NICHT zugeordnet hat (Taufen mit gleichnamigem Vater im
+Zeitraum der Familie, Begraebnisse gleichnamiger Mitglieder ohne eigenes Begraebnis), in einem hellen Ton der
+Familienfarbe und mit derselben Frage: so wird "fehlt eine Zeile?" vom Suchen zum Ankreuzen, und die Vollstaendigkeit
+laesst sich messen. Ein Filter auf der Spalte Stichprobe zeigt nur die Stichprobe.
+
+Die Antworten wirken direkt (stichprobe-auswerten --db ... --uebernehmen): Kandidat "richtig" -> Entscheidung
+"gleich" (Vater/Mutter einer Taufe = Mann/Frau der Familie; Verstorbener = das Familienmitglied); Begraebnis "falsch"
+-> Entscheidung "neu" (eigene Person). Falsche Taufen und Trauungen bleiben fuer die Pruefliste, weil offen ist,
+welche Verbindung falsch war.
+
+Gezogen werden Familien zufaellig (die Grundlage der Fehlerquote) und bewusst schwierige Faelle
 (haeufige Namen, Witwer mit zweiter Ehe, Taufen mit einem Paten gleichen Namens wie der Vater), die getrennt
 ausgewertet werden. Die Abschrift selbst wird nicht geprueft.
 """
@@ -40,6 +50,12 @@ NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
       "pr": "http://schemas.openxmlformats.org/package/2006/relationships",
       "xdr": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
       "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+
+
+def hell(rgb, anteil=0.6):
+    """Farbe zu anteil mit Weiss mischen: der helle Ton fuer Kandidatenzeilen."""
+    r, g, b = (int(rgb[i:i + 2], 16) for i in (0, 2, 4))
+    return "%02X%02X%02X" % tuple(int(x + (255 - x) * anteil) for x in (r, g, b))
 
 
 def farben(n):
@@ -72,6 +88,12 @@ class Bestand:
         self.rolle = defaultdict(dict)                       # eintrag -> pfad -> ident
         for r in con.execute("SELECT p.eintrag, p.pfad, z.ident FROM person p JOIN zuordnung z ON z.person=p.id"):
             self.rolle[r["eintrag"]][r["pfad"]] = r["ident"]
+        self.nennung = defaultdict(dict)                     # eintrag -> pfad -> person-Zeile
+        for r in con.execute("SELECT id, eintrag, pfad, name, vorname, name_schl, vorname_kanon FROM person"):
+            self.nennung[r["eintrag"]][r["pfad"]] = dict(r)
+        self.erste_nennung = {}                              # ident -> eine person.id, die ihm zugeordnet ist
+        for r in con.execute("SELECT ident, MIN(person) p FROM zuordnung GROUP BY ident"):
+            self.erste_nennung[r["ident"]] = r["p"]
         self.paten = {r["eintrag"]: r["wert"] for r in con.execute("SELECT eintrag, wert FROM feld WHERE name='paten' AND wert IS NOT NULL")}
         self.trauung = {f["trauung_eintrag"]: f["id"] for f in self.fams.values() if f["trauung_eintrag"]}
 
@@ -115,6 +137,58 @@ class Bestand:
             return "—"
         x = self.idents[i]
         return f"{x['name'] or ('NN' if x['unbekannt'] else '—')}, {x['vorname'] or '—'}"
+
+
+def _passt(nennung, ident, B):
+    """Name aehnlich (auch Ehe- oder Geburtsname) und Vorname nicht widersprechend."""
+    from . import normalform as nf
+    if not nennung or not ident:
+        return False
+    i = B.idents[ident]
+    def nah(a, b):                                           # Lautschluessel UND Schreibung nah (Lemke ist nicht Lang)
+        return bool(a and b) and nf.namen_aehnlich(a, b) and nf.levenshtein(a.lower(), b.lower()) <= max(2, len(a) // 3)
+    if not any(nah(n, nennung.get("name")) for n in (i["name"], i["ehename"], i["geburtsname"]) if n):
+        return False
+    vp = nf.vornamen_punkte(nennung.get("vorname_kanon"), i["vorname_kanon"])
+    return vp is None or vp > 0
+
+
+def kandidaten(B, fid, belegt, je_familie=4):
+    """Naheliegende, NICHT zugeordnete Zeilen einer Familie: [(eintrag, art, ziel_ident)].
+    Taufen mit gleichnamigem Vater (und nicht widersprechender Mutter) im Zeitraum der Familie;
+    Begraebnisse gleichnamiger Mitglieder, die noch kein Begraebnis haben."""
+    f = B.fams[fid]
+    eigene = set(B.zeilen_der_familie(fid))
+    kinder = B.kinder.get(fid, [])
+    jahre = [B.idents[k]["geb_jahr"] for k in kinder if B.idents[k]["geb_jahr"]] + ([f["tr_jahr"]] if f["tr_jahr"] else [])
+    if not jahre:
+        return []
+    von, bis = min(jahre) - 3, max(jahre) + 12
+    begraben = {B.rolle[e].get("verstorbener") for e in eigene if B.eintraege[e]["register"] == "tod"}
+    out = []
+    for eid, e in B.eintraege.items():
+        if eid in eigene or eid in belegt or not e["jahr"]:
+            continue
+        n = B.nennung.get(eid, {})
+        if e["register"] == "taufe" and von <= e["jahr"] <= bis and _passt(n.get("vater"), f["mann"], B):
+            if f["frau"] and n.get("mutter") and n["mutter"].get("vorname_kanon") and not _passt(n["mutter"], f["frau"], B) \
+                    and B.idents[f["frau"]]["vorname_kanon"]:
+                from . import normalform as nf
+                if not nf.vornamen_punkte(n["mutter"]["vorname_kanon"], B.idents[f["frau"]]["vorname_kanon"]):
+                    continue
+            out.append((abs(e["jahr"] - (von + bis) / 2), eid, "Taufe eines Kindes", f["mann"]))
+        elif e["register"] == "tod":
+            for m in [x for x in (f["mann"], f["frau"]) if x] + kinder:
+                if m in begraben:
+                    continue
+                gj = B.idents[m]["geb_jahr"]
+                if gj and not (gj <= e["jahr"] <= gj + 100):
+                    continue
+                if _passt(n.get("verstorbener"), m, B):
+                    out.append((abs(e["jahr"] - (von + bis) / 2), eid, "Begräbnis eines Mitglieds", m))
+                    break
+    out.sort()
+    return [(eid, art, ziel) for _, eid, art, ziel in out[:je_familie]]
 
 
 def auswahl(B, n_zufall=20, n_schwer=10, saat=1):
@@ -275,6 +349,16 @@ def bauen(con, quelle, ziel, n_zufall=20, n_schwer=10, saat=20261012):
         for o in z:
             zeilen_von.setdefault(o, []).append(fid)
     ids_von = {B.ort(e): B.ids(e) for e in B.eintraege}
+    belegt = {e for fid, _ in gew for e in B.zeilen_der_familie(fid)}
+    kand_von = {}                                           # (datei, blatt, zeile) -> familie
+    kand_meta = {}
+    for fid, _art in gew:
+        liste = []
+        for eid, art_k, ziel_i in kandidaten(B, fid, belegt):
+            belegt.add(eid)
+            kand_von[B.ort(eid)] = fid
+            liste.append({"ort": list(B.ort(eid)), "eintrag": eid, "art": art_k, "ziel": ziel_i})
+        kand_meta[f"F{fid}"] = liste
 
     dateien = sorted({q["datei"] for q in B.quellen.values()})
     for datei in dateien:
@@ -304,6 +388,14 @@ def bauen(con, quelle, ziel, n_zufall=20, n_schwer=10, saat=20261012):
                     for sp in range(1, letzte + len(NEUE_SPALTEN) + 1):
                         ws.cell(zeile, sp).fill = fill
                     dv.add(ws.cell(zeile, letzte + 4).coordinate)
+                elif o in kand_von:                          # naheliegend, aber nicht zugeordnet: heller Ton, gleiche Frage
+                    fid_k = kand_von[o]
+                    ws.cell(zeile, letzte + 1, f"F{fid_k} (prüfen)")
+                    fill = PatternFill("solid", fgColor=hell(farbe[fid_k]))
+                    for sp in range(1, letzte + len(NEUE_SPALTEN) + 1):
+                        ws.cell(zeile, sp).fill = fill
+                    dv.add(ws.cell(zeile, letzte + 4).coordinate)
+            ws.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(letzte + len(NEUE_SPALTEN))}{ws.max_row}"
             if not ws._images:                               # aeltere openpyxl verlieren Bilder; neuere lesen sie selbst
                 _bilder_setzen(ws, bilder.get(ws.title, []))
         wb.save(ziel / datei)
@@ -321,6 +413,8 @@ def bauen(con, quelle, ziel, n_zufall=20, n_schwer=10, saat=20261012):
         for d, b, z in familie_zeilen[fid]:
             nach[f"{d} · {b}"].append(z)
         zeilen = "\n".join(f"{k}: Zeile {', '.join(map(str, v))}" for k, v in nach.items())
+        if kand_meta.get(f"F{fid}"):
+            zeilen += "\nzum Prüfen (hell): " + "; ".join(f"{k['ort'][1]} Zeile {k['ort'][2]}" for k in kand_meta[f"F{fid}"])
         tr = f"{f['tr_tag'] or ''}.{f['tr_monat'] or ''}.{f['tr_jahr']}".strip(".") if f["tr_jahr"] else "keine (aus Taufen erschlossen)"
         ws.append(["", f"F{fid}", B.name(f["mann"]), B.name(f["frau"]), tr, zeilen, None, None, None, art])
         r = ws.max_row
@@ -334,15 +428,22 @@ def bauen(con, quelle, ziel, n_zufall=20, n_schwer=10, saat=20261012):
     ws.freeze_panes = "C2"
     an = ub.create_sheet("Anleitung")
     for t in ["In den Tabellen sind die Zeilen jeder Familie in einer Farbe markiert.",
+              "Über den Filter-Pfeil in der Spalte „Stichprobe“ lassen sich nur diese Zeilen anzeigen.",
               "1. Gehört die farbige Zeile zur Familie? In der Spalte „Gehört dazu?“ richtig, falsch oder unklar wählen.",
+              "   Hell gefärbte Zeilen hat das Programm NICHT zugeordnet, sie könnten aber dazugehören: dieselbe Frage.",
               "2. Fehlt eine Zeile, die zur Familie gehört? Hier im Blatt „Familien“ ja wählen und die Zeile nennen.",
               "Kommentare sind willkommen, Pflicht ist nichts."]:
         an.append([t])
     an.column_dimensions["A"].width = 110
     ub.save(ziel / "Stichprobe Übersicht.xlsx")
     (ziel / "stichprobe.json").write_text(json.dumps({"grundgesamtheit": grundgesamtheit, "familien": [[f, a] for f, a in gew],
-        "zeilen": {f"F{f}": [list(o) for o in familie_zeilen[f]] for f, _ in gew}}, ensure_ascii=False, indent=1), encoding="utf-8")
-    return dict(familien=len(gew), zeilen=len(zeilen_von), dateien=len(dateien), ziel=str(ziel),
+        "zeilen": {f"F{f}": [list(o) for o in familie_zeilen[f]] for f, _ in gew},
+        "eintraege": {f"F{f}": B.zeilen_der_familie(f) for f, _ in gew},
+        "kandidaten": kand_meta, "mitglieder": {f"F{f}": {"mann": B.fams[f]["mann"], "frau": B.fams[f]["frau"]} for f, _ in gew},
+        "nennungen": {str(e): {k: v["id"] for k, v in B.nennung[e].items()}
+                      for e in {e for f, _ in gew for e in B.zeilen_der_familie(f)} | {k["eintrag"] for l in kand_meta.values() for k in l}},
+        "erste_nennung": {str(i): B.erste_nennung.get(i) for i in {x for f, _ in gew for x in (B.fams[f]["mann"], B.fams[f]["frau"], *B.kinder.get(f, [])) if x}}}, ensure_ascii=False, indent=1), encoding="utf-8")
+    return dict(familien=len(gew), zeilen=len(zeilen_von), kandidaten=len(kand_von), dateien=len(dateien), ziel=str(ziel),
                 arten=Counter(a for _, a in gew), grundgesamtheit=grundgesamtheit)
 
 
@@ -362,6 +463,9 @@ def auswerten(ordner):
     meta = json.loads((ordner / "stichprobe.json").read_text(encoding="utf-8"))
     art = {f"F{f}": a for f, a in meta["familien"]}
     urteil = {}                                              # (familie) -> Counter
+    kand_urteil = {}                                         # familie -> Counter
+    gefunden = defaultdict(list)                             # familie -> [(datei, blatt, zeile)] Kandidat "richtig"
+    falsch_ort = defaultdict(list)                           # familie -> [(datei, blatt, zeile)]
     fremde = defaultdict(list)
     for datei in sorted(ordner.glob("*.xlsx")):
         if datei.name == "Stichprobe Übersicht.xlsx":
@@ -376,7 +480,15 @@ def auswerten(ordner):
                 if not fam:
                     continue
                 u = (ws.cell(zeile, kopf["Gehört dazu?"]).value or "").strip().lower()
+                if str(fam).endswith("(prüfen)"):
+                    f = str(fam).split(" ")[0]
+                    kand_urteil.setdefault(f, Counter())[u or "offen"] += 1
+                    if u == "richtig":
+                        gefunden[f].append((datei.name, ws.title, zeile))
+                    continue
                 for f in str(fam).split(", "):
+                    if u == "falsch":
+                        falsch_ort[f].append((datei.name, ws.title, zeile))
                     urteil.setdefault(f, Counter())[u or "offen"] += 1
                     if u == "falsch":
                         fremde[f].append(f"{datei.name} · {ws.title}: Zeile {zeile}")
@@ -394,14 +506,22 @@ def auswerten(ordner):
         offen = sum(urteil.get(f, Counter())["offen"] for f in fs)
         geprueft = [f for f in fs if sum(urteil.get(f, Counter())[x] for x in ("richtig", "falsch")) > 0]
         fehlerhaft = [f for f in geprueft if urteil[f]["falsch"] or fehlt.get(f, (False,))[0]]
-        mit_luecke = [f for f in geprueft if fehlt.get(f, (False,))[0]]
+        mit_luecke = [f for f in geprueft if fehlt.get(f, (False,))[0] or kand_urteil.get(f, Counter())["richtig"]]
+        fehlerhaft = [f for f in geprueft if urteil[f]["falsch"] or f in mit_luecke]
+        k_richtig = sum(kand_urteil.get(f, Counter())["richtig"] for f in fs)
+        k_falsch = sum(kand_urteil.get(f, Counter())["falsch"] for f in fs)
+        k_offen = sum(kand_urteil.get(f, Counter())[x] for f in fs for x in ("unklar", "offen"))
         return dict(familien=len(fs), geprueft=len(geprueft), richtig=richtig, falsch=falsch, unklar=unklar, offen=offen,
                     zeilen_quote=falsch / (richtig + falsch) if richtig + falsch else None,
                     zeilen_intervall=_wilson(falsch, richtig + falsch),
                     familien_fehlerhaft=len(fehlerhaft), familien_quote=len(fehlerhaft) / len(geprueft) if geprueft else None,
-                    familien_intervall=_wilson(len(fehlerhaft), len(geprueft)), mit_luecke=len(mit_luecke))
+                    familien_intervall=_wilson(len(fehlerhaft), len(geprueft)), mit_luecke=len(mit_luecke),
+                    kand_richtig=k_richtig, kand_falsch=k_falsch, kand_offen=k_offen,
+                    fehlend_quote=k_richtig / (k_richtig + richtig) if k_richtig + richtig else None,
+                    fehlend_intervall=_wilson(k_richtig, k_richtig + richtig))
     return dict(zufall=gruppe(lambda a: a == "zufall"), schwierig=gruppe(lambda a: a != "zufall"),
-                fremde=dict(fremde), fehlt={f: w for f, (j, w) in fehlt.items() if j})
+                fremde=dict(fremde), fehlt={f: w for f, (j, w) in fehlt.items() if j},
+                gefunden=dict(gefunden), falsch_ort=dict(falsch_ort), meta=meta)
 
 
 def bericht(ordner):
@@ -416,6 +536,9 @@ def bericht(ordner):
         print(f"  Fremde Zeilen: {pz(g['zeilen_quote'])} (95 %: {pz(lo)} bis {pz(hi)})")
         lo, hi = g["familien_intervall"]
         print(f"  Familien mit Fehler (fremde oder fehlende Zeile): {g['familien_fehlerhaft']}, {pz(g['familien_quote'])} (95 %: {pz(lo)} bis {pz(hi)}); davon mit Lücke {g['mit_luecke']}")
+        lo, hi = g["fehlend_intervall"]
+        print(f"  Vorgelegte Kandidaten: gehört dazu {g['kand_richtig']}, gehört nicht dazu {g['kand_falsch']}, unklar/ohne Urteil {g['kand_offen']}")
+        print(f"  Fehlende Zeilen: {pz(g['fehlend_quote'])} der zugehörigen Zeilen fehlten (95 %: {pz(lo)} bis {pz(hi)})")
     if r["fremde"]:
         print("\nFremde Zeilen:")
         for f, z in r["fremde"].items():
@@ -425,3 +548,47 @@ def bericht(ordner):
         for f, w in r["fehlt"].items():
             print(f"  {f}: {w}")
     return r
+
+
+def uebernehmen(con, ordner):
+    """Eindeutige Antworten als Entscheidungen speichern. -> (gespeichert, fuer die Pruefliste)."""
+    from . import verknuepfen
+    r = auswerten(ordner)
+    meta = r["meta"]
+    gespeichert, liste = [], []
+    for f, orte in r["gefunden"].items():
+        for o in orte:
+            k = next((k for k in meta["kandidaten"].get(f, []) if tuple(k["ort"]) == tuple(o)), None)
+            if not k:
+                continue
+            nenn = meta["nennungen"].get(str(k["eintrag"]), {})
+            mitgl = meta["mitglieder"][f]
+            if k["art"].startswith("Taufe"):
+                for rolle, ident in (("vater", mitgl["mann"]), ("mutter", mitgl["frau"])):
+                    ziel = meta["erste_nennung"].get(str(ident)) if ident else None
+                    if nenn.get(rolle) and ziel:
+                        verknuepfen.entscheiden_von_hand(con, nenn[rolle], "gleich", ziel)
+                        gespeichert.append((f, o, rolle))
+            else:
+                ziel = meta["erste_nennung"].get(str(k["ziel"]))
+                if nenn.get("verstorbener") and ziel:
+                    verknuepfen.entscheiden_von_hand(con, nenn["verstorbener"], "gleich", ziel)
+                    gespeichert.append((f, o, "verstorbener"))
+    for f, orte in r["falsch_ort"].items():
+        for o in orte:
+            liste.append((f, o))
+    # Begraebnis "falsch": der Verstorbene ist eine eigene Person
+    eintrag_von_ort = {}
+    for f, eids in meta["eintraege"].items():
+        for e, o in zip(eids, meta["zeilen"][f]):
+            eintrag_von_ort[(f, tuple(o))] = e
+    rest = []
+    for f, o in liste:
+        e = eintrag_von_ort.get((f, tuple(o)))
+        nenn = meta["nennungen"].get(str(e), {}) if e else {}
+        if "verstorbener" in nenn:
+            verknuepfen.entscheiden_von_hand(con, nenn["verstorbener"], "neu")
+            gespeichert.append((f, o, "verstorbener neu"))
+        else:
+            rest.append((f, o))
+    return gespeichert, rest

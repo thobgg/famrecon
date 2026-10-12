@@ -70,9 +70,38 @@ class Stichprobe(unittest.TestCase):
         z = r["zufall"]
         self.assertEqual(z["falsch"], 1)
         self.assertEqual(z["richtig"] + z["falsch"], self.st["zeilen"])
+        self.assertEqual(z["kand_richtig"] + z["kand_falsch"], 0)               # Kandidaten unbeantwortet
         self.assertIn(erste_falsch, r["fremde"])
         self.assertEqual(len(r["fehlt"]), 1)
         self.assertGreaterEqual(z["familien_fehlerhaft"], 1)
+
+
+class Kandidaten(unittest.TestCase):
+    """Eine Taufe, die das Programm nicht zuordnet (Mutter ohne Namen, zwei Ehen): als Kandidat vorgelegt,
+    "richtig" wird zur Entscheidung, der naechste Lauf haengt das Kind an die Familie."""
+
+    def test_kandidat_wird_entscheidung(self):
+        from tests.test_zwei_ehen import EHEN, TAUFE_1770, projekt, familie_des_kindes
+        con = projekt(EHEN + [("1771-01-01", "Lang", "Peter", "Kurz", "Eva")],
+                      [TAUFE_1770, ("1760-04-01", "Kiefer", "Anna", "Kiefer, Friedrich", "Burckhardt, Catharina")])
+        quelle = Path(con.execute("PRAGMA database_list").fetchone()[2]).parent
+        st = stichprobe.bauen(con, quelle, quelle / "s", n_zufall=5, n_schwer=0, saat=1)
+        meta = __import__("json").loads((quelle / "s" / "stichprobe.json").read_text(encoding="utf-8"))
+        f1758 = next(f for f, (fid, _) in zip(meta["kandidaten"], meta["familien"]) if con.execute(
+            "SELECT tr_jahr FROM familie WHERE id=?", (int(f[1:]),)).fetchone()[0] == 1758)
+        kand = meta["kandidaten"][f1758]
+        self.assertTrue(any(k["art"].startswith("Taufe") for k in kand))
+        wb = openpyxl.load_workbook(quelle / "s" / "r.xlsx")
+        ws = wb["Taufen"]
+        kopf = {c.value: c.column for c in ws[1]}
+        for r in range(2, ws.max_row + 1):
+            if ws.cell(r, kopf["Stichprobe"]).value == f"{f1758} (prüfen)":
+                ws.cell(r, kopf["Gehört dazu?"], "richtig")
+        wb.save(quelle / "s" / "r.xlsx")
+        gesp, rest = stichprobe.uebernehmen(con, quelle / "s")
+        self.assertTrue(any(g[2] == "mutter" for g in gesp))
+        verknuepfen.verknuepfen(con)
+        self.assertEqual(familie_des_kindes(con, "Johann")["tr_jahr"], 1758)
 
 
 if __name__ == "__main__":
