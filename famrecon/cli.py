@@ -71,6 +71,19 @@ def cmd_verknuepfen(args):
     print(_("Zuordnungen:") + " " + ", ".join(f"{k} {v}" for k, v in st["stufen"].items()))
 
 
+def cmd_stichprobe(args):
+    """Stichprobe in Kopien der Registertabellen: Zeilen je Familie farbig, Spalten fuer das Urteil."""
+    from . import stichprobe
+    st = stichprobe.bauen(db.oeffnen(args.db), args.quelle, args.out, args.zufall, args.schwer, args.saat)
+    print(f"{st['familien']} Familien ({', '.join(f'{k} {v}' for k, v in st['arten'].items())}), {st['zeilen']} Zeilen in {st['dateien']} Tabellen, gezogen aus {st['grundgesamtheit']} Familien mit mindestens zwei Zeilen -> {st['ziel']}")
+
+
+def cmd_stichprobe_auswerten(args):
+    """Ausgefuellte Stichprobe auswerten: Fehlerquote der Zuordnung."""
+    from . import stichprobe
+    stichprobe.bericht(args.ordner)
+
+
 def cmd_ausschluesse(args):
     """Wie oft jede Ausschlussregel im letzten Lauf gegriffen hat."""
     verknuepfen.ausschluesse_zeigen(db.oeffnen(args.db))
@@ -187,6 +200,19 @@ def main(argv=None):
     s.add_argument("db", nargs="?", default="daten/projekt.db")
     s.add_argument("--kennungen", action="store_true", help=_("Kennungen (Feld ref) als Vorgabe: gleiche Kennung ist dieselbe Person"))
     s.set_defaults(fn=cmd_verknuepfen)
+
+    s = sub.add_parser("stichprobe", help=_("Stichprobe zur Pruefung in Kopien der Registertabellen"))
+    s.add_argument("db")
+    s.add_argument("--quelle", required=True, help="Ordner mit den Originaltabellen")
+    s.add_argument("-o", "--out", required=True)
+    s.add_argument("--zufall", type=int, default=20)
+    s.add_argument("--schwer", type=int, default=10)
+    s.add_argument("--saat", type=int, default=20261012)
+    s.set_defaults(fn=cmd_stichprobe)
+
+    s = sub.add_parser("stichprobe-auswerten", help=_("Ausgefuellte Stichprobe auswerten"))
+    s.add_argument("ordner")
+    s.set_defaults(fn=cmd_stichprobe_auswerten)
 
     s = sub.add_parser("ausschluesse", help=_("Wie oft jede Ausschlussregel im letzten Lauf gegriffen hat"))
     s.add_argument("db", nargs="?", default="daten/projekt.db")
